@@ -1,4 +1,4 @@
-const Hand = ({ owned,  money }) => {
+const Hand = ({ owned, money }) => {
     console.log(owned);
     return (
         <div className="bg-white border-4 border-red-600 rounded-xl p-4 w-full shadow-2xl font-mono mb-4 md:mb-0 md:ml-6">
@@ -6,18 +6,23 @@ const Hand = ({ owned,  money }) => {
                 Your Properties
             </h2>
             <p className="text-sm text-gray-700 font-semibold mb-4 text-center">
-                 ${money?.toString()}
+                ${money?.toString()}
             </p>
-            <div className="space-y-2 max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-red-500 scrollbar-track-red-100">
+            <div className="flex flex-wrap gap-3 max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-red-500 scrollbar-track-red-100 justify-center">
                 {owned.length === 0 ? (
-                    <p className="text-sm text-gray-500 text-center">No properties yet</p>
+                    <p className="text-sm text-gray-500 text-center w-full">No properties yet</p>
                 ) : (
                     owned.map((property, index) => (
                         <div
                             key={index}
-                            className="bg-red-100 text-red-700 font-semibold text-sm rounded-md px-2 py-1 border border-red-300"
+                            className="bg-red-100 text-red-700 font-semibold text-sm rounded-md p-3 border border-red-300 flex flex-col items-center justify-between shadow-md"
                         >
-                            {property.name}
+                            <span className="text-center truncate w-full">
+                                {property.name}
+                            </span>
+                            <button className="mt-2 bg-red-400 hover:bg-red-500 text-white text-xs py-1 px-3 rounded">
+                                View
+                            </button>
                         </div>
                     ))
                 )}

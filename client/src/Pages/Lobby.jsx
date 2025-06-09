@@ -1,4 +1,3 @@
-import Background from "../Components/Background";
 import { useGameStore } from "../store/gameStore";
 
 const Lobby = () => {

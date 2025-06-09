@@ -332,10 +332,12 @@ export const buyProp = async (req, res) => {
             otherPlayersProperties.push({player : p, properties: yourProperties});
         });
         // console.log(otherPlayersProperties);
+        const yourMoney = updatedGame.players[playerIndex].money;
+    
         const socket = getSocket(userId);
         socket.to(code).emit("property-bought", {player: player.userId.username, property: property.name, game: updatedGame, otherPlayersProperties: otherPlayersProperties});
 
-        res.status(200).json({message: `You Bought ${property.name}`, game: updatedGame, yourProperties: yourProperties });
+        res.status(200).json({message: `You Bought ${property.name}`, game: updatedGame, yourProperties: yourProperties,  yourMoney: yourMoney});
 
     } catch (error) {
         console.log("error in buy property controller", error.message); 

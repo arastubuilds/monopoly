@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { MonopolyBoard } from "../Components/Board";
 import { useGameStore } from "../store/gameStore";
 
@@ -8,6 +8,7 @@ import Hand from "../Components/Hand";
 import RightHand from "../Components/RightHand";
 import PayRentPrompt from "../Components/PayRentPrompt";
 import YourOwnPrompt from "../Components/YourOwnPrompt";
+import TradeScreen from "../Components/TradeScreen";
 
 const Play = () => {
     const game = useGameStore((state) => state.game);
@@ -15,13 +16,12 @@ const Play = () => {
     const landedOn = useGameStore((state) => state.landedOn);
     const yourProperties = useGameStore((state) => state.yourProperties);
     const oPP = useGameStore((state) => state.oPP);
-    const {roll, end, rolled, isYourTurn, isBuying, isPaying, isOwn } = useGameStore();
-
-    // console.log(game?.boardState);
+    const { roll, end, rolled, passed, isYourTurn, isBuying, isPaying, isOwn } = useGameStore();
+    const [isTrading, setIsTrading] = useState(false);
+    console.log(yourMoney);
     
     useEffect(() => {
         registerPlayerEvents();
-
         return () => unregisterPlayerEvents();
     }, []);
 
@@ -40,7 +40,7 @@ const Play = () => {
             </div>
     
             {/* Board (Middle) */}
-            <div className="w-full md:w-[50%] flex justify-center items-center relative">
+            <div className="w-full md:w-[50%] flex justify-center items-center relative md:h-screen">
                 <MonopolyBoard boardData={game?.boardState}>
                     {!rolled &&  (
                         <button
@@ -62,9 +62,10 @@ const Play = () => {
                             End Turn
                         </button>
                     )}
-                    {isBuying && <BuyPrompt space={landedOn} />}
+                    {isTrading && <TradeScreen/>}
+                    {isBuying && !passed && <BuyPrompt space={landedOn} />}
                     {isPaying && <PayRentPrompt space={landedOn}/>}
-                    {isOwn && <YourOwnPrompt space={landedOn}/>}
+                    {isOwn && !passed && <YourOwnPrompt space={landedOn}/>}
                 </MonopolyBoard>
             </div>
     

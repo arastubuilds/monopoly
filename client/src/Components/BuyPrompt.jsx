@@ -1,9 +1,10 @@
 import { useGameStore } from "../store/gameStore";
 
 const BuyPrompt = ({ space  }) => {
-    const {game, buy} = useGameStore();
+    const {game, buy, pass} = useGameStore();
 
     const handleBuy = async () =>  { await buy(game?.code) };
+    const handlePass = () => { pass() };
     if (!space) return null;
 
     return (
@@ -30,7 +31,7 @@ const BuyPrompt = ({ space  }) => {
                             </button>
                             <button
                                 className="w-full sm:w-32 h-12 bg-white text-red-600 border-4 border-red-600 rounded-lg font-bold text-lg hover:bg-red-600 hover:text-white transition-all"
-                                
+                                onClick={handlePass}
                             >
                                 Pass
                             </button>

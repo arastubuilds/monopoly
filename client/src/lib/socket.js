@@ -88,6 +88,8 @@ export const registerPlayerEvents = () => {
         setGame(res.game);
     });
     socket.on("player-turn", (res) => {
+        console.log(res);
+        
         if (res.currentTurn._id.toString() === user._id.toString()) { 
             toast.success(`Your Turn`); 
             setIsYourTurn(true);

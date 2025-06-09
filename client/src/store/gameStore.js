@@ -9,7 +9,7 @@ export const useGameStore = create((set) => ({
     yourProperties: [],
     oPP: [], 
     landedOn: null,
-    isCreating: false,
+    isCreating: true,
     isJoining: false,
     isStarting: false,
     isRolling: false,
@@ -17,6 +17,7 @@ export const useGameStore = create((set) => ({
     isBuying: false,
     isPaying: false,
     isOwn: false,
+    passed: false,
     ready: false,
     joined: false,
     started: false,
@@ -24,7 +25,7 @@ export const useGameStore = create((set) => ({
     dice: 0,
 
     create: async () => {
-        set({game: null, isCreating: true});
+        set({game: null});
         try {
             const res = await axiosInstance.post("/game/create");
             console.log(res.data);
@@ -89,12 +90,11 @@ export const useGameStore = create((set) => ({
     end: async (code) => {
         try {
             const res = await axiosInstance.post(`/game/${code}/endTurn`);
-            set({isYourTurn: false, rolled: false, landedOn: null});
+            set({isYourTurn: false, rolled: false, passed: false, landedOn: null});
             toast.success(res.data.message);
         } catch (error) {
             toast.error(error.response.data.message);
         }
-
     },
     buy: async (code) => {
         try {
@@ -111,13 +111,17 @@ export const useGameStore = create((set) => ({
     pay: async (code, recipient, space) => {
         try {
             const res = await axiosInstance.post(`/game/${code}/pay`, {recipient, space});
-            set({game: res.data.game, isPaying: false, yourMoney: res.data.yourMoney});
+            set({game: res.data.game, isPaying: false, yourMoney: res.data.yourMoney, oPP: res.data.otherPlayersProperties});
             toast(`${res.data.message}`)
             // console.log(res.data.)
         } catch (error) {
             console.log(error.message);
             toast.error(error.response.data.message);
         }
+    },
+    pass: () => {
+        console.log("passed");
+        set({passed: true});
     },
     setIsYourTurn: (isYourTurn) => set({isYourTurn}),
     setLandedOn: (landedOn) => set({landedOn}),
