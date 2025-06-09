@@ -44,13 +44,7 @@ export const joinGame = async (req, res) => {
     try {
         const userId = req.user._id;
         const {code} = req.params;
-        const game = await Game.findOne({code}).populate("players.userId", "username");;
-
-        if (!game)
-            return res.status(404).json({message: "Game not found"});
-        
-        if (game.started)
-            return res.status(400).json({message:"Game already started"});
+        const game = req.game;
 
         const playerExists = game.players.some(player => player.userId.toString() === userId.toString());
 
@@ -61,20 +55,22 @@ export const joinGame = async (req, res) => {
             return res.status(400).json({message: "Room is Full"});
 
         game.players.push({ userId });
-
+        
         await game.save();
-
-        const updatedGame = await Game.findOne({ code }).populate("players.userId", "username");
+        await game.populate("players.userId", "username");
+        // console.log(game);
+        // const updatedGame = await Game.findOne({ code }).populate("players.userId", "username");
         // socket 
+        console.log(game.players);
         const socket = getSocket(userId);
         // console.log(socket.id);
         socket.join(code);
-        io.to(code).emit("joined-room", updatedGame);
+        io.to(code).emit("joined-room", game);
         
-        res.status(200).json({message: "Joined Game Successfully", game: updatedGame});
+        res.status(200).json({message: "Joined Game Successfully", game});
 
     } catch (error) {
-        console.log("Error in join game controller", error.message);
+        console.log("Error in join game controller", error);
         return res.status(500).json({message: "Error Joining Game"});
     }
 }
@@ -82,26 +78,26 @@ export const joinGame = async (req, res) => {
 export const startGame = async (req, res) => {
     try {
         const {code} = req.params;
-
+        const game = req.game;
         const userId = req.user._id;
         // console.log(userId.toString());
         
-        const game = await Game.findOne({code});
+        // const game = await Game.findOne({code});
 
-        if (!game)
-            return res.status(400).json({message: "Game with code not found"});
+        // if (!game)
+        //     return res.status(400).json({message: "Game with code not found"});
 
-        if (game.started)
-            return res.status(400).json({message: "Game already started"});
+        // if (game.started)
+        //     return res.status(400).json({message: "Game already started"});
 
-        if (game.hostId.toString() !== userId.toString())
-            return res.status(400).json({message: "Only host can start game", game: game});
+        // if (game.hostId.toString() !== userId.toString())
+        //     return res.status(400).json({message: "Only host can start game", game: game});
 
         if (game.players.length < 2)
             return res.status(400).json({message: "2 or more players required"});
 
 
-        game.turnOrder = game.players.map(player => player.userId.toString());
+        game.turnOrder = game.players.map(player => player.userId._id.toString());
         game.turnOrder.sort(() => Math.random() - 0.5);
 
         game.currentTurn = game.turnOrder[0];
@@ -109,20 +105,20 @@ export const startGame = async (req, res) => {
 
         await game.save();
 
-        const updatedGame = await Game.findOne({ code }).populate("players.userId", "username");
+        // const updatedGame = await Game.findOne({ code }).populate("players.userId", "username");
         // socket function
-        const curr = updatedGame.currentTurn;
-        const player = updatedGame.players.find((p) => p.userId._id.toString() === curr.toString());
+        const curr = game.currentTurn;
+        const player = game.players.find((p) => p.userId._id.toString() === curr.toString());
         // console.log(player);
         // const socket = getSocket(curr);
 
-        io.to(code).emit("game-started", updatedGame);
+        io.to(code).emit("game-started", game);
         io.to(code).emit("player-turn", player.userId);
 
-        return res.status(201).json({message: "Game started successfully", game: updatedGame});
+        return res.status(201).json({message: "Game started successfully", game});
 
     } catch (error) {
-        console.log("Error in start game controller", error.message);
+        console.log("Error in start game controller", error);
         return res.status(500).json({message: "Error Starting Game"});
     }
 }
@@ -132,14 +128,14 @@ export const rollDice = async (req, res) => {
 
         const userId = req.user._id;
         const {code} = req.params;
-        
-        const game = await Game.findOne({code}).populate("players.userId", "username").populate("boardState.owner", "username");
+        const game = req.game;
+        // const game = await Game.findOne({code}).populate("players.userId", "username").populate("boardState.owner", "username");
 
-        if (!game)
-            return res.status(404).json({message: "Game not found"});
+        // if (!game)
+        //     return res.status(404).json({message: "Game not found"});
 
-        if (!game.started)
-            return res.status(400).json({ message: "Game has not started yet" });
+        // if (!game.started)
+        //     return res.status(400).json({ message: "Game has not started yet" });
 
         if (game.currentTurn.toString() !== userId.toString())
             return res.status(403).json({ message: "Not your turn" });
@@ -181,11 +177,11 @@ export const rollDice = async (req, res) => {
 
         await game.save();
 
-        const updatedGame = await Game.findOne({ code }).populate("players.userId", "username").populate("boardState.owner", "username");
+        // const updatedGame = await Game.findOne({ code }).populate("players.userId", "username").populate("boardState.owner", "username");
 
         const socket = getSocket(userId);
 
-        socket.to(code).emit("dice-rolled", {game: updatedGame, num: roll, name: name});
+        socket.to(code).emit("dice-rolled", {game, num: roll, name: name});
 
         if (landed.event === "landed-unowned-prop"){
             console.log("unowned");
@@ -198,7 +194,7 @@ export const rollDice = async (req, res) => {
                 pay: false,
                 own: false,
                 landedOn: landed.space,
-                game: updatedGame,
+                game,
                 dice: { die1, die2 },
                 number: roll,
             });
@@ -213,7 +209,7 @@ export const rollDice = async (req, res) => {
                 pay: true,
                 own: false,
                 landedOn: landed.space,
-                game: updatedGame,
+                game,
                 dice: { die1, die2 },
                 number: roll,
             });
@@ -226,7 +222,7 @@ export const rollDice = async (req, res) => {
                 pay: false,
                 own: true,
                 landedOn: landed.space,
-                game: updatedGame,
+                game,
                 dice: { die1, die2 },
                 number: roll,
             });
@@ -245,11 +241,11 @@ export const endTurn = async (req, res) => {
     try {
         const userId = req.user._id;
         const {code} = req.params;
-        
-        const game = await Game.findOne({code}).populate("players.userId", "username");
+        const game = req.game;
+        // const game = await Game.findOne({code}).populate("players.userId", "username");
 
-        if (!game)
-            return res.status(404).json({message: "Game not found"});
+        // if (!game)
+        //     return res.status(404).json({message: "Game not found"});
 
         const currentIndex = game.turnOrder.findIndex(
             (id) => id.toString() === userId.toString()
@@ -263,17 +259,16 @@ export const endTurn = async (req, res) => {
         game.currentTurn = game.turnOrder[nextIndex];
     
         await game.save();
-        const updatedGame = await Game.findOne({ code })
-        .populate("currentTurn", "username")
-        .populate("players.userId", "username");
+        await game.populate("players.userId", "username");
+        await game.populate("currentTurn", "username");
 
         // io.to(code).emit("end-turn", curr.userId);
-        console.log("curr:",updatedGame.currentTurn);
+        console.log("curr:",game.currentTurn);
         
 
-        io.to(code).emit("player-turn", {currentTurn: updatedGame.currentTurn, game: updatedGame});
+        io.to(code).emit("player-turn", {currentTurn: game.currentTurn, game});
 
-        res.status(200).json({message:"Turn Ended", game: updatedGame})        
+        res.status(200).json({message:"Turn Ended", game})        
     } catch (error) {
         console.log("error in end turn controller", error.message); 
         res.status(500).json({message:"Error Ending Turn"});
@@ -284,12 +279,12 @@ export const endTurn = async (req, res) => {
 export const buyProp = async (req, res) => {
     const userId = req.user._id;
     const {code} = req.params;
-    
+    const game = req.game;
     try {
-        const game = await Game.findOne({code}).populate("players.userId", "username").populate("boardState.owner", "username");
+        // const game = await Game.findOne({code}).populate("players.userId", "username").populate("boardState.owner", "username");
 
-        if (!game)
-            return res.status(404).json({message: "Game not found"});
+        // if (!game)
+        //     return res.status(404).json({message: "Game not found"});
 
         let playerIndex = game.players.findIndex(
             (p) => p.userId._id.toString() === userId.toString() 
@@ -352,12 +347,13 @@ export const payRent = async (req, res) => {
     const userId = req.user._id;
     const {code} = req.params;
     const {recipient, space} = req.body;
+    const game = req.body;
     console.log(recipient);
     
     try {
-        const game = await Game.findOne({code}).populate("players.userId", "username").populate("boardState.owner", "username");
-        if (!game)
-            return res.status(404).json({message: "Game not found"});
+        // const game = await Game.findOne({code}).populate("players.userId", "username").populate("boardState.owner", "username");
+        // if (!game)
+        //     return res.status(404).json({message: "Game not found"});
 
         const playerIndex = game.players.findIndex((player) => player.userId._id.toString() === userId.toString());
         const recieverIndex = game.players.findIndex((player) => player.userId._id.toString() === recipient._id.toString());
@@ -394,6 +390,86 @@ export const payRent = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).json({message:"Error Paying Rent"});
+    }   
+}
+
+export const tradePropProposal = async (req, res) => {
+    const userId = req.user._id;
+    const {code} = req.params;
+    const {recipient, tradeProposal} = req.body;
+    try {
+        const game = await Game.findOne({code}).populate("players.userId", "username").populate("boardState.owner", "username");
+        const playerIndex = game.players.findIndex((player) => player.userId._id.toString() === userId.toString());
+        const recieverIndex = game.players.findIndex((player) => player.userId._id.toString() === recipient._id.toString());
+        
+        const player =   updatedGame.players[playerIndex];
+        const reciever = updatedGame.players[recieverIndex];
+
+        const senderSocket = getSocket(userId);
+
+        senderSocket.to(code).emit("trade-proposal", (player, reciever, tradeProposal));
+        res.status(200).json({message: "Proposal sent"});
+    } catch (error) {
+        console.log("error sending trade proposal", error);
+        res.status(400).json({message: "Error Sending Trade"});
     }
-    
+}
+
+export const acceptTrade = async(req, res)=>{
+    const userId = req.user._id;
+    const {tradeProposal} = req.body;
+
+    try {
+        const game = await Game.findOne({code}).populate("players.userId", "username").populate("boardState.owner", "username");
+        const senderIndex = game.players.findIndex((player) => player.userId._id.toString() === tradeProposal.sender._id.toString());
+        const receiverIndex = game.players.findIndex((player) => player.userId._id.toString() === userId.toString());
+
+        const sender = game.players[senderIndex];
+        const receiver = game.players[receiverIndex];
+
+        sender.properties = sender.properties.filter((prop) => {
+            return tradeProposal.sender.properties.includes(prop.id);
+        });
+        receiver.properties = receiver.properties.filter((prop) => {
+            return tradeProposal.receiver.properties.includes(prop.id);
+        });
+        
+        sender.properties.push(...tradeProposal.receiver.properties);
+        receiver.properties.push(...tradeProposal.sender.properties);
+
+        sender.properties.forEach((prop) => {
+            if (prop.owner != sender._id) prop.owner = sender._id;
+        });
+        receiver.properties.forEach((prop) => {
+            if (prop.owner != receiver._id) prop.owner = receiver._id;
+        });
+        await game.save();
+        const updatedGame = await Game.findOne({code}).populate("players.userId", "username").populate("boardState.owner");
+        const updatedSender = game.players[senderIndex];
+        const updatedReceiver = game.players[receiverIndex];
+        
+        const socket = getSocket(userId);
+        socket.to(code).emit("trade-accepted", ({game: updatedGame, sender: updatedSender, receiver: updatedReceiver}));
+        res.status(200).json({message:"Trade successfull", game: updatedGame, sender: updatedSender, receiver: updatedReceiver});
+
+    } catch (error) {
+        console.log("error accepting trade", error);
+        res.status(400).json({message: "Internal Server Error"});
+    }
+}
+
+export const rejectTrade = async (req, res) => {
+    const userId = req.user._id;
+    try {
+        const {code} = req.params;
+        const {tradeProposal} = req.body;
+        
+        const socket = getSocket(userId);
+        socket.to(code).emit("trade-rejected", ({tradeProposal}));
+
+        res.status(200).json({message: "Trade rejected", tradeProposal});
+    } catch (error) {
+        console.log("Error rejecting trade", error);
+        res.status(400).json({message: "Internal Server Error"});
+    }
 }
