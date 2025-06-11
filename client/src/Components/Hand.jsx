@@ -1,5 +1,8 @@
+import { useGameStore } from "../store/gameStore";
+
 const Hand = ({ owned, money }) => {
     console.log(owned);
+    const {setIsViewing} = useGameStore();
     return (
         <div className="bg-white border-4 border-red-600 rounded-xl p-4 w-full shadow-2xl font-mono mb-4 md:mb-0 md:ml-6">
             <h2 className="text-xl font-bold text-red-600 mb-1 text-center">
@@ -20,7 +23,9 @@ const Hand = ({ owned, money }) => {
                             <span className="text-center truncate w-full">
                                 {property.name}
                             </span>
-                            <button className="mt-2 bg-red-400 hover:bg-red-500 text-white text-xs py-1 px-3 rounded">
+                            <button className="mt-2 bg-red-400 hover:bg-red-500 text-white text-xs py-1 px-3 rounded"
+                                onClick={() => setIsViewing(property)}
+                            >
                                 View
                             </button>
                         </div>

@@ -1,7 +1,7 @@
 import Game from "../models/game.model.js";
 import { generateUniqueCode } from "../lib/utils.js";
 import { getSocket, io } from "../lib/socket.js";
-import boardData from "../lib/data.js";
+import { boardData } from "../lib/data.js";
 import { handleLandedOn } from "../lib/gameUtils.js";
 
 export const createGame = async (req, res) => {
@@ -167,7 +167,7 @@ export const rollDice = async (req, res) => {
         game.players[playerIndex].position = newPosition;
 
         //landed on
-        const landed = await handleLandedOn(game, playerIndex, userId);
+        const landed = handleLandedOn(game, playerIndex, userId);
 
         // const currentIndex = game.turnOrder.findIndex(
         //     (id) => id.toString() === userId.toString()

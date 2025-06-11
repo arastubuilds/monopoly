@@ -1,9 +1,9 @@
 import { useGameStore } from "../store/gameStore";
 
 const YourOwnPrompt = ({ space  }) => {
-    const {game, pass, landedOn} = useGameStore();
+    const { pass, isPassing, setIsPassing } = useGameStore();
 
-    const handlePass = async () =>  { await pass(game?.code, landedOn.owner) };
+    const handlePass =  () =>  { setIsPassing(true); pass(); };
     if (!space) return null;
 
     return (
@@ -25,7 +25,7 @@ const YourOwnPrompt = ({ space  }) => {
                                 className="w-full sm:w-32 h-12 bg-red-600 text-white rounded-lg font-bold text-lg hover:bg-red-700 transition-all"
                                 onClick={handlePass}
                             >
-                                Pass
+                                {isPassing ? "Passing":"Pass"}
                             </button>
                         </div>
                     </>

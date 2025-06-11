@@ -7,15 +7,20 @@ export const useGameStore = create((set) => ({
     game: null,
     yourMoney: 0,
     yourProperties: [],
-    oPP: [], 
+    oPP: [],
+    viewing: null,
     landedOn: null,
+    tradingWith: null,
     isCreating: true,
     isJoining: false,
     isStarting: false,
     isRolling: false,
     isYourTurn: false,
     isBuying: false,
+    isPassing: false,
     isPaying: false,
+    isViewing: false,
+    isTrading: false,
     isOwn: false,
     passed: false,
     ready: false,
@@ -73,6 +78,9 @@ export const useGameStore = create((set) => ({
             toast.error(error.response.data.message);
         }
     },
+    close: () => {
+        set({isViewing: false, viewing: null});
+    },
     roll: async(code) => {
         set({isRolling: true});
         try {
@@ -104,9 +112,8 @@ export const useGameStore = create((set) => ({
             set({yourProperties: res.data.yourProperties, yourMoney: res.data.yourMoney});
             toast.success(res.data.message);
         } catch (error) {
-            toast.error(error.response.data.message);
+            toast.error(error.response.data.message);   
         }
-
     },
     pay: async (code, recipient, space) => {
         try {
@@ -121,12 +128,15 @@ export const useGameStore = create((set) => ({
     },
     pass: () => {
         console.log("passed");
-        set({passed: true});
+        set({passed: true, isPassing: false, isBuying: false}); 
     },
     setIsYourTurn: (isYourTurn) => set({isYourTurn}),
     setLandedOn: (landedOn) => set({landedOn}),
     setIsBuying: (isBuying) => set({isBuying}),
+    setIsViewing: (viewing) => set({isViewing: true, viewing}),
+    setIsTrading: (tradingWith) => set({isTrading: true, tradingWith: tradingWith}),
+    setIsPassing: (isPassing) => set({isPassing}),
     setYourMoney: (yourMoney) => set({yourMoney}),
-    setOPP: (oPP) => {set({oPP}); console.log(oPP)},
+    setOPP: (oPP) => {set({oPP}); console.log("oPP", oPP)},
     setGame: (game) => set({game}),
 }));

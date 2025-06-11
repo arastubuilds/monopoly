@@ -9,6 +9,7 @@ import RightHand from "../Components/RightHand";
 import PayRentPrompt from "../Components/PayRentPrompt";
 import YourOwnPrompt from "../Components/YourOwnPrompt";
 import TradeScreen from "../Components/TradeScreen";
+import OwnedProp from "../Components/OwnedProp";
 
 const Play = () => {
     const game = useGameStore((state) => state.game);
@@ -16,7 +17,7 @@ const Play = () => {
     const landedOn = useGameStore((state) => state.landedOn);
     const yourProperties = useGameStore((state) => state.yourProperties);
     const oPP = useGameStore((state) => state.oPP);
-    const { roll, end, rolled, passed, isYourTurn, isBuying, isPaying, isOwn } = useGameStore();
+    const { roll, end, rolled, passed, viewing, isYourTurn, isBuying, isPaying, isOwn, isViewing } = useGameStore();
     const [isTrading, setIsTrading] = useState(false);
     console.log(yourMoney);
     
@@ -66,6 +67,7 @@ const Play = () => {
                     {isBuying && !passed && <BuyPrompt space={landedOn} />}
                     {isPaying && <PayRentPrompt space={landedOn}/>}
                     {isOwn && !passed && <YourOwnPrompt space={landedOn}/>}
+                    {isViewing && <OwnedProp space={viewing} />}
                 </MonopolyBoard>
             </div>
     

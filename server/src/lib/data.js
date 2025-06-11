@@ -1,4 +1,4 @@
-const boardData =  
+export const boardData =  
 [
     {
         id: 0,
@@ -521,4 +521,43 @@ const boardData =
         gridColumn: '3',
     },
 ];
-export default boardData;
+export const chanceCards = [
+    {
+        id: 0,
+        desc: "Take a helicopter ride to Mayfair",
+        action: "move",
+        destination: 39,
+    },
+    {
+        id: 1,
+        desc: "Collect $150",
+        action: "add",
+        amt: 150,
+    },
+    {
+        id: 2,
+        desc: "Pay $50",
+        action: "pay",
+        amt: 50,
+    },
+];
+export const communityCards = [
+    {
+        id: 0,
+        desc: "Take a helicopter ride to Mayfair",
+        action: "move",
+        destination: 39,
+    },
+    {
+        id: 1,
+        desc: "Collect $150",
+        action: "add",
+        amt: 150,
+    },
+    {
+        id: 2,
+        desc: "Pay $50",
+        action: "pay",
+        amt: 50,
+    },
+];

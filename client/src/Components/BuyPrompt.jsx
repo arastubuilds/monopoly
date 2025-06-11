@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { useGameStore } from "../store/gameStore";
 
 const BuyPrompt = ({ space  }) => {
-    const {game, buy, pass} = useGameStore();
-
-    const handleBuy = async () =>  { await buy(game?.code) };
-    const handlePass = () => { pass() };
+    const [buying, setBuying] = useState(false);
+    const [passing, setPassing] = useState(false);
+    const { game, buy, pass } = useGameStore();
+    const handleBuy = async () =>  { setBuying(true);  await buy(game?.code); setBuying(false); };
+    const handlePass = () => { setPassing(true); pass(); setPassing(false); };
+    
     if (!space) return null;
 
     return (
@@ -27,13 +30,13 @@ const BuyPrompt = ({ space  }) => {
                                 className="w-full sm:w-32 h-12 bg-red-600 text-white rounded-lg font-bold text-lg hover:bg-red-700 transition-all"
                                 onClick={handleBuy}
                             >
-                                Buy
+                                {buying ? "Buying..." : "Buy"}
                             </button>
                             <button
                                 className="w-full sm:w-32 h-12 bg-white text-red-600 border-4 border-red-600 rounded-lg font-bold text-lg hover:bg-red-600 hover:text-white transition-all"
                                 onClick={handlePass}
                             >
-                                Pass
+                                {passing ? "Passing..." : "Pass"}
                             </button>
                         </div>
                     </>

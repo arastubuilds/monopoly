@@ -9,8 +9,8 @@ import Background from "../Components/Background";
 
 const JoinGame = () => {
 
-
-    const socket = useAuthStore((state) => state.socket);
+    const {socket, connectSocket} = useAuthStore();
+    // const socket = useAuthStore((state) => state.socket);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -27,6 +27,7 @@ const JoinGame = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        connectSocket();
         await join(code);
     }
     // if (game?.started) ( navigate(`/play/${game.code}`) )

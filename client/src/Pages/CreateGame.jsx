@@ -9,7 +9,8 @@ import { useNavigate } from "react-router-dom";
 
 const CreateGame = () => {
     const { create, game, start, isStarting } = useGameStore();
-    const socket = useAuthStore((state) => state.socket);
+    // const socket = useAuthStore((state) => state.socket);
+    const {socket, connectSocket} = useAuthStore();
 
     const [initialLoading, setInitialLoading] = useState(true);
     const navigate = useNavigate();
@@ -19,13 +20,14 @@ const CreateGame = () => {
     
     }
     useEffect(() => {
+        
         if (socket) registerBasicEvents();
 
         return () => unregisterBasicEvents();
     }, [socket]);
 
     useEffect(() => {
-        
+        connectSocket();
         const createGame = async () => {
             await create();
             setInitialLoading(false);

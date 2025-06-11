@@ -1,5 +1,5 @@
 const RightHand = ({ players }) => {
-    console.log(players);
+    // console.log(players);
 
     return (
         <div className="bg-white border-4 border-red-600 rounded-xl p-4 w-full shadow-2xl font-mono mb-4 md:mb-0 md:mr-6 max-h-[90vh] overflow-y-auto">
@@ -18,6 +18,12 @@ const RightHand = ({ players }) => {
                             <p className="text-sm text-gray-700 font-semibold">
                                 ${player?.money?.toString() || 0}
                             </p>
+                            <button
+                                className="ml-2 px-2 py-1 border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition-all text-xs"
+                                onClick={() => console.log(`Trade request with`,{player, properties})}
+                            >
+                                Trade
+                            </button>
                         </div>
                         {properties.length === 0 ? (
                             <p className="text-sm text-gray-500 text-center">No properties</p>
@@ -29,14 +35,6 @@ const RightHand = ({ players }) => {
                                         className="flex justify-between items-center bg-red-100 text-red-700 font-semibold text-sm rounded-md px-2 py-1 border border-red-300"
                                     >
                                         <span>{property.name}</span>
-                                        <button
-                                            className="ml-2 px-2 py-1 border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition-all text-xs"
-                                            onClick={() =>
-                                                console.log(`Trade request for ${property.name}`)
-                                            }
-                                        >
-                                            Trade
-                                        </button>
                                     </div>
                                 ))}
                             </div>

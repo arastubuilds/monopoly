@@ -12,12 +12,12 @@ const Home = () => {
                 </p>
                 <div className="flex flex-col justify-center items-center md:flex-row md:space-x-4 space-y-4 md:space-y-0">
                     <Link to="/create" className="w-48">
-                        <button className="w-full h-14 bg-red-600 text-white rounded-lg font-bold text-lg hover:bg-red-700 transition-all">
+                        <button className="cursor-pointer w-full h-14 bg-red-600 text-white rounded-lg font-bold text-lg hover:bg-red-700 transition-all">
                             Create Game
                         </button>
                     </Link>
                     <Link to="/join" className="w-48">
-                        <button className="w-full h-14 bg-white text-red-600 border-4 border-red-600 rounded-lg font-bold text-lg hover:bg-red-600 hover:text-white transition-all">
+                        <button className="cursor-pointer w-full h-14 bg-white text-red-600 border-4 border-red-600 rounded-lg font-bold text-lg hover:bg-red-600 hover:text-white transition-all">
                             Join Game
                         </button>
                     </Link>
