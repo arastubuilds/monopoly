@@ -130,11 +130,14 @@ export const useGameStore = create((set) => ({
         console.log("passed");
         set({passed: true, isPassing: false, isBuying: false}); 
     },
+    trade: () => {
+        
+    },
     setIsYourTurn: (isYourTurn) => set({isYourTurn}),
     setLandedOn: (landedOn) => set({landedOn}),
     setIsBuying: (isBuying) => set({isBuying}),
     setIsViewing: (viewing) => set({isViewing: true, viewing}),
-    setIsTrading: (tradingWith) => set({isTrading: true, tradingWith: tradingWith}),
+    setIsTrading: (tradingWith) => set({isTrading: true, tradingWith}),
     setIsPassing: (isPassing) => set({isPassing}),
     setYourMoney: (yourMoney) => set({yourMoney}),
     setOPP: (oPP) => {set({oPP}); console.log("oPP", oPP)},

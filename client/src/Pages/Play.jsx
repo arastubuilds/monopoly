@@ -17,8 +17,8 @@ const Play = () => {
     const landedOn = useGameStore((state) => state.landedOn);
     const yourProperties = useGameStore((state) => state.yourProperties);
     const oPP = useGameStore((state) => state.oPP);
-    const { roll, end, rolled, passed, viewing, isYourTurn, isBuying, isPaying, isOwn, isViewing } = useGameStore();
-    const [isTrading, setIsTrading] = useState(false);
+    const { roll, end, rolled, passed, viewing, tradingWith, isYourTurn, isBuying, isPaying, isOwn, isViewing, isTrading } = useGameStore();
+    // const [isTrading, setIsTrading] = useState(false);
     console.log(yourMoney);
     
     useEffect(() => {
@@ -63,7 +63,7 @@ const Play = () => {
                             End Turn
                         </button>
                     )}
-                    {isTrading && <TradeScreen/>}
+                    {isTrading && <TradeScreen receipient = {tradingWith}/>}
                     {isBuying && !passed && <BuyPrompt space={landedOn} />}
                     {isPaying && <PayRentPrompt space={landedOn}/>}
                     {isOwn && !passed && <YourOwnPrompt space={landedOn}/>}
