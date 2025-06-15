@@ -2,7 +2,7 @@ import { useGameStore } from "../store/gameStore";
 
 const RightHand = ({ players }) => {
     // console.log(players);
-    const { setIsTrading } = useGameStore();
+    const { setIsOffering } = useGameStore();
     return (
         <div className="bg-white border-4 border-red-600 rounded-xl p-4 w-full shadow-2xl font-mono mb-4 md:mb-0 md:mr-6 max-h-[90vh] overflow-y-auto">
             <h2 className="text-xl font-bold text-red-600 mb-4 text-center">
@@ -22,7 +22,7 @@ const RightHand = ({ players }) => {
                             </p>
                             <button
                                 className="ml-2 px-2 py-1 border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition-all text-xs"
-                                onClick={() => setIsTrading({player, properties})}
+                                onClick={() => setIsOffering({player, properties})}
                             >
                                 Trade
                             </button>

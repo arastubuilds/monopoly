@@ -51,7 +51,7 @@ export const registerPlayerEvents = () => {
     const setYourMoney = useGameStore.getState().setYourMoney;
     const setIsYourTurn = useGameStore.getState().setIsYourTurn;
     const setOPP = useGameStore.getState().setOPP;
-
+    const setOfferedTrade = useGameStore.getState().setOfferedTrade;
 
     if (!socket) return;
 
@@ -119,6 +119,7 @@ export const registerPlayerEvents = () => {
     socket.on("trade-offer", (res) => {
         if (res.reciever.userId._id.toString() === user._id.toString()){
             console.log("offer", res.tradeOffer);
+            setOfferedTrade(res.tradeOffer);
         toast.success(`${res.tradeOffer.sender.username} offers a trade`);
         }
     });
