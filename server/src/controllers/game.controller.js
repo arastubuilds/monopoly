@@ -347,7 +347,7 @@ export const payRent = async (req, res) => {
     const userId = req.user._id;
     const {code} = req.params;
     const {recipient, space} = req.body;
-    const game = req.body;
+    const game = req.game;
     console.log(recipient);
     
     try {
@@ -393,25 +393,25 @@ export const payRent = async (req, res) => {
     }   
 }
 
-export const tradePropProposal = async (req, res) => {
+export const offerTrade = async (req, res) => {
     const userId = req.user._id;
-    const {code} = req.params;
-    const {recipient, tradeProposal} = req.body;
+    const { code } = req.params;
+    const { tradeOffer } = req.body;
     try {
         const game = await Game.findOne({code}).populate("players.userId", "username").populate("boardState.owner", "username");
         const playerIndex = game.players.findIndex((player) => player.userId._id.toString() === userId.toString());
-        const recieverIndex = game.players.findIndex((player) => player.userId._id.toString() === recipient._id.toString());
+        const recieverIndex = game.players.findIndex((player) => player.userId._id.toString() === tradeOffer.recipient.player.userId._id.toString());
         
-        const player =   updatedGame.players[playerIndex];
-        const reciever = updatedGame.players[recieverIndex];
+        const player =   game.players[playerIndex];
+        const reciever = game.players[recieverIndex];
 
         const senderSocket = getSocket(userId);
 
-        senderSocket.to(code).emit("trade-proposal", (player, reciever, tradeProposal));
-        res.status(200).json({message: "Proposal sent"});
+        senderSocket.to(code).emit("trade-offer", {player, reciever, tradeOffer});
+        res.status(200).json({message: "Trade Offered"});
     } catch (error) {
-        console.log("error sending trade proposal", error);
-        res.status(400).json({message: "Error Sending Trade"});
+        console.log("error offering trade", error);
+        res.status(400).json({message: "Error Offering trade"});
     }
 }
 

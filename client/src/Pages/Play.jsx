@@ -8,7 +8,7 @@ import Hand from "../Components/Hand";
 import RightHand from "../Components/RightHand";
 import PayRentPrompt from "../Components/PayRentPrompt";
 import YourOwnPrompt from "../Components/YourOwnPrompt";
-import TradeScreen from "../Components/TradeScreen";
+import OfferTrade from "../Components/OfferTrade";
 import OwnedProp from "../Components/OwnedProp";
 
 const Play = () => {
@@ -18,8 +18,8 @@ const Play = () => {
     const yourProperties = useGameStore((state) => state.yourProperties);
     const oPP = useGameStore((state) => state.oPP);
     const { roll, end, rolled, passed, viewing, tradingWith, isYourTurn, isBuying, isPaying, isOwn, isViewing, isTrading } = useGameStore();
-    // const [isTrading, setIsTrading] = useState(false);
-    console.log(yourMoney);
+    console.log(tradingWith);
+    // console.log(yourMoney);
     
     useEffect(() => {
         registerPlayerEvents();
@@ -63,7 +63,7 @@ const Play = () => {
                             End Turn
                         </button>
                     )}
-                    {isTrading && <TradeScreen receipient = {tradingWith}/>}
+                    {isTrading && <OfferTrade recipient = {tradingWith}/>}
                     {isBuying && !passed && <BuyPrompt space={landedOn} />}
                     {isPaying && <PayRentPrompt space={landedOn}/>}
                     {isOwn && !passed && <YourOwnPrompt space={landedOn}/>}

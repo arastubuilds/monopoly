@@ -78,8 +78,11 @@ export const useGameStore = create((set) => ({
             toast.error(error.response.data.message);
         }
     },
-    close: () => {
+    closeOwn: () => {
         set({isViewing: false, viewing: null});
+    },
+    closeTrade: () => {
+        set({tradingWith: null, isTrading: false});
     },
     roll: async(code) => {
         set({isRolling: true});
@@ -126,12 +129,18 @@ export const useGameStore = create((set) => ({
             toast.error(error.response.data.message);
         }
     },
+    offerTrade: async(code, recipient, tradeOffer) => {
+        try {
+            const res = await axiosInstance.post(`/game/${code}/offer-trade`, {recipient, tradeOffer});
+            toast(`${res.data.message}`);
+        } catch (error) {
+            console.log(error.message);
+            toast.error(error.response.data.message);
+        }
+    },
     pass: () => {
         console.log("passed");
         set({passed: true, isPassing: false, isBuying: false}); 
-    },
-    trade: () => {
-        
     },
     setIsYourTurn: (isYourTurn) => set({isYourTurn}),
     setLandedOn: (landedOn) => set({landedOn}),

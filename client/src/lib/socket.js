@@ -116,6 +116,12 @@ export const registerPlayerEvents = () => {
         setOPP(otherPlayersProperties);
         setGame(res.game);
     });
+    socket.on("trade-offer", (res) => {
+        if (res.reciever.userId._id.toString() === user._id.toString()){
+            console.log("offer", res.tradeOffer);
+        toast.success(`${res.tradeOffer.sender.username} offers a trade`);
+        }
+    });
 };
 export const unregisterPlayerEvents = () => {
     const socket = useAuthStore.getState().socket;

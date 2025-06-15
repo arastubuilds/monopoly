@@ -1,8 +1,8 @@
 import { useGameStore } from "../store/gameStore";
 
 const OwnedProp = ({space}) => {
-    const {close} = useGameStore();
-    const handleClose = () => {close()};
+    const {closeOwn} = useGameStore();
+    const handleClose = () => {closeOwn()};
     return (
         <>
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
