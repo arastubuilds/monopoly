@@ -415,27 +415,27 @@ export const offerTrade = async (req, res) => {
     }
 }
 
-export const acceptTrade = async(req, res)=>{
+export const acceptOffer = async(req, res)=>{
     const userId = req.user._id;
-    const {tradeProposal} = req.body;
+    const { tradeOffer } = req.body;
 
     try {
         const game = await Game.findOne({code}).populate("players.userId", "username").populate("boardState.owner", "username");
-        const senderIndex = game.players.findIndex((player) => player.userId._id.toString() === tradeProposal.sender._id.toString());
+        const senderIndex = game.players.findIndex((player) => player.userId._id.toString() === tradeOffer.sender._id.toString());
         const receiverIndex = game.players.findIndex((player) => player.userId._id.toString() === userId.toString());
 
         const sender = game.players[senderIndex];
         const receiver = game.players[receiverIndex];
 
         sender.properties = sender.properties.filter((prop) => {
-            return tradeProposal.sender.properties.includes(prop.id);
+            return tradeOffer.sender.properties.includes(prop.id);
         });
         receiver.properties = receiver.properties.filter((prop) => {
-            return tradeProposal.receiver.properties.includes(prop.id);
+            return tradeOffer.receiver.properties.includes(prop.id);
         });
         
-        sender.properties.push(...tradeProposal.receiver.properties);
-        receiver.properties.push(...tradeProposal.sender.properties);
+        sender.properties.push(...tradeOffer.receiver.properties);
+        receiver.properties.push(...tradeOffer.sender.properties);
 
         sender.properties.forEach((prop) => {
             if (prop.owner != sender._id) prop.owner = sender._id;
@@ -458,14 +458,14 @@ export const acceptTrade = async(req, res)=>{
     }
 }
 
-export const rejectTrade = async (req, res) => {
+export const declineOffer = async (req, res) => {
     const userId = req.user._id;
     try {
         const {code} = req.params;
-        const {tradeProposal} = req.body;
+        const {sender} = req.body;
         
         const socket = getSocket(userId);
-        socket.to(code).emit("trade-rejected", ({tradeProposal}));
+        socket.to(code).emit("trade-rejected", {sender});
 
         res.status(200).json({message: "Trade rejected", tradeProposal});
     } catch (error) {

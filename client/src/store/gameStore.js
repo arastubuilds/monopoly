@@ -140,6 +140,24 @@ export const useGameStore = create((set) => ({
             toast.error(error.response.data.message);
         }
     },
+    declineOffer: async(code, sender) => {
+        try {
+            const res = await axiosInstance.post(`/game/${code}/decline-offer`, { sender });
+            set({isOffered: false, offeredTrade: null});
+            toast.success(`${res.data.message}`);
+        } catch (error) {
+            console.log(error.message);
+            toast.error(`${error.response.data.message}`);
+        }
+    },
+    acceptOffer: async(code, sender, tradeOffer) => {
+        try {
+            const res = await axiosInstance.post(`/game/${code}/accept-offer`, { sender, tradeOffer });
+            toast
+        } catch (error) {
+            
+        }
+    },
     pass: () => {
         console.log("passed");
         set({passed: true, isPassing: false, isBuying: false}); 
