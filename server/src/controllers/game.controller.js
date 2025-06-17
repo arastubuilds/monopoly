@@ -417,8 +417,9 @@ export const offerTrade = async (req, res) => {
 
 export const acceptOffer = async(req, res)=>{
     const userId = req.user._id;
+    const { code } = req.params;
     const { tradeOffer } = req.body;
-
+    // console.log(tradeOffer);
     try {
         const game = await Game.findOne({code}).populate("players.userId", "username").populate("boardState.owner", "username");
         const senderIndex = game.players.findIndex((player) => player.userId._id.toString() === tradeOffer.sender._id.toString());
@@ -426,31 +427,74 @@ export const acceptOffer = async(req, res)=>{
 
         const sender = game.players[senderIndex];
         const receiver = game.players[receiverIndex];
+        // console.log(sender, receiver);
+        
+        console.log("sender", sender.properties);
+        console.log("receiver", receiver.properties);
 
         sender.properties = sender.properties.filter((prop) => {
-            return tradeOffer.sender.properties.includes(prop.id);
+            return !tradeOffer.senderOffer.senderProp.map(p => p.id).includes(prop);
         });
         receiver.properties = receiver.properties.filter((prop) => {
-            return tradeOffer.receiver.properties.includes(prop.id);
+            return !tradeOffer.senderAsk.askedProp.map(p => p.id).includes(prop);
         });
         
-        sender.properties.push(...tradeOffer.receiver.properties);
-        receiver.properties.push(...tradeOffer.sender.properties);
+        console.log("sender", sender.properties);
+        console.log("receiver", receiver.properties);
 
-        sender.properties.forEach((prop) => {
-            if (prop.owner != sender._id) prop.owner = sender._id;
+        sender.properties.push(... tradeOffer.senderAsk.askedProp.map(p => p.id));
+        receiver.properties.push(... tradeOffer.senderOffer.senderProp.map(p => p.id));
+
+        console.log("sender", sender.properties);
+        console.log("receiver", receiver.properties);
+
+        sender.properties.forEach((p) => {
+            if (game.boardState[p].owner._id !== sender._id)
+                game.boardState[p].owner = sender._id;
         });
-        receiver.properties.forEach((prop) => {
-            if (prop.owner != receiver._id) prop.owner = receiver._id;
+        receiver.properties.forEach((p) => {
+            if (game.boardState[p].owner._id !== receiver._id)
+                game.boardState[p].owner = receiver._id;
         });
+        // sender.properties.forEach((prop) => {
+        //     if (prop.owner != sender._id) prop.owner = sender._id;
+        // });
+        // receiver.properties.forEach((prop) => {
+        //     if (prop.owner != receiver._id) prop.owner = receiver._id;
+        // });
+
+        sender.money -= tradeOffer.senderOffer.senderMoney;
+        sender.money += tradeOffer.senderAsk.askedMoney;
+
+        receiver.money -= tradeOffer.senderAsk.askedMoney;
+        receiver.money += tradeOffer.senderOffer.senderMoney;
+
         await game.save();
+
         const updatedGame = await Game.findOne({code}).populate("players.userId", "username").populate("boardState.owner");
-        const updatedSender = game.players[senderIndex];
-        const updatedReceiver = game.players[receiverIndex];
+        const updatedSender = updatedGame.players[senderIndex];
+        const updatedReceiver = updatedGame.players[receiverIndex];
+    
+        console.log("updated-sender", updatedSender.properties);
+        console.log("updated-receiver", updatedReceiver.properties);
+
+        const otherPlayersProperties = [];
+        updatedGame.players.forEach((p) => {
+
+            // if (p === player) return;
+
+            const yourProperties = updatedGame.boardState.filter((prop) => {
+                return p.properties.includes(prop.id);
+            });
+            otherPlayersProperties.push({player : p, properties: yourProperties});
+        });
+        // console.log(otherPlayersProperties);
         
+
+
         const socket = getSocket(userId);
         socket.to(code).emit("trade-accepted", ({game: updatedGame, sender: updatedSender, receiver: updatedReceiver}));
-        res.status(200).json({message:"Trade successfull", game: updatedGame, sender: updatedSender, receiver: updatedReceiver});
+        res.status(200).json({message:"Trade successfull", game: updatedGame, you: updatedReceiver});
 
     } catch (error) {
         console.log("error accepting trade", error);
@@ -458,7 +502,7 @@ export const acceptOffer = async(req, res)=>{
     }
 }
 
-export const declineOffer = async (req, res) => {
+export const rejectOffer = async (req, res) => {
     const userId = req.user._id;
     try {
         const {code} = req.params;

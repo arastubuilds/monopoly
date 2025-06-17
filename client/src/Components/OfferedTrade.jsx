@@ -1,6 +1,9 @@
-const OfferedTrade = ({ tradeOffer,  }) => {
+import { useGameStore } from "../store/gameStore";
+
+const OfferedTrade = ({ tradeOffer  }) => {
+    const { game, acceptOffer } = useGameStore();
     const { sender, senderOffer, senderAsk, recipient } = tradeOffer;
-    const handleAccept = () => {};
+    const handleAccept = async () => { await acceptOffer(game?.code, tradeOffer) };
     const handleDecline = () => {};
     return (
         <div className="fixed inset-0 bg-black/40 z-50 flex flex-col items-center justify-center">
