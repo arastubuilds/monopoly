@@ -49,8 +49,12 @@ export const registerPlayerEvents = () => {
     const socket = useAuthStore.getState().socket;
     const setGame = useGameStore.getState().setGame;
     const setYourMoney = useGameStore.getState().setYourMoney;
+    const setYourProperties = useGameStore.getState().setYourProperties;
     const setIsYourTurn = useGameStore.getState().setIsYourTurn;
+    const setIsOffering = useGameStore.getState().setIsOffering;
+    const setTradingWith = useGameStore.getState().setTradingWith;
     const setOPP = useGameStore.getState().setOPP;
+    const setIsOffered = useGameStore.getState().setIsOffered;
     const setOfferedTrade = useGameStore.getState().setOfferedTrade;
 
     if (!socket) return;
@@ -110,7 +114,7 @@ export const registerPlayerEvents = () => {
         
         const otherPlayersProperties = res.otherPlayersProperties.filter((opp) => {
             return opp.player.userId._id.toString() !== user._id.toString();
-        })
+        });
 
         console.log(otherPlayersProperties);
         setOPP(otherPlayersProperties);
@@ -119,9 +123,28 @@ export const registerPlayerEvents = () => {
     socket.on("trade-offer", (res) => {
         if (res.reciever.userId._id.toString() === user._id.toString()){
             console.log("offer", res.tradeOffer);
+            setIsOffered(true);
             setOfferedTrade(res.tradeOffer);
         toast.success(`${res.tradeOffer.sender.username} offers a trade`);
         }
+    });
+    socket.on("trade-accepted", (res) => {
+        if (res.sender.userId._id.toString() === user._id.toString()) {
+            toast.success(`Trade Successful`);
+            setYourProperties(res.senderProperties);
+            setYourMoney(res.sender.money);
+            setIsOffering(false);
+            setTradingWith(null);
+        }
+        
+        const otherPlayersProperties = res.otherPlayersProperties.filter((opp) => {
+            return opp.player.userId._id.toString() !== user._id.toString();
+        });
+
+        // console.log(otherPlayersProperties);
+        
+        setOPP(otherPlayersProperties);
+        setGame(res.game);
     });
 };
 export const unregisterPlayerEvents = () => {

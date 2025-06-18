@@ -448,11 +448,11 @@ export const acceptOffer = async(req, res)=>{
         console.log("sender", sender.properties);
         console.log("receiver", receiver.properties);
 
-        sender.properties.forEach((p) => {
+        sender.properties?.forEach((p) => {
             if (game.boardState[p].owner._id !== sender._id)
                 game.boardState[p].owner = sender._id;
         });
-        receiver.properties.forEach((p) => {
+        receiver.properties?.forEach((p) => {
             if (game.boardState[p].owner._id !== receiver._id)
                 game.boardState[p].owner = receiver._id;
         });
@@ -479,22 +479,26 @@ export const acceptOffer = async(req, res)=>{
         console.log("updated-receiver", updatedReceiver.properties);
 
         const otherPlayersProperties = [];
+
+        const yourMoney = updatedReceiver.money;
+        const yourProperties = updatedGame.boardState.filter((prop) => {
+            return updatedReceiver.properties.includes(prop.id);
+        });
+        const senderProperties = updatedGame.boardState.filter((prop) => {
+            return updatedSender.properties.includes(prop.id);
+        })
         updatedGame.players.forEach((p) => {
-
             // if (p === player) return;
-
             const yourProperties = updatedGame.boardState.filter((prop) => {
-                return p.properties.includes(prop.id);
+                    return p.properties.includes(prop.id);
             });
             otherPlayersProperties.push({player : p, properties: yourProperties});
         });
         // console.log(otherPlayersProperties);
         
-
-
         const socket = getSocket(userId);
-        socket.to(code).emit("trade-accepted", ({game: updatedGame, sender: updatedSender, receiver: updatedReceiver}));
-        res.status(200).json({message:"Trade successfull", game: updatedGame, you: updatedReceiver});
+        socket.to(code).emit("trade-accepted", ({game: updatedGame, sender, senderProperties, otherPlayersProperties}));
+        res.status(200).json({message:"Offer Accepted", game: updatedGame, yourMoney, yourProperties, otherPlayersProperties });
 
     } catch (error) {
         console.log("error accepting trade", error);

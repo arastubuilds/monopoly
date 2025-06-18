@@ -1,7 +1,7 @@
 import { useGameStore } from "../store/gameStore";
 
 const Hand = ({ owned, money }) => {
-    console.log(owned);
+    // console.log(owned);
     const {setIsViewing} = useGameStore();
     return (
         <div className="bg-white border-4 border-red-600 rounded-xl p-4 w-full shadow-2xl font-mono mb-4 md:mb-0 md:ml-6">

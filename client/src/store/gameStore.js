@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
+import { useAuthStore } from "./authStore";
 
 
 export const useGameStore = create((set) => ({
@@ -112,7 +113,7 @@ export const useGameStore = create((set) => ({
     buy: async (code) => {
         try {
             const res = await axiosInstance.post(`/game/${code}/buy`);
-            console.log(res.data.yourProperties);
+            // console.log(res.data.yourProperties);
             set({game: res.data.game, isBuying: false});
             set({yourProperties: res.data.yourProperties, yourMoney: res.data.yourMoney});
             toast.success(res.data.message);
@@ -153,10 +154,20 @@ export const useGameStore = create((set) => ({
     acceptOffer: async(code, tradeOffer) => {
         try {
             const res = await axiosInstance.post(`/game/${code}/accept-offer`, { tradeOffer });
+            set({game: res.data.game, isOffered: false, offeredTrade: null});
+            set({yourProperties: res.data.yourProperties, yourMoney: res.data.yourMoney});
+
+            const user = useAuthStore.getState().authUser;
+            
+            const otherPlayersProperties = res.data.otherPlayersProperties.filter((opp) => {
+                return opp.player.userId._id.toString() !== user._id.toString();
+            });
+            
+            set({oPP: otherPlayersProperties});
             toast.success(`${res.data.message}`);
         } catch (error) {
-            console.log(error.message);
-            toast.error(`${error.response.data.message}`);
+            console.log(error);
+            toast.error(error.message);
         }
     },
     pass: () => {
@@ -167,10 +178,13 @@ export const useGameStore = create((set) => ({
     setLandedOn: (landedOn) => set({landedOn}),
     setIsBuying: (isBuying) => set({isBuying}),
     setIsViewing: (viewing) => set({isViewing: true, viewing}),
-    setIsOffering: (tradingWith) => set({isOffering: true, tradingWith}),
+    setIsOffering: (isOffering) => set({isOffering}),
+    setTradingWith: (tradingWith) => set({tradingWith}),
     setIsPassing: (isPassing) => set({isPassing}),
     setYourMoney: (yourMoney) => set({yourMoney}),
-    setOfferedTrade: (offeredTrade) => set({isOffered: true, offeredTrade}),
+    setYourProperties: (yourProperties) => set({yourProperties}),
+    setIsOffered: (isOffered) => set({isOffered}),
+    setOfferedTrade: (offeredTrade) => set({offeredTrade}),
     setOPP: (oPP) => {set({oPP}); console.log("oPP", oPP)},
     setGame: (game) => set({game}),
 }));

@@ -49,7 +49,7 @@ export const useAuthStore = create((set, get) => ({
             console.log(res.data);
             toast.success("Logged In");
 
-            get().connectSocket();
+            // get().connectSocket();
 
         } catch (error) {
             toast.error(error.response.data.message);
@@ -63,7 +63,7 @@ export const useAuthStore = create((set, get) => ({
             set({authUser: null});
             toast.success("Logged Out");
 
-            get().disconnectSocket();
+            // get().disconnectSocket();
 
         } catch (error) {
             toast.error(error.response.data.message);
