@@ -11,9 +11,11 @@ export const handleLandedOn = (game, playerIndex, userId) => {
     }
     if (space.property || space.station || space.utility){
         if (!space.owned) return {event: "landed-unowned-prop", space: space};
-        else if (space.owner._id.toString() === userId.toString()) return {event: "landed-your-prop", space: space};
-        else {
-            return {event:"landed-owned-prop", space: space};
+        else if (space.owner._id.toString() === userId.toString()) {
+            const canBuildHouse = checkBuildHouse(player, space);
+            return {event: "landed-your-prop", space: space, canBuildHouse};
+        } else {
+            return { event:"landed-owned-prop", space: space };
         }
     }
     if (space.chance){
@@ -30,6 +32,11 @@ export const handleLandedOn = (game, playerIndex, userId) => {
         player.money += card.amt;
         return {event: "landed-community", card};
     }
+}
+const checkBuildHouse = (player, property) => {
+    if (property.property && property.houses <= 4) 
+        return player.properties.every(p => property.setPairIndices.includes(p));
+    else return false;
 }
 const drawRandomCard = (cardArray) => {
     const card = cardArray[Math.floor(Math.random()*cardArray.length)];

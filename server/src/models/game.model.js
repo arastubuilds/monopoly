@@ -8,7 +8,7 @@ const spaceSchema = new mongoose.Schema({
     base: {type: Number },
     hCost: {type: Number },
     setSize: { type: Number },
-
+    setPairIndices: [{type: Number}],
     
     go: { type: Boolean, default: false },
     property: { type: Boolean, default: false },
@@ -18,8 +18,8 @@ const spaceSchema = new mongoose.Schema({
     jail: { type: Boolean, default: false },
     free: { type: Boolean, default: false },
 
-    chance : {type: Boolean, default: false },
-    comm : {type: Boolean, default: false },
+    chance : { type: Boolean, default: false },
+    comm : { type: Boolean, default: false },
     owned: { type: Boolean, default: false },
     owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null }, // Property owner
     houses: { type: Number, default: 0 },
