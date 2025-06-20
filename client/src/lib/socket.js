@@ -145,6 +145,7 @@ export const registerPlayerEvents = () => {
         
         setOPP(otherPlayersProperties);
         setGame(res.game);
+        console.log(res.game.boardState);
     });
 };
 export const unregisterPlayerEvents = () => {

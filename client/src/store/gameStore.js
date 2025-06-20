@@ -141,9 +141,9 @@ export const useGameStore = create((set) => ({
             toast.error(error.response.data.message);
         }
     },
-    declineOffer: async(code, sender) => {
+    rejectOffer: async(code, tradeOffer) => {
         try {
-            const res = await axiosInstance.post(`/game/${code}/decline-offer`, { sender });
+            const res = await axiosInstance.post(`/game/${code}/reject-offer`, { tradeOffer });
             set({isOffered: false, offeredTrade: null});
             toast.success(`${res.data.message}`);
         } catch (error) {
@@ -162,7 +162,7 @@ export const useGameStore = create((set) => ({
             const otherPlayersProperties = res.data.otherPlayersProperties.filter((opp) => {
                 return opp.player.userId._id.toString() !== user._id.toString();
             });
-            
+            console.log(res.data.game.boardState);
             set({oPP: otherPlayersProperties});
             toast.success(`${res.data.message}`);
         } catch (error) {

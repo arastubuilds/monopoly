@@ -278,7 +278,7 @@ export const endTurn = async (req, res) => {
 
 export const buyProp = async (req, res) => {
     const userId = req.user._id;
-    const {code} = req.params;
+    const { code } = req.params;
     const game = req.game;
     try {
         // const game = await Game.findOne({code}).populate("players.userId", "username").populate("boardState.owner", "username");
@@ -325,6 +325,7 @@ export const buyProp = async (req, res) => {
                 return p.properties.includes(prop.id);
             });
             otherPlayersProperties.push({player : p, properties: yourProperties});
+
         });
         // console.log(otherPlayersProperties);
         const yourMoney = updatedGame.players[playerIndex].money;
@@ -421,7 +422,7 @@ export const acceptOffer = async(req, res)=>{
     const { tradeOffer } = req.body;
     // console.log(tradeOffer);
     try {
-        const game = await Game.findOne({code}).populate("players.userId", "username").populate("boardState.owner", "username");
+        const game = await Game.findOne({code}).populate("players.userId", "username");
         const senderIndex = game.players.findIndex((player) => player.userId._id.toString() === tradeOffer.sender._id.toString());
         const receiverIndex = game.players.findIndex((player) => player.userId._id.toString() === userId.toString());
 
@@ -438,7 +439,7 @@ export const acceptOffer = async(req, res)=>{
         receiver.properties = receiver.properties.filter((prop) => {
             return !tradeOffer.senderAsk.askedProp.map(p => p.id).includes(prop);
         });
-        
+    
         console.log("sender", sender.properties);
         console.log("receiver", receiver.properties);
 
@@ -449,12 +450,13 @@ export const acceptOffer = async(req, res)=>{
         console.log("receiver", receiver.properties);
 
         sender.properties?.forEach((p) => {
-            if (game.boardState[p].owner._id !== sender._id)
-                game.boardState[p].owner = sender._id;
+                game.boardState[p].owner = sender.userId._id;
+                console.log(game.boardState[p].owner);
+                
         });
         receiver.properties?.forEach((p) => {
-            if (game.boardState[p].owner._id !== receiver._id)
-                game.boardState[p].owner = receiver._id;
+                game.boardState[p].owner = receiver.userId._id;
+                console.log(game.boardState[p].owner);
         });
         // sender.properties.forEach((prop) => {
         //     if (prop.owner != sender._id) prop.owner = sender._id;
@@ -471,7 +473,7 @@ export const acceptOffer = async(req, res)=>{
 
         await game.save();
 
-        const updatedGame = await Game.findOne({code}).populate("players.userId", "username").populate("boardState.owner");
+        const updatedGame = await Game.findOne({code}).populate("players.userId", "username").populate("boardState.owner", "username");
         const updatedSender = updatedGame.players[senderIndex];
         const updatedReceiver = updatedGame.players[receiverIndex];
     
@@ -510,14 +512,61 @@ export const rejectOffer = async (req, res) => {
     const userId = req.user._id;
     try {
         const {code} = req.params;
-        const {sender} = req.body;
+        const {tradeOffer} = req.body;
         
         const socket = getSocket(userId);
-        socket.to(code).emit("trade-rejected", {sender});
+        socket.to(code).emit("trade-rejected", { tradeOffer });
 
-        res.status(200).json({message: "Trade rejected", tradeProposal});
+        res.status(200).json({message: "Trade rejected", tradeOffer});
     } catch (error) {
         console.log("Error rejecting trade", error);
         res.status(400).json({message: "Internal Server Error"});
+    }
+}
+export const buildHouse = async (req, res) => {
+    const userId = req.user._id;
+    const { code } = req.params;
+    const { propertyIdx } = req.body;
+    try {
+        const game = await Game.findOne({code}).populate("players.userId", "username").populate("boardState.owner", "username");
+        const playerIndex = game.players.findIndex((player) => player.userId._id.toString() === userId.toString());
+        
+        const player = game.players[playerIndex];
+        const property = game.boardState[propertyIdx];
+
+        const flag = player.properties.every(p => property.setPairIndices.includes(p));
+        if (flag && property.houses <= 4){
+            property.houses += 1;
+            player.money -= property.hCost;
+        } else {
+            return res.status(400).json({message: "Cannot build more houses"});
+        }
+        await game.save();
+        return res.status(200).json({message: "House Built Successfully"});
+
+    } catch (error) {
+        console.log(error.message);
+        return res.status(400).json({message: "Error building house"});
+    }
+}
+export const mortgageProp = async(req, res) => {
+    const { userId } = req.user._id;
+    const { code } = req.params;
+    const { propertyIdx } = req.body;
+    try {
+        const game = await Game.findOne({code}).populate("players.userId", "username").populate("boardState.owner", "username");
+        const playerIdx = game.players.find(p => p.userId._id.toString() === userId.toString());
+        const player = game.players[playerIdx];
+        const property = game.boardState[propertyIdx];
+
+        property.mortgage = true;
+        await game.save();
+
+        const socket = getSocket(userId);
+        socket.to(code).emit("mortgaged-prop", {game  });
+        res.status(200).json({message: "Mortgaged Successfully", game, property});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Error mortgaging property"});
     }
 }

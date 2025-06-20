@@ -10,9 +10,10 @@ export const handleLandedOn = (game, playerIndex, userId) => {
         return {event: "landed-tax", space: space};
     }
     if (space.property || space.station || space.utility){
-        if (!space.owned) return {event: "landed-unowned-prop", space: space};
+        if (!space.owned) return { event: "landed-unowned-prop", space: space };
         else if (space.owner._id.toString() === userId.toString()) {
             const canBuildHouse = checkBuildHouse(player, space);
+            console.log("can build a house");
             return {event: "landed-your-prop", space: space, canBuildHouse};
         } else {
             return { event:"landed-owned-prop", space: space };

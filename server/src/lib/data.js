@@ -23,6 +23,7 @@ export const boardData =
         property : true,
         gridRow: '11',
         gridColumn: '1/3',
+        mortgaged: false,
     },
     {
         id: 2,
@@ -47,6 +48,7 @@ export const boardData =
         property : true,
         gridRow: '9',
         gridColumn: '1/3',
+        mortgaged: false,
     },
     {
         id: 4,
@@ -71,6 +73,7 @@ export const boardData =
         property : true,
         gridRow: '7',
         gridColumn: '1/3',
+        mortgaged: false,
     },
     {
         id: 6,
@@ -88,6 +91,7 @@ export const boardData =
         property : true,
         gridRow: '6',
         gridColumn: '1/3',
+        mortgaged: false,
     },
     {
         id: 7,
@@ -113,6 +117,7 @@ export const boardData =
         property : true,
         gridRow: '4',
         gridColumn: '1/3',
+        mortgaged: false,
     },
     {
         id: 9,
@@ -130,6 +135,7 @@ export const boardData =
         property : true,
         gridRow: '3',
         gridColumn: '1/3',
+        mortgaged: false,
     },
     {
         id: 10,
@@ -154,10 +160,11 @@ export const boardData =
         property : true,
         gridRow: '1/3',
         gridColumn: '3',
+        mortgaged: false,
     },
     {
         id: 12,
-        name : "ElectricS",
+        name : "Electrics",
         // color: "z",
         base: 4,
         price : 1500,
@@ -168,6 +175,7 @@ export const boardData =
         utility : true,
         gridRow: '1/3',
         gridColumn: '4',
+        mortgaged: false,
     },
     {
         id: 13,
@@ -185,6 +193,7 @@ export const boardData =
         property : true,
         gridRow: '1/3',
         gridColumn: 5,
+        mortgaged: false,
     },
     {
         id: 14,
@@ -202,6 +211,7 @@ export const boardData =
         property : true,
         gridRow: '1/3',
         gridColumn: '6',
+        mortgaged: false,
     },
     {
         id: 15,
@@ -217,6 +227,7 @@ export const boardData =
         owner : null,
         gridRow: '1/3',
         gridColumn: '7',
+        mortgaged: false,
     },
     {
         id: 16,
@@ -234,6 +245,7 @@ export const boardData =
         property : true,
         gridRow: '1/3',
         gridColumn: '8',
+        mortgaged: false,
     },
     {
         id: 17,
@@ -258,6 +270,7 @@ export const boardData =
         property : true,
         gridRow: '1/3',
         gridColumn: '10',
+        mortgaged: false,
     },
     {
         id: 19,
@@ -275,6 +288,7 @@ export const boardData =
         property : true,
         gridRow: '1/3',
         gridColumn: '11',
+        mortgaged: false,
     },
     {
         id: 20,
@@ -299,6 +313,7 @@ export const boardData =
         property : true,
         gridRow: '3',
         gridColumn: "12/14",
+        mortgaged: false,
     },
     {
         id: 22,
@@ -323,6 +338,7 @@ export const boardData =
         property : true,
         gridRow: '5',
         gridColumn: "12/14",
+        mortgaged: false,
     },
     {
         id: 24,
@@ -340,6 +356,7 @@ export const boardData =
         property : true,
         gridRow: '6',
         gridColumn: "12/14",
+        mortgaged: false,
     },
     {
         id: 25,
@@ -355,6 +372,7 @@ export const boardData =
         owner : null,
         gridRow: '7',
         gridColumn: "12/14",
+        mortgaged: false,
     },
     {
         id: 26,
@@ -372,6 +390,7 @@ export const boardData =
         property : true,
         gridRow: '8',
         gridColumn: "12/14",
+        mortgaged: false,
     },
     {
         id: 27,
@@ -389,6 +408,7 @@ export const boardData =
         property : true,
         gridRow: '9',
         gridColumn: "12/14",
+        mortgaged: false,
     },
     {
         id: 28,
@@ -401,6 +421,7 @@ export const boardData =
         utility : true,
         gridRow: '10',
         gridColumn: "12/14",
+        mortgaged: false,
     },
     {
         id: 29,
@@ -418,6 +439,7 @@ export const boardData =
         property : true,
         gridRow: '11',
         gridColumn: "12/14",
+        mortgaged: false,
     },
     {
         id: 30,
@@ -442,6 +464,7 @@ export const boardData =
         property : true,
         gridRow: "12/14",
         gridColumn: '11',
+        mortgaged: false,
     },
     {
         id: 32,
@@ -458,6 +481,7 @@ export const boardData =
         property : true,
         gridRow: "12/14",
         gridColumn: '10',
+        mortgaged: false,
     },
     {
         id: 33,
@@ -482,6 +506,7 @@ export const boardData =
         property : true,
         gridRow: "12/14",
         gridColumn: '8',
+        mortgaged: false,
     },
     {
         id: 35,
@@ -497,6 +522,7 @@ export const boardData =
         owner : null,
         gridRow: "12/14",
         gridColumn: '7',
+        mortgaged: false,
     },
     {
         id: 36,
@@ -521,6 +547,7 @@ export const boardData =
         property : true,
         gridRow: "12/14",
         gridColumn: '5',
+        mortgaged: false,
     },
     {
         id: 38,
@@ -546,6 +573,7 @@ export const boardData =
         property : true,
         gridRow: "12/14",
         gridColumn: '3',
+        mortgaged: false,
     },
 ];
 export const chanceCards = [
