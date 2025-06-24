@@ -53,3 +53,22 @@ export const checkGameJoined = async(req, res, next) => {
         return res.status(400).json({message: "Internal Server Error"});
     }
 }
+export const checkOwner = async (req, res, next) => {
+    try {
+        const userId = req.user._id;
+        const { propertyIdx } = req.body;
+        const { game } = req.game;
+
+        if (!game)
+            return res.status(404).json({message: "Game not found"});
+        const playerIdx = game.players.find(p => p.userId._id.toString() === userId.toString());
+        const player = game.players[playerIdx];
+        if (!player.properties.includes(propertyIdx)){
+            return res.status(400).json({message: "Not owner of property"});
+        }
+        next();
+    } catch (error) {
+        console.log("Error in check-owned middleware", error);
+        return res.status(500).json("Internal Server Error");
+    }
+}

@@ -1,7 +1,7 @@
 import express from "express";
 import { buyProp, createGame, endTurn, joinGame, payRent, rollDice, startGame, offerTrade, rejectOffer, acceptOffer, buildHouse, mortgageProp } from "../controllers/game.controller.js";
 import { protectRoute } from "../middlewares/auth.middleware.js";
-import { checkGame, checkHost, checkGameJoined } from "../middlewares/game.middleware.js";
+import { checkGame, checkHost, checkGameJoined, checkOwner } from "../middlewares/game.middleware.js";
 
 const router = express.Router();
 

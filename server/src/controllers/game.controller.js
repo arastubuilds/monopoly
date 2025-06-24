@@ -550,7 +550,7 @@ export const buildHouse = async (req, res) => {
     }
 }
 export const mortgageProp = async(req, res) => {
-    const { userId } = req.user._id;
+    const  userId  = req.user._id;
     const { code } = req.params;
     const { propertyIdx } = req.body;
     try {
@@ -574,3 +574,50 @@ export const mortgageProp = async(req, res) => {
         res.status(500).json({message: "Error mortgaging property"});
     }
 }
+const unmortgageProp = async(req, res) => {
+    const userId = req.user._id;
+    const { code } = req.params;
+    const { propertyIdx } = req.body;
+    try {
+        const game = Game.findOne({code}).populate("players.userId", "username").populate("boardState.owner", "username");
+        const playerIdx = game.players.findIndex(p => p.userId._id.toString() === userId.toString());
+        const player = game.players[playerIdx];
+        if (!player.properties.includes(propertyIdx) || !game.boardState[propertyIdx].mortgaged){
+            res.status(400).json({message: "Either not the property owner or property is not mortgaged"});
+        }
+        const property = game.boardState[propertyIdx];
+        property.mortgaged = false;
+        await game.save();
+
+        const socket = getSocket(userId);
+        socket.to(code).emit("unmortgaged-prop", {});
+        res.status(200).json({message: "Unmortgaged Successfully", game});
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Internal Server Error"});
+    }
+};
+const sellHouse = async (req, res) => {
+    const userId = req.user._id;
+    const { code } = req.params;
+    const { propertyIdx } = req.body;
+
+    try {
+        const game = Game.findOne({code});
+        const playerIdx = game.players.findIndex(p => p.userId._id.toString() === userId.toString());
+        const player = game.players[playerIdx];
+        const property = game.boardState[propertyIdx];
+        game.boardState[propertyIdx].houses -= 1;
+        player.money += property.hCost / 2;
+
+        await game.save();
+        const socket = getSocket(userId);
+        socket.to(code).emit("sold-house", {game});
+        res.status(200).json({message: "House sold successfully", game});
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Internal Server Error"});
+    }
+};
