@@ -161,7 +161,7 @@ export const rollDice = async (req, res) => {
         let newPosition = (game.players[playerIndex].position + roll) % 40;
 
         if (newPosition < game.players[playerIndex].position) {
-            game.players[playerIndex].money += 200; // Add $200 for passing GO
+            game.players[playerIndex].money += 2000; // Add $200 for passing GO
         }
 
         game.players[playerIndex].position = newPosition;
@@ -557,9 +557,13 @@ export const mortgageProp = async(req, res) => {
         const game = await Game.findOne({code}).populate("players.userId", "username").populate("boardState.owner", "username");
         const playerIdx = game.players.find(p => p.userId._id.toString() === userId.toString());
         const player = game.players[playerIdx];
+
+        if (!player.properties.includes(propertyIdx))
+            return res.status(400).json({message:"Not the property owner"});
+        
         const property = game.boardState[propertyIdx];
 
-        property.mortgage = true;
+        property.mortgaged = true;
         await game.save();
 
         const socket = getSocket(userId);

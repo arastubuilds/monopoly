@@ -18,6 +18,7 @@ const OwnedProp = ({space}) => {
                         <p className="text-lg text-gray-800 mb-6">
 
                             <span className="font-bold">Base Rent: ${space.base}</span>
+                            <span className="font-bold">Rent </span>
                         </p>
 
                         <div className="flex flex-col sm:flex-row justify-center gap-4">

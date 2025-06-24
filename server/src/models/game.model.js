@@ -27,6 +27,7 @@ const spaceSchema = new mongoose.Schema({
 
     gridRow: {type: String},
     gridColumn: {type: String},
+    mortgaged: {type: Boolean},
 });
 const gameSchema = new mongoose.Schema({
     code: {

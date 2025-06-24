@@ -1,5 +1,5 @@
 import express from "express";
-import { buyProp, createGame, endTurn, joinGame, payRent, rollDice, startGame, offerTrade, rejectOffer, acceptOffer } from "../controllers/game.controller.js";
+import { buyProp, createGame, endTurn, joinGame, payRent, rollDice, startGame, offerTrade, rejectOffer, acceptOffer, buildHouse, mortgageProp } from "../controllers/game.controller.js";
 import { protectRoute } from "../middlewares/auth.middleware.js";
 import { checkGame, checkHost, checkGameJoined } from "../middlewares/game.middleware.js";
 
@@ -13,8 +13,9 @@ router.post("/:code/roll", checkGameJoined, rollDice);
 router.post("/:code/endTurn", checkGameJoined, endTurn);
 router.post("/:code/buy", checkGameJoined, buyProp);
 router.post("/:code/pay", checkGameJoined, payRent);
+router.post("/:code/mortgage", checkGameJoined, mortgageProp);
 router.post("/:code/offer-trade", checkGameJoined, offerTrade);
 router.post("/:code/reject-offer", checkGameJoined, rejectOffer);
-router.post("/:code/accept-offer", checkGameJoined, acceptOffer)
-
+router.post("/:code/accept-offer", checkGameJoined, acceptOffer);
+router.post("/:code/build-house", checkGameJoined, buildHouse);
 export default router;

@@ -21,7 +21,7 @@ const Play = () => {
     const { roll, end, rolled, passed, viewing, tradingWith, offeredTrade, isYourTurn, isBuying, isPaying, isOwn, isViewing, isOffering, isOffered } = useGameStore();
     // console.log(tradingWith);
     // console.log(yourMoney);
-    console.log(isOffered, offeredTrade);
+    // console.log(isOffered, offeredTrade);
     
     useEffect(() => {
         registerPlayerEvents();
