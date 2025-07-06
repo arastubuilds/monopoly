@@ -61,13 +61,17 @@ export const joinGame = async (req, res) => {
         // console.log(game);
         // const updatedGame = await Game.findOne({ code }).populate("players.userId", "username");
         // socket 
-        console.log(game.players);
+        // console.log(game.players);
         const socket = getSocket(userId);
         // console.log(socket.id);
         socket.join(code);
         io.to(code).emit("joined-room", game);
         
-        res.status(200).json({message: "Joined Game Successfully", game});
+        // get users in already in room to set up mesh webrtc
+        const room = await io.in(code).fetchSockets();
+        const usersInRoom = room.map(s => s.id).filter(id => id !== socket.id);
+
+        res.status(200).json({message: "Joined Game Successfully", game, usersInRoom});
 
     } catch (error) {
         console.log("Error in join game controller", error);
@@ -574,7 +578,7 @@ export const mortgageProp = async(req, res) => {
         res.status(500).json({message: "Error mortgaging property"});
     }
 }
-const unmortgageProp = async(req, res) => {
+export const unmortgageProp = async(req, res) => {
     const userId = req.user._id;
     const { code } = req.params;
     const { propertyIdx } = req.body;
@@ -586,6 +590,7 @@ const unmortgageProp = async(req, res) => {
             res.status(400).json({message: "Either not the property owner or property is not mortgaged"});
         }
         const property = game.boardState[propertyIdx];
+        player.money -= (property.price/2 + property.price/20);
         property.mortgaged = false;
         await game.save();
 
@@ -598,7 +603,7 @@ const unmortgageProp = async(req, res) => {
         res.status(500).json({message: "Internal Server Error"});
     }
 };
-const sellHouse = async (req, res) => {
+export const sellHouse = async (req, res) => {
     const userId = req.user._id;
     const { code } = req.params;
     const { propertyIdx } = req.body;
@@ -621,3 +626,18 @@ const sellHouse = async (req, res) => {
         res.status(500).json({message: "Internal Server Error"});
     }
 };
+export const getLoan = async (req, res) => {
+    const userId = req.user._id;
+    const { code } = req.params;
+    const { loanAmt } = req.body;
+
+    const game = await Game.findOne({code});
+    const playerIdx = game.players.findIndex(p => p.userId._id.toString() === userId.toString());
+    const player = game.players[playerIdx];
+    
+    player.money += loanAmt;
+    player.loanTaken = true;
+    player.loanInterest = 10;
+
+    await game.save();
+}
