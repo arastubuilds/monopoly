@@ -58,7 +58,7 @@ export const useGameStore = create((set) => ({
             set({game: res.data.game, joined: true, usersInRoom: res.data.usersInRoom});
             await initLocalAudio();
             await offerUsersInRoom();
-            
+
             toast.success("Game Joined Successfully");
         } catch (error) {
             console.log(error);
@@ -178,6 +178,15 @@ export const useGameStore = create((set) => ({
     pass: () => {
         console.log("passed");
         set({passed: true, isPassing: false, isBuying: false}); 
+    },
+    offer: async(code, userId, offer) => {
+        await axiosInstance.post(`/game/${code}/voice-offer`, { targetId: userId, offer });
+    },
+    answer: async(code, fromId, answer) => {
+        await axiosInstance.post(`/game/${code}/voice-answer`, { targetId: fromId, answer });
+    },
+    iceCandidate: async(code, userId, candidate) => {
+        await axiosInstance.post(`/game/${code}/voice-ice-candidate`, { targetId: userId, candidate });
     },
     setIsYourTurn: (isYourTurn) => set({isYourTurn}),
     setLandedOn: (landedOn) => set({landedOn}),

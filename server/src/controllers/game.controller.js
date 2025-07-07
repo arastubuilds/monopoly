@@ -644,9 +644,34 @@ export const getLoan = async (req, res) => {
 export const voiceOffer = (req, res) => {
     const userId = req.user._id;
     const { targetId, offer } = req.body;
+    const socket = getSocket(userId);
     try {
-        io.to(targetId).emit("offer", {fromId: userId, offer});
+        io.to(targetId).emit("offer", {fromId: socket.id, offer});
         return res.status(200).json({message: "voice-offer emitted successfuly"});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Internal Server Error"});
+    }
+}
+export const voiceAnswer = (req, res) => {
+    const userId = req.user._id;
+    const { targetId, answer } = req.body;
+    const socket = getSocket(userId);
+    try {
+        io.to(targetId).emit("answer", {fromId: socket.id, answer});
+        return res.status(200).json({message: "voice-offer emitted successfuly"});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Internal Server Error"});
+    }
+}
+export const voiceCandidate = (req, res) => {
+    const userId = req.user._id;
+    const { targetId, candidate } = req.body;
+    const socket = getSocket(userId);
+    try {
+        io.to(targetId).emit("answer", {fromId: socket.id, candidate});
+        return res.status(200).json({message: "voice-candidate emitted successfuly"});
     } catch (error) {
         console.log(error);
         res.status(500).json({message: "Internal Server Error"});
