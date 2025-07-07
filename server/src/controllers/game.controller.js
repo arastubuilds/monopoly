@@ -641,3 +641,14 @@ export const getLoan = async (req, res) => {
 
     await game.save();
 }
+export const voiceOffer = (req, res) => {
+    const userId = req.user._id;
+    const { targetId, offer } = req.body;
+    try {
+        io.to(targetId).emit("offer", {fromId: userId, offer});
+        return res.status(200).json({message: "voice-offer emitted successfuly"});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Internal Server Error"});
+    }
+}

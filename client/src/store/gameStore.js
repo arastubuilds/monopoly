@@ -2,9 +2,12 @@ import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
 import { useAuthStore } from "./authStore";
+import { initLocalAudio, offerUsersInRoom } from "../lib/voice-chat";
 
 
 export const useGameStore = create((set) => ({
+    usersInRoom: null,
+
     game: null,
     yourMoney: 0,
     yourProperties: [],
@@ -52,8 +55,10 @@ export const useGameStore = create((set) => ({
         try {
             const res = await axiosInstance.post(`/game/join/${code}`);
             // console.log(res.data);            
-            set({game: res.data.game});
-            set({joined: true});
+            set({game: res.data.game, joined: true, usersInRoom: res.data.usersInRoom});
+            await initLocalAudio();
+            await offerUsersInRoom();
+            
             toast.success("Game Joined Successfully");
         } catch (error) {
             console.log(error);

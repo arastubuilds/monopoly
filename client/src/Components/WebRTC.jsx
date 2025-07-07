@@ -1,10 +1,20 @@
-import { useRef } from "react";
+import { useEffect } from "react";
 import { useState } from "react";
+import { registerOnRemoteStream } from "../lib/voice-chat";
 
 const WebRTC = () => {
+
+    const [isMuted, setIsMuted] = useState(true);
     const [remoteStreams, setRemoteStreams] = useState({});
-    const localStreamRef = useRef(null);
-    
+
+    useEffect(() => {
+        registerOnRemoteStream((userId, stream) => {
+            setRemoteStreams(prev => ({
+                ...prev, [userId]:stream,
+            }));
+        });
+    }, []);
+        
     return (
         <></>
     );
