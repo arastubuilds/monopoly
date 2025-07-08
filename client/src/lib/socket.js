@@ -17,7 +17,7 @@ export const registerBasicEvents = () => {
         toast.success("Player Joined");
         setGame(game);
     });
-    
+
     socket.on("game-started", (game) => {
         console.log("game started");
         toast.success("Game Started");
@@ -33,7 +33,6 @@ export const registerBasicEvents = () => {
             setIsYourTurn(false);
         }
     });
-
 };
 export const unregisterBasicEvents = () => {
     const socket = useAuthStore.getState().socket;

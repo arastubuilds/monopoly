@@ -18,4 +18,7 @@ router.post("/:code/offer-trade", checkGameJoined, offerTrade);
 router.post("/:code/reject-offer", checkGameJoined, rejectOffer);
 router.post("/:code/accept-offer", checkGameJoined, acceptOffer);
 router.post("/:code/build-house", checkGameJoined, buildHouse);
+// router.post("/:code/voice-offer", voiceOffer);
+// router.post("/:code/voice-answer", voiceAnswer);
+// router.post("/:code/voice-ice-candidate", voiceCandidate);
 export default router;

@@ -4,6 +4,7 @@ import { useAuthStore } from "../store/authStore";
 import { useNavigate } from "react-router-dom";
 
 import { registerBasicEvents, unregisterBasicEvents } from "../lib/socket";
+import { registerSignallingSocketEvents } from "../lib/voice-chat";
 import Lobby from "./Lobby";
 import Background from "../Components/Background";
 
@@ -14,7 +15,7 @@ const JoinGame = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (socket) registerBasicEvents();
+        if (socket) { registerBasicEvents(); registerSignallingSocketEvents(); };
 
         return () => unregisterBasicEvents();
     }, [socket]);

@@ -24,6 +24,22 @@ io.on("connect", (socket) => {
     const userId = socket.handshake.query.userId;
     if (userId) userSocketMap[userId] = socket;
 
+    //WebRTC Signalling
+    socket.on('offer', ({ targetId, offer }) => {
+        console.log(`offering to ${targetId}`);
+        io.to(targetId).emit('offer', { fromId: socket.id, offer });
+    });
+
+    socket.on('answer', ({ targetId, answer }) => {
+        console.log(`answering to ${targetId}`);
+        io.to(targetId).emit('answer', { fromId: socket.id, answer });
+    });
+
+    socket.on('ice-candidate', ({ targetId, candidate }) => {
+        console.log(`ice-candidate to ${targetId}`);
+        io.to(targetId).emit('ice-candidate', { fromId: socket.id, candidate });
+    });
+
     socket.on("disconnect", () => {
         console.log("a user disconnected", socket.id);
     });

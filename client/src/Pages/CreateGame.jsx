@@ -3,8 +3,9 @@ import { useGameStore } from "../store/gameStore";
 import { Loader } from "lucide-react";
 import Lobby from "./Lobby";
 import { useAuthStore } from "../store/authStore";
-import { registerBasicEvents, unregisterBasicEvents } from "../lib/socket";
 import { useNavigate } from "react-router-dom";
+import { registerBasicEvents, unregisterBasicEvents } from "../lib/socket";
+import { registerSignallingSocketEvents } from "../lib/voice-chat";
 
 
 const CreateGame = () => {
@@ -21,7 +22,7 @@ const CreateGame = () => {
     }
     useEffect(() => {
         
-        if (socket) registerBasicEvents();
+        if (socket) { registerBasicEvents(); registerSignallingSocketEvents(); };
 
         return () => unregisterBasicEvents();
     }, [socket]);

@@ -27,6 +27,12 @@ export const createGame = async (req, res) => {
             socket.join(code);
             // io.to(socket).emit("joined-room", game);
 
+            const room = await io.in(code).fetchSockets();
+            const usersInRoom = room.map(s => s.id).filter(id => id !== socket.id);
+
+            socket.emit("existing-users", {usersInRoom});
+            console.log("existing-users emitted");
+
             res.status(201).json({ message: "Game Created Successfully", game: game });
         }else{
             res.status(400).json({message: "Invalid game details"});
@@ -65,13 +71,16 @@ export const joinGame = async (req, res) => {
         const socket = getSocket(userId);
         // console.log(socket.id);
         socket.join(code);
+        // socket.join(socket.id);
         io.to(code).emit("joined-room", game);
-        
-        // get users in already in room to set up mesh webrtc
+            
         const room = await io.in(code).fetchSockets();
         const usersInRoom = room.map(s => s.id).filter(id => id !== socket.id);
 
-        res.status(200).json({message: "Joined Game Successfully", game, usersInRoom});
+        socket.emit("existing-users", {usersInRoom});
+        console.log("existsing-users emitted");
+        
+        res.status(200).json({message: "Joined Game Successfully", game});
 
     } catch (error) {
         console.log("Error in join game controller", error);
@@ -641,39 +650,39 @@ export const getLoan = async (req, res) => {
 
     await game.save();
 }
-export const voiceOffer = (req, res) => {
-    const userId = req.user._id;
-    const { targetId, offer } = req.body;
-    const socket = getSocket(userId);
-    try {
-        io.to(targetId).emit("offer", {fromId: socket.id, offer});
-        return res.status(200).json({message: "voice-offer emitted successfuly"});
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({message: "Internal Server Error"});
-    }
-}
-export const voiceAnswer = (req, res) => {
-    const userId = req.user._id;
-    const { targetId, answer } = req.body;
-    const socket = getSocket(userId);
-    try {
-        io.to(targetId).emit("answer", {fromId: socket.id, answer});
-        return res.status(200).json({message: "voice-offer emitted successfuly"});
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({message: "Internal Server Error"});
-    }
-}
-export const voiceCandidate = (req, res) => {
-    const userId = req.user._id;
-    const { targetId, candidate } = req.body;
-    const socket = getSocket(userId);
-    try {
-        io.to(targetId).emit("answer", {fromId: socket.id, candidate});
-        return res.status(200).json({message: "voice-candidate emitted successfuly"});
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({message: "Internal Server Error"});
-    }
-}
+// export const voiceOffer = (req, res) => {
+//     const userId = req.user._id;
+//     const { targetId, offer } = req.body;
+//     const socket = getSocket(userId);
+//     try {
+//         io.to(targetId).emit("offer", {fromId: socket.id, offer});
+//         return res.status(200).json({message: "voice-offer emitted successfuly"});
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).json({message: "Internal Server Error"});
+//     }
+// }
+// export const voiceAnswer = (req, res) => {
+//     const userId = req.user._id;
+//     const { targetId, answer } = req.body;
+//     const socket = getSocket(userId);
+//     try {
+//         io.to(targetId).emit("answer", {fromId: socket.id, answer});
+//         return res.status(200).json({message: "voice-offer emitted successfuly"});
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).json({message: "Internal Server Error"});
+//     }
+// }
+// export const voiceCandidate = (req, res) => {
+//     const userId = req.user._id;
+//     const { targetId, candidate } = req.body;
+//     const socket = getSocket(userId);
+//     try {
+//         io.to(targetId).emit("ice-candidate", {fromId: socket.id, candidate});
+//         return res.status(200).json({message: "voice-candidate emitted successfuly"});
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).json({message: "Internal Server Error"});
+//     }
+// }

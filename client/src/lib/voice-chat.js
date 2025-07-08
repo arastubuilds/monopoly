@@ -1,12 +1,4 @@
 import { useAuthStore } from "../store/authStore";
-import { useGameStore } from "../store/gameStore";
-
-
-const socket = useAuthStore.getState().socket;
-const game = useGameStore.getState().game;
-const voiceOffer = useGameStore.getState().offer;
-const voiceAnswer = useGameStore.getState().answer;
-const voiceCandidate = useGameStore.getState().iceCandidate;
 
 
 let localStream = null;
@@ -18,11 +10,40 @@ const pendingCandidates = {};
 
 export const initLocalAudio = async() => {
     localStream = await navigator.mediaDevices.getUserMedia({audio: true});
-    localStream.getAudioTracks()[0].enabled = false;
-    
+    localStream.getAudioTracks()[0].enabled = true;
+    console.log("local stream init");
 }
+
 export const registerSignallingSocketEvents = () => {
+    const socket = useAuthStore.getState().socket;
+
+    console.log("signalling events registered");
+
+    socket.on("existing-users", async ({usersInRoom}) => {
+      console.log("received existing users", usersInRoom);
+
+      for (const userId of usersInRoom) {
+        const pc = createPeerConnection(userId);
+        localStream?.getTracks().forEach((track) => {
+          console.log("Adding tracks to", userId, localStream?.getAudioTracks());
+          pc.addTrack(track, localStream);
+        });
+
+        const offer = await pc.createOffer();
+        try {
+            await pc.setLocalDescription(offer);
+            console.log("local description set");
+        } catch (error) {
+            console.error("fail local description", error);
+        }
+
+        socket.emit("offer", { targetId: userId, offer });
+      }
+    });
+
     socket.on("offer", async ({fromId, offer}) => {
+        console.log("received offer from", fromId);
+        
         const pc = createPeerConnection(fromId);
         localStream?.getTracks().forEach((track) => {
             pc.addTrack(track, localStream);
@@ -38,11 +59,15 @@ export const registerSignallingSocketEvents = () => {
         }
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
-        voiceAnswer(game.code, fromId, answer);
+        socket.emit("answer", {targetId: fromId, answer});
+        // voiceAnswer(game.code, fromId, answer);
     });
+
     socket.on("answer", async({fromId, answer})=> {
+        console.log("received answer from", fromId);
+
         const pc = peerConnections[fromId];
-        if (!pc) return;
+        if (!pc) { console.log("returning"); return};
 
         if (pc.signalingState === "have-local-offer"){
             await pc.setRemoteDescription(new RTCSessionDescription(answer));
@@ -54,7 +79,10 @@ export const registerSignallingSocketEvents = () => {
             }
         }
     });
+
     socket.on("ice-candidate", ({fromId, candidate}) => {
+        console.log("received candidate from", fromId);
+
         const pc = peerConnections[fromId];
         const iceCandidate = new RTCIceCandidate(candidate);
         if (pc?.remoteDescription && pc.remoteDescription.type) {
@@ -70,21 +98,12 @@ export const registerSignallingSocketEvents = () => {
 export const registerOnRemoteStream = (callback) => {
     onRemoteStream = callback;
 }
-export const offerUsersInRoom = async () => {
-    const usersInRoom = useGameStore().getState().usersInRoom;
-    for (const userId of usersInRoom) {
-        const pc = createPeerConnection(userId);
-        localStream?.getTracks().forEach((track) => {
-            pc.addTrack(track, localStream);
-        });
-        const offer = await pc.createOffer();
-        await pc.setLocalDescription(offer);
-
-        voiceOffer(game.code, userId, offer);
-    }
-}
 
 const createPeerConnection = (userId) => {
+    // const {game, iceCandidate: voiceCandidate} = useGameStore.getState();
+    console.log("creating peer connection for", userId);
+    
+    const socket = useAuthStore.getState().socket;
     const pc = new RTCPeerConnection({
       iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
     });
@@ -92,8 +111,13 @@ const createPeerConnection = (userId) => {
     peerConnections[userId] = pc;
 
     pc.onicecandidate = (event) => {
+      console.log("trying to generate ice candidate");
       if (event.candidate) {
-        voiceCandidate(game.code, userId, event.candidate);
+        // voiceCandidate(game.code, userId, event.candidate);
+        socket.emit("ice-candidate", {targetId: userId, candidate: event.candidate});
+        console.log("ice-candidate emitted");
+      }else{
+        console.log("all ice candidates sent");
       }
     };
 

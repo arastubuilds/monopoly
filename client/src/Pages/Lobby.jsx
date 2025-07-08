@@ -1,3 +1,4 @@
+import VoiceChat from "../Components/VoiceChat";
 import { useGameStore } from "../store/gameStore";
 
 const Lobby = () => {
@@ -19,6 +20,7 @@ const Lobby = () => {
                     </div>
                 ))}
             </div>
+            <VoiceChat />
         </div>
     // </div>
     );

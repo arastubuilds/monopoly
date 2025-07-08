@@ -2,14 +2,13 @@ import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
 import { useAuthStore } from "./authStore";
-import { initLocalAudio, offerUsersInRoom } from "../lib/voice-chat";
+import { initLocalAudio } from "../lib/voice-chat";
 
 
 export const useGameStore = create((set) => ({
-    usersInRoom: null,
 
     game: null,
-    yourMoney: 0,
+    yourMoney: 0, 
     yourProperties: [],
     oPP: [],
     viewing: null,
@@ -39,8 +38,9 @@ export const useGameStore = create((set) => ({
         set({game: null});
         try {
             const res = await axiosInstance.post("/game/create");
-            console.log(res.data);
+            // console.log(res.data);
             set({ game: res.data.game });
+            await initLocalAudio();
             toast.success("Game created successfully");
 
         } catch (error) {
@@ -55,9 +55,9 @@ export const useGameStore = create((set) => ({
         try {
             const res = await axiosInstance.post(`/game/join/${code}`);
             // console.log(res.data);            
-            set({game: res.data.game, joined: true, usersInRoom: res.data.usersInRoom});
+            set({game: res.data.game, joined: true});
             await initLocalAudio();
-            await offerUsersInRoom();
+            // await offerUsersInRoom(res.data.usersInRoom);
 
             toast.success("Game Joined Successfully");
         } catch (error) {
@@ -179,15 +179,7 @@ export const useGameStore = create((set) => ({
         console.log("passed");
         set({passed: true, isPassing: false, isBuying: false}); 
     },
-    offer: async(code, userId, offer) => {
-        await axiosInstance.post(`/game/${code}/voice-offer`, { targetId: userId, offer });
-    },
-    answer: async(code, fromId, answer) => {
-        await axiosInstance.post(`/game/${code}/voice-answer`, { targetId: fromId, answer });
-    },
-    iceCandidate: async(code, userId, candidate) => {
-        await axiosInstance.post(`/game/${code}/voice-ice-candidate`, { targetId: userId, candidate });
-    },
+
     setIsYourTurn: (isYourTurn) => set({isYourTurn}),
     setLandedOn: (landedOn) => set({landedOn}),
     setIsBuying: (isBuying) => set({isBuying}),
