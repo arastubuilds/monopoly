@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { registerOnRemoteStream } from "../lib/voice-chat";
-
+import { getLocalStream, registerOnRemoteStream } from "../lib/voice-chat";
+import { Mic, MicOff } from "lucide-react";
 
 const RemoteAudio = ({ stream }) => {
   const audioRef = useRef(null);
@@ -11,21 +11,21 @@ const RemoteAudio = ({ stream }) => {
     }
   }, [stream]);
 
-  return <audio ref={audioRef} autoPlay controls muted={false} />;
+  return <audio ref={audioRef} autoPlay controls muted={false} className="hidden"/>;
 }
 
-
 const VoiceChat = () => {
-    // const [isMuted, setIsMuted] = useState(true);
     const [remoteStreams, setRemoteStreams] = useState({});
+    const [isMuted, setIsMuted] = useState(true);
+    const localStream = getLocalStream();
 
-    // const toggleMute = () => {
-    // const audioTrack = localStreamRef.current?.getAudioTracks?.()[0];
-    //     if (audioTrack) {
-    //         audioTrack.enabled = !audioTrack.enabled;
-    //         setIsMuted(!audioTrack.enabled);
-    //     }
-    // };
+    const toggleMute = () => {
+    const audioTrack = localStream?.getAudioTracks?.()[0];
+        if (audioTrack) {
+            audioTrack.enabled = !audioTrack.enabled;
+            setIsMuted(!audioTrack.enabled);
+        }
+    };
 
     useEffect(() => {
         registerOnRemoteStream((userId, stream) => {
@@ -38,6 +38,12 @@ const VoiceChat = () => {
     return (
         <>
             <div className="mt-4">
+                <button
+                    onClick={toggleMute}
+                    className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
+                >
+                    {isMuted ? <MicOff /> : <Mic />}
+                </button>
                 {Object.entries(remoteStreams).map(([id, stream]) => (
                     <RemoteAudio key={id} stream={stream} />
                 ))}

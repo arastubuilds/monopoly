@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
 import { useAuthStore } from "./authStore";
-import { initLocalAudio } from "../lib/voice-chat";
+// import { initLocalAudio } from "../lib/voice-chat";
 
 
 export const useGameStore = create((set) => ({
@@ -40,7 +40,7 @@ export const useGameStore = create((set) => ({
             const res = await axiosInstance.post("/game/create");
             // console.log(res.data);
             set({ game: res.data.game });
-            await initLocalAudio();
+            // await initLocalAudio();
             toast.success("Game created successfully");
 
         } catch (error) {

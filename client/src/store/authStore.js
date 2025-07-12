@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { io } from "socket.io-client";
 
 const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:8000" : "/";
-console.log(BASE_URL);
+// console.log(BASE_URL);
 export const useAuthStore = create((set, get) => ({
     
     authUser: null,
@@ -18,8 +18,8 @@ export const useAuthStore = create((set, get) => ({
         try {
             const res = await axiosInstance.get("/auth/check-auth");
             set({authUser: res.data});
-        } catch (error) {
-            console.log("Error checking auth:", error.response.data.message);
+        } catch (error) {            
+            console.log("Error checking auth:", error.response?.data.message || error.message);
             set({ authUser: null });
         } finally {
             set({ isCheckingAuth: false });
@@ -33,10 +33,10 @@ export const useAuthStore = create((set, get) => ({
             set({authUser: res.data});
             toast.success("User Created Successfully");
 
-            get().connectSocket();
+            // get().connectSocket();
 
         } catch (error) {
-            toast.error(error.response.data.message);
+            toast.error(response.data.message);
         }finally{
             set({isSigningUp: false});
         }
@@ -63,7 +63,7 @@ export const useAuthStore = create((set, get) => ({
             set({authUser: null});
             toast.success("Logged Out");
 
-            // get().disconnectSocket();
+            get().disconnectSocket();
 
         } catch (error) {
             toast.error(error.response.data.message);

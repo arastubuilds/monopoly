@@ -13,8 +13,12 @@ export const initLocalAudio = async() => {
     localStream.getAudioTracks()[0].enabled = true;
     console.log("local stream init");
 }
-
-export const registerSignallingSocketEvents = () => {
+export const getLocalStream = () => {
+    return localStream;
+}
+export const registerSignallingSocketEvents = async() => {
+    await initLocalAudio();
+    
     const socket = useAuthStore.getState().socket;
 
     console.log("signalling events registered");
@@ -102,7 +106,7 @@ export const registerOnRemoteStream = (callback) => {
 const createPeerConnection = (userId) => {
     // const {game, iceCandidate: voiceCandidate} = useGameStore.getState();
     console.log("creating peer connection for", userId);
-    
+
     const socket = useAuthStore.getState().socket;
     const pc = new RTCPeerConnection({
       iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
@@ -112,6 +116,8 @@ const createPeerConnection = (userId) => {
 
     pc.onicecandidate = (event) => {
       console.log("trying to generate ice candidate");
+      console.log(event);
+
       if (event.candidate) {
         // voiceCandidate(game.code, userId, event.candidate);
         socket.emit("ice-candidate", {targetId: userId, candidate: event.candidate});
