@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
 import { useAuthStore } from "./authStore";
-// import { initLocalAudio } from "../lib/voice-chat";
+
 
 
 export const useGameStore = create((set) => ({
@@ -38,9 +38,10 @@ export const useGameStore = create((set) => ({
         set({game: null});
         try {
             const res = await axiosInstance.post("/game/create");
+            
             // console.log(res.data);
             set({ game: res.data.game });
-            // await initLocalAudio();
+            
             toast.success("Game created successfully");
 
         } catch (error) {
@@ -55,8 +56,9 @@ export const useGameStore = create((set) => ({
         try {
             const res = await axiosInstance.post(`/game/join/${code}`);
             // console.log(res.data);            
+            
             set({game: res.data.game, joined: true});
-            await initLocalAudio();
+            
             // await offerUsersInRoom(res.data.usersInRoom);
 
             toast.success("Game Joined Successfully");

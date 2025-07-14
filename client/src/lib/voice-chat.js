@@ -1,113 +1,112 @@
 import { useAuthStore } from "../store/authStore";
 
-
 let localStream = null;
 let onRemoteStream = () => {};
-
 const peerConnections = {};
 const pendingCandidates = {};
 
+export const initLocalAudio =  async() => {
+    try {
+        localStream = await navigator.mediaDevices.getUserMedia({audio: true});
+        localStream.getAudioTracks()[0].enabled = true;
+        console.log("local stream initted");
+    } catch (error) {
+        console.error("error accessing mic", error);
+    }
+};
+export const getLocalStream = () => { return localStream };
 
-export const initLocalAudio = async() => {
-    localStream = await navigator.mediaDevices.getUserMedia({audio: true});
-    localStream.getAudioTracks()[0].enabled = true;
-    console.log("local stream init");
-}
-export const getLocalStream = () => {
-    return localStream;
-}
-export const registerSignallingSocketEvents = async() => {
-    await initLocalAudio();
-    
-    const socket = useAuthStore.getState().socket;
+export const registerSignallingSocketEvents = () => {
 
-    console.log("signalling events registered");
+  const socket = useAuthStore.getState().socket;
 
-    socket.on("existing-users", async ({usersInRoom}) => {
-      console.log("received existing users", usersInRoom);
+  console.log("Signalling events registered");
+  initLocalAudio().then(() => {console.log("local audio initted")});
 
-      for (const userId of usersInRoom) {
-        const pc = createPeerConnection(userId);
-        localStream?.getTracks().forEach((track) => {
-          console.log("Adding tracks to", userId, localStream?.getAudioTracks());
-          pc.addTrack(track, localStream);
-        });
+  socket.on("existing-users", async ({ usersInRoom }) => {
+    console.log("Received existing users", usersInRoom);
 
-        const offer = await pc.createOffer();
-        try {
-            await pc.setLocalDescription(offer);
-            console.log("local description set");
-        } catch (error) {
-            console.error("fail local description", error);
-        }
+    for (const userId of usersInRoom) {
+      const pc = createPeerConnection(userId);
+      localStream?.getTracks().forEach((track) => {
+        console.log("Adding track to", userId);
+        pc.addTrack(track, localStream);
+      });
 
-        socket.emit("offer", { targetId: userId, offer });
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+      socket.emit("offer", { targetId: userId, offer });
+    }
+  });
+
+  socket.on("offer", async ({ fromId, offer }) => {
+    console.log("Received offer from", fromId);
+
+    const pc = createPeerConnection(fromId);
+    localStream?.getTracks().forEach((track) => {
+        console.log(track);
+      pc.addTrack(track, localStream);
+    });
+
+    await pc.setRemoteDescription(new RTCSessionDescription(offer));
+
+    // Add pending candidates if any
+    if (pendingCandidates[fromId]) {
+      for (const c of pendingCandidates[fromId]) {
+        await pc.addIceCandidate(c);
       }
-    });
+      delete pendingCandidates[fromId];
+    }
+    const answer = await pc.createAnswer();
+    await pc.setLocalDescription(answer);
+    socket.emit("answer", { targetId: fromId, answer });
+  });
 
-    socket.on("offer", async ({fromId, offer}) => {
-        console.log("received offer from", fromId);
-        
-        const pc = createPeerConnection(fromId);
-        localStream?.getTracks().forEach((track) => {
-            pc.addTrack(track, localStream);
-        });
-        
-        await pc.setRemoteDescription(new RTCSessionDescription(offer));
+  socket.on("answer", async ({ fromId, answer }) => {
+    console.log("Received answer from", fromId);
 
-        if (pendingCandidates[fromId]){
-            for (const c of pendingCandidates[fromId]) {
-                pc.addIceCandidate(c);
-            }
-            delete pendingCandidates[fromId];
+    const pc = peerConnections[fromId];
+    if (!pc) {
+      console.warn("No peer connection for", fromId);
+      return;
+    }
+
+    if (pc.signalingState === "have-local-offer") {
+      await pc.setRemoteDescription(new RTCSessionDescription(answer));
+
+      if (pendingCandidates[fromId]) {
+        for (const c of pendingCandidates[fromId]) {
+          await pc.addIceCandidate(c);
         }
-        const answer = await pc.createAnswer();
-        await pc.setLocalDescription(answer);
-        socket.emit("answer", {targetId: fromId, answer});
-        // voiceAnswer(game.code, fromId, answer);
-    });
+        delete pendingCandidates[fromId];
+      }
+    }
+  });
 
-    socket.on("answer", async({fromId, answer})=> {
-        console.log("received answer from", fromId);
+  socket.on("ice-candidate", async ({ fromId, candidate }) => {
+    console.log("Received ICE candidate from", fromId);
+    const pc = peerConnections[fromId];
+    const iceCandidate = new RTCIceCandidate(candidate);
 
-        const pc = peerConnections[fromId];
-        if (!pc) { console.log("returning"); return};
-
-        if (pc.signalingState === "have-local-offer"){
-            await pc.setRemoteDescription(new RTCSessionDescription(answer));
-            if (pendingCandidates[fromId]){
-                for (const c of pendingCandidates[fromId]) {
-                    peerConnections[fromId].addIceCandidate(c);
-                }
-                delete pendingCandidates[fromId];
-            }
-        }
-    });
-
-    socket.on("ice-candidate", ({fromId, candidate}) => {
-        console.log("received candidate from", fromId);
-
-        const pc = peerConnections[fromId];
-        const iceCandidate = new RTCIceCandidate(candidate);
-        if (pc?.remoteDescription && pc.remoteDescription.type) {
-            pc.addIceCandidate(iceCandidate);
-        } else {
-            if (!pendingCandidates[fromId]){
-                pendingCandidates[fromId] = [];
-            }
-            pendingCandidates[fromId].push(iceCandidate);
-        }
-    });
-}
+    if (pc?.remoteDescription?.type) {
+      await pc.addIceCandidate(iceCandidate);
+    } else {
+      if (!pendingCandidates[fromId]){
+        pendingCandidates[fromId] = [];
+      }
+      pendingCandidates[fromId].push(iceCandidate);
+    }
+  });
+};
 export const registerOnRemoteStream = (callback) => {
     onRemoteStream = callback;
 }
 
 const createPeerConnection = (userId) => {
-    // const {game, iceCandidate: voiceCandidate} = useGameStore.getState();
+    // const { peerConnections, setPeerConnections, addRemoteStream } = useVoiceStore.getState();
     console.log("creating peer connection for", userId);
-
     const socket = useAuthStore.getState().socket;
+
     const pc = new RTCPeerConnection({
       iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
     });
@@ -126,9 +125,8 @@ const createPeerConnection = (userId) => {
         console.log("all ice candidates sent");
       }
     };
-
     pc.ontrack = (event) => {
-      console.log("received remote stream:", event.streams[0]);
+        console.log("received remote stream:", event.streams[0]);
         if (typeof onRemoteStream === "function"){
             onRemoteStream(userId, event.streams[0]);
         }
