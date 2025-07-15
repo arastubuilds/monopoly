@@ -2,6 +2,7 @@ import { useAuthStore } from "../store/authStore";
 
 let localStream = null;
 let onRemoteStream = () => {};
+const remoteStreams = {};
 const peerConnections = {};
 const pendingCandidates = {};
 
@@ -15,6 +16,16 @@ export const initLocalAudio =  async() => {
     }
 };
 export const getLocalStream = () => { return localStream };
+export const localStreamSetter = (stream) => { localStream = stream };
+
+export const addRemoteStream = (userId, stream) => {
+    remoteStreams[userId] = stream;
+    if (typeof onRemoteStream === "function"){
+        onRemoteStream(userId, stream);
+    }
+};
+
+export const getRemoteStreams = () => { return remoteStreams };
 
 export const registerSignallingSocketEvents = () => {
 
@@ -127,9 +138,7 @@ const createPeerConnection = (userId) => {
     };
     pc.ontrack = (event) => {
         console.log("received remote stream:", event.streams[0]);
-        if (typeof onRemoteStream === "function"){
-            onRemoteStream(userId, event.streams[0]);
-        }
+        addRemoteStream(userId, event.streams[0]);
     };
     return pc;
 }

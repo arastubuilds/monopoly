@@ -36,9 +36,9 @@ const Play = () => {
     }
 
     return (
-        <div className="w-screen h-screen flex flex-col md:flex-row">
+        <div className="w-screen h-screen flex flex-col md:flex-row justify-between gap-5">
             {/* Left Hand (Top on small screens) */}
-            <div className="w-full md:w-[25%] flex justify-center items-start p-2">
+            <div className="w-full md:w-[23%] flex justify-center items-start p-2">
                 <Hand owned={yourProperties} money={yourMoney} />
             </div>
     
@@ -75,7 +75,7 @@ const Play = () => {
             </div>
     
             {/* Right Hand (Bottom on small screens) */}
-            <div className="w-full md:w-[25%] flex justify-center items-start p-2">
+            <div className="w-full md:w-[23%] flex justify-center items-start p-2">
                 <RightHand players={oPP} />
             </div>
         </div>

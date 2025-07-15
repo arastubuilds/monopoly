@@ -20,7 +20,9 @@ const Lobby = () => {
                     </div>
                 ))}
             </div>
-            <VoiceChat />
+            <div className="mt-2">
+                <VoiceChat />
+            </div>
         </div>
     // </div>
     );
