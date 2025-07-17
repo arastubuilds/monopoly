@@ -57,7 +57,7 @@ const VoiceChat = () => {
         <div className="">
             <button
                 onClick={toggleMute}
-                className="px-4 py-2 bg-red-500 text-white rounded"
+                className="px-4 py-2 bg-red-500 text-white rounded-xl"
             >
                 {isMuted ? <MicOff /> : <Mic />}
             </button>
