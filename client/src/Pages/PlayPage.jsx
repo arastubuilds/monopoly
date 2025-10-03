@@ -16,7 +16,7 @@ import OfferedTrade from "../Components/OfferedTrade";
 import { SceneCanvas } from '../Components/SceneCanvasLazy.js';
 import RollDiceButton from '../Components/RollDiceButton.jsx';
 import EndTurnButton from '../Components/EndTurnButton.jsx';
-import HUD from '../Components/Hud.jsx';
+import HUD from '../Components/HUD.jsx';
 import { Loader } from 'lucide-react';
 
 
