@@ -5,13 +5,14 @@ import express from "express";
 const app = express();
 const server = http.createServer(app);
 
+const CLIENT_URL = process.env.CLIENT_URL;
 const io = new Server(server, {
     // connectionStateRecovery: {
     //     maxDisconnectionDuration: 2*60*1000,
     //     skipMiddlewares: true,
     // },
     cors: {
-        origin: ["http://localhost:5173"],
+        origin: [CLIENT_URL],
         methods: ["GET", "POST"]
     },
 });

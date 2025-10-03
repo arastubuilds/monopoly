@@ -14,24 +14,25 @@ import { app, server } from "./lib/socket.js";
 dotenv.config();
 
 const PORT = process.env.PORT;
+const CLIENT_URL = process.env.CLIENT_URL;
 const  __dirname = path.resolve();
 
 app.use(express.json());    
 app.use(cookieParser());
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cors({ origin: CLIENT_URL, credentials: true }));
 
 
 app.use("/api/auth", authRoutes);
 app.use("/api/game", gameRoutes);
 
-if (process.env.NODE_ENV==="production"){
-    app.use(express.static(path.join(__dirname, "../client/dist")));
-    app.get("*", (req, res) => {
-        res.sendFile(path.join(__dirname, "../client", "dist", "index.html"));
-    });
-}
+// if (process.env.NODE_ENV==="production"){
+//     app.use(express.static(path.join(__dirname, "../client/dist")));
+//     app.get("*", (req, res) => {
+//         res.sendFile(path.join(__dirname, "../client", "dist", "index.html"));
+//     });
+// }
 server.listen(PORT, () => {
     console.log("server running on", PORT);
     connectDB();
-    setInterval(deleteInactiveGames, 5*60*1000);
+    // setInterval(deleteInactiveGames, 5*60*1000);
 });
