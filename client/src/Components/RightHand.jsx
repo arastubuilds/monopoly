@@ -4,7 +4,7 @@ const RightHand = ({ players }) => {
     // console.log(players);
     const { setIsOffering, setTradingWith } = useGameStore();
     return (
-        <div className="bg-white border-4 border-red-600 rounded-xl p-4 w-full shadow-2xl font-mono mb-4 md:mb-0 md:mr-6 max-h-[90vh] overflow-y-auto">
+        <div className="bg-white max-w-1/3 max-h-1/2 absolute lg:right-6 right-0 border-4 border-red-600 rounded-xl p-4 md:shadow-2xl font-mono lg:top-15 top-10">
             <h2 className="text-xl font-bold text-red-600 mb-4 text-center">
                 Player Properties
             </h2>

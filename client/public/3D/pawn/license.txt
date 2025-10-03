@@ -1,0 +1,11 @@
+Model Information:
+* title:	Pawn
+* source:	https://sketchfab.com/3d-models/pawn-f8a3ea88d7984031bc6c436d5763678a
+* author:	Robbie.Mclaughlin (https://sketchfab.com/Robbie.Mclaughlin)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Pawn" (https://sketchfab.com/3d-models/pawn-f8a3ea88d7984031bc6c436d5763678a) by Robbie.Mclaughlin (https://sketchfab.com/Robbie.Mclaughlin) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

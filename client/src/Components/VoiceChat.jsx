@@ -54,10 +54,10 @@ const VoiceChat = () => {
     }, []);
 
     return (
-        <div className="">
+        <>
             <button
                 onClick={toggleMute}
-                className="px-4 py-2 bg-red-500 text-white rounded-xl"
+                className="lg:w-7 lg:h-7 w-4 h-4 bg-red-500 text-white rounded-full flex justify-center items-center"
             >
                 {isMuted ? <MicOff /> : <Mic />}
             </button>
@@ -65,7 +65,7 @@ const VoiceChat = () => {
             {Object.entries(remoteStreams).map(([id, stream]) => (
                 <RemoteAudio key={id} stream={stream} />
             ))}
-        </div>
+        </>
     );
 };
 

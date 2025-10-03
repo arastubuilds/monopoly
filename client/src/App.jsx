@@ -1,3 +1,4 @@
+import './App.css'
 import { useEffect } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
@@ -17,6 +18,9 @@ import Logout from "./Components/Logout";
 import Background from "./Components/Background";
 import Lobby from "./Pages/Lobby";
 import Play from "./Pages/Play";
+import PlayPage from "./Pages/PlayPage";
+import SceneCanvas from './Components/3D/SceneCanvas';
+import LoadGame from './Pages/LoadGame';
 
 
 const App = () => {
@@ -24,7 +28,7 @@ const App = () => {
   const location = useLocation();
   // console.log(location);
   
-  const bgPages = ["/signup", "/login", "/create", "/join", "/join", "/lobby", "/", "test"];
+  const bgPages = ["/signup", "/login", "/create", "/join", "/join", "/lobby", "/", "/load", "/test"];
   useEffect(()=>{
     checkAuth();
     console.log(authUser);
@@ -40,18 +44,31 @@ const App = () => {
 
   return (
     <div>
-    {(bgPages.includes(location.pathname) && <Background />)}
+    {(bgPages.includes(location.pathname) &&  
+      <div style={{
+        position: 'absolute',
+        backgroundImage: `url(/bg.jpg)`,
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        height: '100vh',
+        width: '100vw',
+        zIndex: -1,
+      }}> 
+        {/* <SceneCanvas />  */}
+      </div> 
+    )}
       <Routes>
         
         <Route path="/signup" element = { authUser ? <Navigate to="/"/> : <SignUp/> } />
         <Route path="/login" element = { authUser ? <Navigate to="/"/> : <Login/> } />
         <Route path="/create" element = { authUser ? <CreateGame/> : <Navigate to="/login" /> } />
         <Route path="/join" element = { authUser ? <JoinGame/> : <Navigate to="/login" /> } />
+        <Route path="/load" element = { authUser ? <LoadGame /> : <Navigate to="/login" /> } />
         <Route path="/logout" element = { authUser ? <Logout/> : <Navigate to="/" /> } />
         <Route path="/lobby" element = {<Lobby/>} />
-        <Route path="/play/:code" element = { <Play/> } />
+        <Route path="/play/:code" element = { <PlayPage /> } />
         <Route path="/" element = { <Home/> }/>
-
+        {/* <Route path="/play" element = {<PlayPage />} /> */}
       </Routes>
 
       <Toaster position="top-center"/>

@@ -1,8 +1,25 @@
-import VoiceChat from "../Components/VoiceChat";
+// import VoiceChat from "../Components/VoiceChat";
+import { useEffect } from "react";
 import { useGameStore } from "../store/gameStore";
+// import { preloadSceneCanvas } from "../Components/SceneCanvasLazy";
+import { preloadAllModels, preloadAllTextures } from "../utils/preload";
 
 const Lobby = () => {
     const game = useGameStore((state) => state.game);
+    const isHost = useGameStore((state) => state.isHost);
+    const {start, isStarting} = useGameStore();
+    // console.log(isHost);
+    
+    const handleStart = async (e) => {
+        await start(game?.code);
+    
+    }
+    useEffect(() => {
+        // preloadSceneCanvas();
+        console.log("preloading...");
+        preloadAllModels();
+        preloadAllTextures();
+    }, []);
 
     return (
     // <div className="relative z-10 text-center flex flex-col justify-center items-center">
@@ -20,9 +37,17 @@ const Lobby = () => {
                     </div>
                 ))}
             </div>
-            <div className="mt-2">
-                <VoiceChat />
-            </div>
+            {/* <div className="mt-2">
+                {/* <VoiceChat /> */}
+            {/* </div>} */}
+            {isHost &&  
+                <button
+                    onClick={handleStart}
+                    className="text-center bg-red-600 text-white p-2 mt-2 rounded-lg font-bold hover:bg-red-700 transition-all disabled:bg-gray-400"
+                >
+                    {isStarting ? "Starting..." : "Start"}
+                </button>
+            }
         </div>
     // </div>
     );

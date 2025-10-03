@@ -15,7 +15,9 @@ const JoinGame = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (socket) { registerBasicEvents(); registerSignallingSocketEvents(); };
+        if (socket) { registerBasicEvents(); 
+            // registerSignallingSocketEvents(); 
+        };
 
         return () => unregisterBasicEvents();
     }, [socket]);

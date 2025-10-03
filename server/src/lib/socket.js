@@ -6,6 +6,10 @@ const app = express();
 const server = http.createServer(app);
 
 const io = new Server(server, {
+    // connectionStateRecovery: {
+    //     maxDisconnectionDuration: 2*60*1000,
+    //     skipMiddlewares: true,
+    // },
     cors: {
         origin: ["http://localhost:5173"],
         methods: ["GET", "POST"]
@@ -18,7 +22,7 @@ export function getSocket(userId) {
     return userSocketMap[userId];
 }
 
-io.on("connect", (socket) => {
+io.on("connection", (socket) => {
     console.log("a user connected", socket.id);
     
     const userId = socket.handshake.query.userId;
@@ -39,7 +43,9 @@ io.on("connect", (socket) => {
         console.log(`ice-candidate to ${targetId}`);
         io.to(targetId).emit('ice-candidate', { fromId: socket.id, candidate });
     });
-
+    // if (socket.recovered) {
+    //     console.log("recovered");
+    // };
     socket.on("disconnect", () => {
         console.log("a user disconnected", socket.id);
     });

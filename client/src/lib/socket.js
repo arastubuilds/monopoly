@@ -1,6 +1,7 @@
 import { useAuthStore } from "../store/authStore";
 import { useGameStore } from "../store/gameStore";
 import toast from "react-hot-toast";
+import { useTokenStore } from "../store/useTokenStore";
 
 export const registerBasicEvents = () => {
 
@@ -8,6 +9,11 @@ export const registerBasicEvents = () => {
 
     const socket = useAuthStore.getState().socket;
     const setGame = useGameStore.getState().setGame;
+    const setIdToIndexMap = useGameStore.getState().setIdToIndexMap;
+    const setYourIndex = useGameStore.getState().setYourIndex;
+    const setNumPlayers = useGameStore.getState().setNumPlayers;
+    const setPlayers = useGameStore.getState().setPlayers;
+    const setCode = useGameStore.getState().setCode;
     const setIsYourTurn = useGameStore.getState().setIsYourTurn;
 
     if (!socket) return;
@@ -18,20 +24,35 @@ export const registerBasicEvents = () => {
         setGame(game);
     });
 
-    socket.on("game-started", (game) => {
+    socket.on("game-started", ({game, idToIndexMap}) => {
         console.log("game started");
         toast.success("Game Started");
         setGame(game);
+        setIdToIndexMap(idToIndexMap);
+        setCode(game.code);
+        setNumPlayers(game.players.length);
+        setYourIndex(idToIndexMap[user._id.toString()]);
+        setPlayers(game.players);
+        // console.log(idToIndexMap[user._id.toString()]);
     });
 
     socket.on("player-turn", (res) => {
-        if (res._id === user._id) { 
+        // if (res._id === user._id) { 
+        //     toast.success(`Your Turn`); 
+        //     setIsYourTurn(true);
+        // } else {
+        //     toast.success(`${res.username}'s turn`);
+        //     setIsYourTurn(false);
+        // }
+        console.log(res);
+        if (res.currentTurn._id.toString() === user._id.toString()) { 
             toast.success(`Your Turn`); 
             setIsYourTurn(true);
         } else {
-            toast.success(`${res.username}'s turn`);
+            toast.success(`${res.currentTurn.username}'s turn`);
             setIsYourTurn(false);
         }
+        setGame(res.game);
     });
 };
 export const unregisterBasicEvents = () => {
@@ -56,10 +77,15 @@ export const registerPlayerEvents = () => {
     const setIsOffered = useGameStore.getState().setIsOffered;
     const setOfferedTrade = useGameStore.getState().setOfferedTrade;
 
+    const animateTokenToTile = useTokenStore.getState().animateTokenToTile;
+
     if (!socket) return;
 
     socket.on("dice-rolled", (res) => {
+        // console.log(res);
+        
         toast.success(`${res.name.username} rolled a ${res.num}`);
+        animateTokenToTile(res.index, res.space.id);
         setGame(res.game);
     });
 

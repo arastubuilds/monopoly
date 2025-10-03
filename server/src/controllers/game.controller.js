@@ -33,7 +33,7 @@ export const createGame = async (req, res) => {
             socket.emit("existing-users", {usersInRoom});
             console.log("existing-users emitted");
 
-            res.status(201).json({ message: "Game Created Successfully", game: game });
+            res.status(201).json({ message: "Game Created Successfully", game: game, isHost: true });
         }else{
             res.status(400).json({message: "Invalid game details"});
             console.log("Invalid game details");
@@ -57,7 +57,7 @@ export const joinGame = async (req, res) => {
         if (playerExists)
             return res.status(400).json({message: "Player already joined"});
 
-        if (game.players.length >= 8)
+        if (game.players.length >= 6)
             return res.status(400).json({message: "Room is Full"});
 
         game.players.push({ userId });
@@ -87,7 +87,45 @@ export const joinGame = async (req, res) => {
         return res.status(500).json({message: "Error Joining Game"});
     }
 }
+export const loadGame = async (req, res) => {
+    try {
+        const {code} = req.params;
+        const userId = req.user._id;
 
+        const game = await Game.findOne({code}).populate("players.userId", "username");
+
+        if (!game)
+            return res.status(404).json({message: "Game not found"});
+        
+        if (game.started)
+            return res.status(400).json({message:"Game already started"});
+
+        let gameMember = false;
+                
+        game.players.forEach((player) => {
+            // console.log(player.userId.toString());
+            if (player.userId._id.toString() === userId.toString()) gameMember = true;
+        })
+        
+        if (!gameMember) return res.status(401).json({message: "Not a part of the original game save"});
+        
+        const socket = getSocket(userId);
+
+        socket.join(code);
+        // const room = await io.in(code).fetchSockets();
+        // const usersInRoom = room.map(s => s.id).filter(id => id !== socket.id);
+        // socket.emit("existing-users", {usersInRoom});
+
+        io.to(code).emit("joined-room", game);
+
+        const isHost = game.hostId.toString() === userId.toString();
+        console.log("host:", isHost);
+        return res.status(200).json({message: "Game Loaded Successfully", game, isHost});
+    } catch (error) {
+        console.log("Error in load game controller", error);
+        return res.status(500).json({message: "Error Loading Game"});
+    }
+}
 export const startGame = async (req, res) => {
     try {
         const {code} = req.params;
@@ -105,11 +143,15 @@ export const startGame = async (req, res) => {
 
         // if (game.hostId.toString() !== userId.toString())
         //     return res.status(400).json({message: "Only host can start game", game: game});
+        
 
         if (game.players.length < 2)
             return res.status(400).json({message: "2 or more players required"});
 
-
+        const idToIndexMap = {};
+        game.players.forEach((p, index) => {
+            idToIndexMap[p.userId._id.toString()] = index;
+        });
         game.turnOrder = game.players.map(player => player.userId._id.toString());
         game.turnOrder.sort(() => Math.random() - 0.5);
 
@@ -117,16 +159,16 @@ export const startGame = async (req, res) => {
         game.started = true;
 
         await game.save();
-
+        await game.populate("currentTurn", "username");
         // const updatedGame = await Game.findOne({ code }).populate("players.userId", "username");
         // socket function
-        const curr = game.currentTurn;
-        const player = game.players.find((p) => p.userId._id.toString() === curr.toString());
+        // const curr = game.currentTurn;
+        // const player = game.players.find((p) => p.userId._id.toString() === curr.toString());
         // console.log(player);
         // const socket = getSocket(curr);
 
-        io.to(code).emit("game-started", game);
-        io.to(code).emit("player-turn", player.userId);
+        io.to(code).emit("game-started", {game, idToIndexMap});
+        io.to(code).emit("player-turn", {currentTurn: game.currentTurn, game});
 
         return res.status(201).json({message: "Game started successfully", game});
 
@@ -194,7 +236,7 @@ export const rollDice = async (req, res) => {
 
         const socket = getSocket(userId);
 
-        socket.to(code).emit("dice-rolled", {game, num: roll, name: name});
+        socket.to(code).emit("dice-rolled", {game, num: roll, name: name, index: playerIndex, space: landed.space});
 
         if (landed.event === "landed-unowned-prop"){
             console.log("unowned");
@@ -206,6 +248,7 @@ export const rollDice = async (req, res) => {
                 buy: true,
                 pay: false,
                 own: false,
+                yourIndex: playerIndex,
                 landedOn: landed.space,
                 game,
                 dice: { die1, die2 },
@@ -221,6 +264,7 @@ export const rollDice = async (req, res) => {
                 buy: false,
                 pay: true,
                 own: false,
+                yourIndex: playerIndex,
                 landedOn: landed.space,
                 game,
                 dice: { die1, die2 },
@@ -234,6 +278,7 @@ export const rollDice = async (req, res) => {
                 buy: false,
                 pay: false,
                 own: true,
+                yourIndex: playerIndex,
                 landedOn: landed.space,
                 game,
                 dice: { die1, die2 },

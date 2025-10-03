@@ -22,7 +22,9 @@ const CreateGame = () => {
     }
     useEffect(() => {
         
-        if (socket) { registerBasicEvents(); registerSignallingSocketEvents(); };
+        if (socket) { registerBasicEvents(); 
+            // registerSignallingSocketEvents(); 
+        };
 
         return () => unregisterBasicEvents();
     }, [socket]);
@@ -62,12 +64,12 @@ const CreateGame = () => {
                     <span className="font-mono text-red-500">{game?.code}</span>
                 </div>
                 {isStarting ? <div className="flex justify-center items-center mb-4"><Loader className="animate-spin w-8 h-8 text-red-600" /></div> : <Lobby />}
-                <button
+                {/* <button
                     onClick={handleStart}
                     className="text-center bg-red-600 text-white py-2 rounded-lg font-bold hover:bg-red-700 transition-all disabled:bg-gray-400"
                 >
                     {isStarting ? "Starting..." : "Start"}
-                </button>
+                </button> */}
             </div>
         </div>
 
