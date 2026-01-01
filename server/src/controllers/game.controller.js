@@ -23,7 +23,8 @@ export const createGame = async (req, res) => {
         const game = await Game.findById(newGame._id).populate("players.userId", "username");
         if (game){
             const socket = getSocket(hostId);
-
+            // console.log("socket", socket);
+            
             socket.join(code);
             // io.to(socket).emit("joined-room", game);
 
