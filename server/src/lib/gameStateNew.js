@@ -1108,6 +1108,8 @@ export class GameSession {
      */
     async joinGame(userId) {
         // Use pure engine logic
+        console.log("joining game inside session");
+        
         this.engine.joinGame(userId);
         
         // Build response from state (gameDoc gets updated when player joins, but we use state)

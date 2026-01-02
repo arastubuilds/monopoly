@@ -22,16 +22,20 @@ export const handleLandedOn = (game, playerIndex, userId) => {
     if (space.chance){
         const card = drawRandomCard(chanceCards);
         if (card.destination){
-            movePlayerTo(player, destination);
+            movePlayerTo(player, card.destination);
         }else if (card.amt){
             player.money += card.amt;
         }
-        return {event: "landed-chance", card}
+        return {event: "landed-chance", space: space, card}
     }
     if (space.comm){
         const card = drawRandomCard(communityCards);
-        player.money += card.amt;
-        return {event: "landed-community", card};
+        if (card.destination){
+            movePlayerTo(player, card.destination);
+        }else if (card.amt){
+            player.money += card.amt;
+        }
+        return {event: "landed-community", space: space, card};
     }
 }
 const checkBuildHouse = (player, property) => {

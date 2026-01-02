@@ -1,4 +1,5 @@
 import Game from "../models/game.model.js";
+import { GameSession} from "../lib/gameStateNew.js";
 import { generateUniqueCode } from "../lib/utils.js";
 import { getSocket, io } from "../lib/socket.js";
 import { boardData } from "../lib/data.js";
@@ -21,10 +22,11 @@ export const createGame = async (req, res) => {
         await newGame.save();
 
         const game = await Game.findById(newGame._id).populate("players.userId", "username");
+        // const session = new GameSession(code, game, io, getSocket);
         if (game){
             const socket = getSocket(hostId);
             // console.log("socket", socket);
-            
+            // await session.joinGame(hostId);
             socket.join(code);
             // io.to(socket).emit("joined-room", game);
 
@@ -286,7 +288,38 @@ export const rollDice = async (req, res) => {
                 number: roll,
             });
 
-        } else {
+        } else if (landed.event === "landed-chance"){
+            console.log("chance");
+            socket.to(code).emit(landed.event, {space: landed.space});
+            res.status(200).json({
+                message: `You rolled a ${roll} Landed on Chance.\nHad to "${landed.card.desc}"`,
+                buy: false,
+                pay: false,
+                own: false,
+                yourIndex: playerIndex,
+                landedOn: landed.space,
+                game,
+                drewCard: landed.card,
+                dice: { die1, die2 },
+                number: roll,
+            });
+        } else if (landed.event === "landed-community"){
+            console.log("community");
+            socket.to(code).emit(landed.event, {space: landed.space});
+            res.status(200).json({
+                message: `You rolled a ${roll} Landed on community.\nHad to "${landed.card.desc}"`,
+                buy: false,
+                pay: false,
+                own: false,
+                yourIndex: playerIndex,
+                landedOn: "Chance",
+                game,
+                drewCard: landed.space,
+                dice: { die1, die2 },
+                number: roll,
+            });
+        }
+        else {
             console.log("error?");
         }
 
