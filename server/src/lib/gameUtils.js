@@ -20,23 +20,41 @@ export const handleLandedOn = (game, playerIndex, userId) => {
         }
     }
     if (space.chance){
-        const card = drawRandomCard(chanceCards);
-        if (card.destination){
-            movePlayerTo(player, card.destination);
-        }else if (card.amt){
-            player.money += card.amt;
-        }
-        return {event: "landed-chance", space: space, card}
+        // const card = drawRandomCard(chanceCards);
+        // if (card.destination){
+        //     movePlayerTo(player, card.destination);
+        // }else if (card.amt){
+        //     player.money += card.amt;
+        // }
+        return {event: "landed-chance", space: space}
     }
     if (space.comm){
-        const card = drawRandomCard(communityCards);
-        if (card.destination){
-            movePlayerTo(player, card.destination);
-        }else if (card.amt){
-            player.money += card.amt;
-        }
-        return {event: "landed-community", space: space, card};
+        // const card = drawRandomCard(communityCards);
+        // if (card.destination){
+        //     movePlayerTo(player, card.destination);
+        // }else if (card.amt){
+        //     player.money += card.amt;
+        // }
+        return {event: "landed-community", space: space};
     }
+}
+export const drawChanceCardUtil = (player) => {
+    const card = drawRandomCard(chanceCards);
+    if (card.destination){
+        movePlayerTo(player, card.destination);
+    }else if (card.amt){
+        player.money += card.amt;
+    }
+    return card;
+}
+export const drawCommunityCard = () => {
+    const card = drawRandomCard(communityCards);
+    if (card.destination){
+        movePlayerTo(player, card.destination);
+    }else if (card.amt){
+        player.money += card.amt;
+    }
+    return card;
 }
 const checkBuildHouse = (player, property) => {
     if (property.property && property.houses <= 4) 

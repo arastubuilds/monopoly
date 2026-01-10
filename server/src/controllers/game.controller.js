@@ -3,7 +3,7 @@ import { GameSession} from "../lib/gameStateNew.js";
 import { generateUniqueCode } from "../lib/utils.js";
 import { getSocket, io } from "../lib/socket.js";
 import { boardData } from "../lib/data.js";
-import { handleLandedOn } from "../lib/gameUtils.js";
+import { drawChanceCardUtil, handleLandedOn } from "../lib/gameUtils.js";
 
 export const createGame = async (req, res) => {
     try {
@@ -292,10 +292,11 @@ export const rollDice = async (req, res) => {
             console.log("chance");
             socket.to(code).emit(landed.event, {space: landed.space});
             res.status(200).json({
-                message: `You rolled a ${roll} Landed on Chance.\nHad to "${landed.card.desc}"`,
+                message: `You rolled a ${roll} Landed on Chance."`,
                 buy: false,
                 pay: false,
                 own: false,
+                drawn: false,
                 yourIndex: playerIndex,
                 landedOn: landed.space,
                 game,
@@ -307,10 +308,11 @@ export const rollDice = async (req, res) => {
             console.log("community");
             socket.to(code).emit(landed.event, {space: landed.space});
             res.status(200).json({
-                message: `You rolled a ${roll} Landed on community.\nHad to "${landed.card.desc}"`,
+                message: `You rolled a ${roll} Landed on community."`,
                 buy: false,
                 pay: false,
                 own: false,
+                drawn: false,
                 yourIndex: playerIndex,
                 landedOn: "Chance",
                 game,
@@ -328,7 +330,34 @@ export const rollDice = async (req, res) => {
         return res.status(500).json({message: "Error Rolling Dice"});
     }
 }
+export const drawChanceCard = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const {code} = req.params;
+        // const game = req.game;
+        const game = await Game.findOne({code}).populate("players.userId", "username");
+        if (!game)
+            return res.status(404).json({message: "Game not found"});
+        
+        if (game.currentTurn.toString() !== userId.toString())
+            return res.status(403).json({message: "Not your turn"});
+        
+        const playerIndex = game.players.findIndex(
+            (p) => p.userId._id.toString() === userId.toString() 
+        );
+        if (playerIndex === -1)
+            return res.status(404).json({message: "Player not found in game"});
 
+        const socket = getSocket(userId);
+        const card = drawChanceCardUtil();
+        socket.to(code).emit("chance-card-drawn", {card});
+        return res.status(200).json({message: "Chance Card Drawn", card});
+
+    } catch (error) {
+        console.log("Error in draw chance card controller", error.message);
+        return res.status(500).json({message: "Error Drawing Chance Card"});
+    }
+}
 export const endTurn = async (req, res) => {
     try {
         const userId = req.user._id;
