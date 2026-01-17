@@ -100,4 +100,51 @@ export default class Game {
             recipientMoney: recipient.money,
         }
     }
+    tradeOffer(userId, recipient, offer) {
+        const playerIndex = this.idToIndexMap[userId.toString()];
+        const recipientIndex = this.idToIndexMap[recipient.toString()];
+        const player = this.players[playerIndex];
+        const recipient = this.players[recipientIndex];
+        if (player.money < offer.amount) throw new Error("Insufficient Balance");
+
+    }
+    acceptTrade(userId, offer) {
+        const playerIndex = this.idToIndexMap[userId.toString()];
+        const recipientIndex = this.idToIndexMap[offer.recipient.toString()];
+        const player = this.players[playerIndex];
+        const recipient = this.players[recipientIndex];
+        if (player.money < offer.amount) throw new Error("Insufficient Balance");
+
+        player.properties = player.properties.filter((prop) => {
+            return !offer.senderOffer.senderProp.map(p => p.id).includes(prop);
+        });
+        recipient.properties = recipient.properties.filter((prop) => {
+            return !tradeOffer.senderAsk.askedProp.map(p => p.id).includes(prop);
+        });
+
+        player.properties.push(... offer.senderAsk.askedProp.map(p => p.id));
+        recipient.properties.push(... offer.senderOffer.senderProp.map(p => p.id));
+
+        sender.properties?.forEach((p) => {
+            this.boardState[p].owner = player.userId._id;
+            console.log(this.boardState[p].owner);
+            
+        });
+        recipient.properties?.forEach((p) => {
+            this.boardState[p].owner = recipient.userId._id;
+            console.log(this.boardState[p].owner);
+        });
+
+        player.money -= offer.senderOffer.senderMoney;
+        player.money += offer.senderAsk.askedMoney;
+
+        recipient.money -= offer.senderAsk.askedMoney;
+        recipient.money += offer.senderOffer.senderMoney;
+    }
+    rejectTrade(userId, offer) {
+        const playerIndex = this.idToIndexMap[userId.toString()];
+        const recipientIndex = this.idToIndexMap[offer.recipient.toString()];
+        const player = this.players[playerIndex];
+        const recipient = this.players[recipientIndex];
+    }
 }
