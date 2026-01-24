@@ -22,6 +22,7 @@ import PlayPage from "./Pages/PlayPage";
 import SceneCanvas from './Components/3D/SceneCanvas';
 import LoadGame from './Pages/LoadGame';
 
+// import bgImage from './assets/bg.jpg';
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();

@@ -8,7 +8,7 @@ import { useGLTF } from '@react-three/drei';
 
 const DiceInstance = memo(function DiceInstance({ position, models, which }) {
   const diceRef = useRef();
-  const gltf = useGLTF('/3D/dice/scene.gltf');
+  const gltf = useGLTF(`/3D/dice/scene.gltf`);
   const scene = useMemo(() => gltf?.scene.clone(true), [gltf]);
   
   const isRolling = useGameStore((state) => state.isRolling);
@@ -99,8 +99,10 @@ const DiceInstance = memo(function DiceInstance({ position, models, which }) {
 export default function Dice({ models }) {
   return (
     <group>
-      <DiceInstance position={[-5, -26, -26]}  which={1} />
-      <DiceInstance position={[6, -26, -26]}  which={2} />
+      {/* <DiceInstance position={[-5, -26, -26]}  which={1} /> */}
+      {/* <DiceInstance position={[6, -26, -26]}  which={2} /> */}
+      <DiceInstance position={[-5, 3.5, 36]}  which={1} />
+      <DiceInstance position={[5, 3.5, 36]}  which={2} />
     </group>
   );
 }

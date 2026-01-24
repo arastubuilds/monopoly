@@ -8,7 +8,7 @@ export default function EndTurnButton() {
         className="
         absolute
         h-[5%] w-[8%]
-        lg:bottom-60 bottom-30
+        lg:bottom-52 bottom-30
         bg-black/10
         border-none rounded-full
         cursor-pointer

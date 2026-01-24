@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, Preload } from '@react-three/drei'
 
-import Dice from './Dice.jsx';
+// import Dice from './Dice.jsx';
 import Board1 from './Board.jsx';
 // import Background from './Background.jsx';
 
@@ -33,9 +33,19 @@ const SceneCanvas = memo(function SceneCanvas() {
                 <CameraController />
                 <ambientLight color={0xffffff} intensity={1.5} />
                 <directionalLight color={0xffffff} position={[100, 100, 100]} intensity={1.5} />
-                <Board1 />
-                <Dice />
-                <OrbitControls />
+                <Board1 rotateY = {0}/>
+                {/* <Dice /> */}
+                <OrbitControls
+                    enablePan={false}
+                    enableRotate={false}
+                    enableZoom={true}
+                    minDistance={110}     // cannot zoom in
+                    maxDistance={200}     // can only zoom out slightly
+                    // zoomSpeed={0.4}       // optional: slows scroll
+                />
+
+
+
                 {/* <Preload all/> */}
             </Canvas>   
         </Suspense>
@@ -46,7 +56,7 @@ function CameraController() {
     const {set, camera} = useThree();
     useEffect(() => {
         camera.position.set(0, 80, 90);
-        // camera.lookAt(0, 0, 0);
+        // camera.lookAt(0, 0, 0)s  ;
         camera.zoom = 2.55;
         camera.lookAt(new THREE.Vector3(0, 0, 0));
         camera.updateProjectionMatrix();

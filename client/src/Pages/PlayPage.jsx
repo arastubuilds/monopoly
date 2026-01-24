@@ -60,7 +60,7 @@ function PlayPage() {
       <Suspense fallback={<div className='h-full w-full flex justify-center items-center '><Loader className=''/></div>}>
         <SceneCanvas />
       </Suspense>
-      <div className='absolute top-0 left-0 flex justify-center w-full h-full z-50 lg:text-lg text-sm'>
+      <div className='top-0 left-0 flex justify-center w-full h-full z-50 lg:text-lg text-sm'>
         <HUD />
         <div className='w-full h-full'>
           {isViewingOwnProps && <Hand owned={yourProperties} />}
