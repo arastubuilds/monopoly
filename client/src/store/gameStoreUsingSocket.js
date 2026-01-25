@@ -45,18 +45,18 @@ export const useGameStoreUsingSocket = create((set) => ({
     rolled: false,
     dice: {die1: 1, die2: 1},
 
-    create: async () => {
+    create: (socket) => {
         set({game: null});
         try {
-            const res = await axiosInstance.post("/game/create");
-            
+            // const res = await axiosInstance.post("/game/create");
+            socket.emit("socket:create-game");
             // console.log(res.data);
-            set({ game: res.data.game, code: res.data.game.code, isHost: res.data.isHost});
-            toast.success("Game created successfully");
+            // set({ game: res.data.game, code: res.data.game.code, isHost: res.data.isHost});
+            // toast.success("Game created successfully");
 
         } catch (error) {
             console.log(error);
-            toast.error(error.response.data.message);
+            // toast.error(error.response.data.message);
         } finally {
             set({isCreating: false});
         }
@@ -76,7 +76,7 @@ export const useGameStoreUsingSocket = create((set) => ({
             
             // await offerUsersInRoom(res.data.usersInRoom);
 
-            toast.success("Game Joined Successfully");
+            // toast.success("Game Joined Successfully");
         } catch (error) {
             console.log(error);
             toast.error(error.response.data.message);
@@ -254,4 +254,5 @@ export const useGameStoreUsingSocket = create((set) => ({
     setPlayers: (players) => set({players}),
     setCode: (code) => set({code}),
     setGame: (game) => set({game}),
+    setIsHost: (isHost) => set({isHost}),
 }));

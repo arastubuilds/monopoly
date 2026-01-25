@@ -6,10 +6,12 @@ import { useAuthStore } from "../store/authStore";
 import { useNavigate } from "react-router-dom";
 import { registerBasicEvents, unregisterBasicEvents } from "../lib/socket";
 import { registerSignallingSocketEvents } from "../lib/voice-chat";
+import { useGameStoreUsingSocket } from "../store/gameStoreUsingSocket";
 
 
 const CreateGame = () => {
-    const { create, game, start, isStarting } = useGameStore();
+    // const { create, game, start, isStarting } = useGameStore();
+    const {create, game, start, isStarting} = useGameStoreUsingSocket();
     // const socket = useAuthStore((state) => state.socket);
     const {socket, connectSocket} = useAuthStore();
 
@@ -23,7 +25,10 @@ const CreateGame = () => {
     useEffect(() => {
         
         if (socket) { registerBasicEvents(); 
+            // create(socket);
             // registerSignallingSocketEvents(); 
+            create(socket);
+            setInitialLoading(false);
         };
 
         return () => unregisterBasicEvents();
@@ -31,11 +36,12 @@ const CreateGame = () => {
 
     useEffect(() => {
         connectSocket();
-        const createGame = async () => {
-            await create();
-            setInitialLoading(false);
-        };
-        createGame();
+        // const createGame = async () => {
+        //     await create();
+        //     setInitialLoading(false);
+        // };
+        // createGame();
+        
     }, []);
     // if (game?.started) ( navigate(`/play/${game.code}`) )
     useEffect(() => {

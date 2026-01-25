@@ -3,11 +3,15 @@ import { useEffect } from "react";
 import { useGameStore } from "../store/gameStore";
 // import { preloadSceneCanvas } from "../Components/SceneCanvasLazy";
 import { preloadAllModels, preloadAllTextures } from "../utils/preload";
+import { useGameStoreUsingSocket } from "../store/gameStoreUsingSocket";
 
 const Lobby = () => {
-    const game = useGameStore((state) => state.game);
-    const isHost = useGameStore((state) => state.isHost);
-    const {start, isStarting} = useGameStore();
+    // const game = useGameStore((state) => state.game);
+    // const isHost = useGameStore((state) => state.isHost);
+    // const {start, isStarting} = useGameStore();
+    const game = useGameStoreUsingSocket((state) => state.game);
+    const isHost = useGameStoreUsingSocket((state) => state.isHost);
+    const {start, isStarting} = useGameStoreUsingSocket();
     // console.log(isHost);
     
     const handleStart = async (e) => {
@@ -30,10 +34,10 @@ const Lobby = () => {
             <div className="space-y-2">
                 {game?.players?.map((player) => (
                     <div
-                        key={player.userId.username}
+                        key={player.userId}
                         className="bg-white shadow-sm rounded-md p-2 border border-gray-200 text-center text-gray-800 font-semibold"
                     >
-                        {player?.userId.username}
+                        {player?.userId}
                     </div>
                 ))}
             </div>

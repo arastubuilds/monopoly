@@ -33,6 +33,7 @@ function PlayPage() {
   const { roll, end, rolled, passed, viewing, tradingWith, offeredTrade, isYourTurn, isBuying, isPaying, isOwn, isViewing, isOffering, isOffered } = useGameStore();
   const isViewingOwnProps = useGameStore((state) => state.isViewingOwnProps);
   const isViewingOthersProps = useGameStore((state) => state.isViewingOthersProps);
+  
   const handleClick = async() => {
     await roll(game?.code);
   }

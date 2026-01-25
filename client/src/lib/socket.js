@@ -2,6 +2,7 @@ import { useAuthStore } from "../store/authStore";
 import { useGameStore } from "../store/gameStore";
 import toast from "react-hot-toast";
 import { useTokenStore } from "../store/useTokenStore";
+import { useGameStoreUsingSocket } from "../store/gameStoreUsingSocket";
 
 export const registerBasicEvents = () => {
 
@@ -15,9 +16,17 @@ export const registerBasicEvents = () => {
     const setPlayers = useGameStore.getState().setPlayers;
     const setCode = useGameStore.getState().setCode;
     const setIsYourTurn = useGameStore.getState().setIsYourTurn;
-
+    
+    const setGameSocket = useGameStoreUsingSocket.getState().setGame;
+    const setIsHostSocket = useGameStoreUsingSocket.getState().setIsHost;
     if (!socket) return;
 
+    // { message: "Game Created Successfully", game, isHost: true }
+    socket.on("socket:create-game:success", (res) => {
+        console.log(res.message);
+        setGameSocket(res.game);
+        setIsHostSocket(res.isHost);
+    });
     socket.on("joined-room", (game) => {
         console.log("player joined room");
         toast.success("Player Joined");

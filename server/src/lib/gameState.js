@@ -1,27 +1,38 @@
-import { getSocket, io } from "../lib/socket.js";
+// import { getSocket, io } from "../lib/socket.js";
 import { handleLandedOn } from "./gameUtils.js";
+import { boardData } from "../lib/data.js";
 
+class Player {
+    constructor(userId, name){
+        this.userId = userId;
+        this.name = name;
+        this.money = 15000;
+        this.position = 0;
+    }
+}
 export default class Game {
 
-    constructor(code, hostId, currentTurn, boardState){
+    constructor(code, hostId, hostName){
         this.code = code;
         this.hostId = hostId;
-        this.currentTurn = currentTurn;
-        this.boardState = boardState;
-        this.players = [];
+        this.currentTurn = hostId;
+        this.boardState = boardData;
+        this.players = [new Player(hostId, hostName)];
         this.idToIndexMap = {};
         this.turnOrder = [];
         this.started = false;
         this.winner = null;
 
     }
-    join(userId){
+    join(userId, userName){
         const playerExists = this.players.some(player => player.userId.toString() === userId.toString());
         if (playerExists) throw new Error("Player already joined");
         if (this.players.length >= 6) throw new Error("Room is Full");
-        this.game.players.push(userId);
+        this.game.players.push(new Player(userId, userName));
     }
-    start(){
+    start(userId){
+        if (userId.toString() !== this.hostId.toString()) throw new Error("Not the Host");
+
         if (this.players.length < 2) throw new Error("2 or more players required");
         this.players.forEach((p, index) => {
             idToIndexMap[p.userId._id.toString()] = index;
@@ -82,9 +93,9 @@ export default class Game {
             yourMoney: player.money,
         }
     }
-    payRent(userId, recipient, space) {
+    payRent(userId, recipientId, space) {
         const playerIndex = this.idToIndexMap[userId.toString()];
-        const recipientIndex = this.idToIndexMap[recipient.toString()];
+        const recipientIndex = this.idToIndexMap[recipientId.toString()];
         const player = this.players[playerIndex];
         const recipient = this.players[recipientIndex];
         const rent = space.base;
@@ -100,9 +111,9 @@ export default class Game {
             recipientMoney: recipient.money,
         }
     }
-    tradeOffer(userId, recipient, offer) {
+    tradeOffer(userId, recipientId, offer) {
         const playerIndex = this.idToIndexMap[userId.toString()];
-        const recipientIndex = this.idToIndexMap[recipient.toString()];
+        const recipientIndex = this.idToIndexMap[recipientId.toString()];
         const player = this.players[playerIndex];
         const recipient = this.players[recipientIndex];
         if (player.money < offer.amount) throw new Error("Insufficient Balance");
@@ -146,5 +157,18 @@ export default class Game {
         const recipientIndex = this.idToIndexMap[offer.recipient.toString()];
         const player = this.players[playerIndex];
         const recipient = this.players[recipientIndex];
+    }
+    buildHouse(userId, propId) {
+        const playerIndex = this.idToIndexMap[userId.toString()];
+        const player = this.players[playerIndex];
+        const property = this.boardState[propId];
+        if (player.money < property.hcost) throw new Error("Insufficient Balance");
+        player.money -= property.hcost;
+        property.houses += 1;
+        const flag = player.properties.every(p => property.setPairIndices.includes(p));
+        if (!flag) throw new Error("Must own all properties in set to build houses");
+        if (property.houses >= 4) throw new Error("Cannot build more houses (max 4)");
+        property.houses += 1;
+        
     }
 }

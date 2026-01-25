@@ -7,6 +7,7 @@ import { registerBasicEvents, unregisterBasicEvents } from "../lib/socket";
 import { registerSignallingSocketEvents } from "../lib/voice-chat";
 import Lobby from "./Lobby";
 import Background from "../Components/Background";
+import { useGameStoreUsingSocket } from "../store/gameStoreUsingSocket";
 
 const JoinGame = () => {
 
@@ -17,12 +18,14 @@ const JoinGame = () => {
     useEffect(() => {
         if (socket) { registerBasicEvents(); 
             // registerSignallingSocketEvents(); 
+            // join(code);
         };
 
         return () => unregisterBasicEvents();
     }, [socket]);
     
-    const { game, join, isJoining, joined } = useGameStore();
+    // const { game, join, isJoining, joined } = useGameStore();
+    const { game, join, isJoining, joined } = useGameStoreUsingSocket();
     const [code, setCode] = useState("");
 
 
@@ -31,7 +34,8 @@ const JoinGame = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         connectSocket();
-        await join(code);
+        if (socket) join(socket, code);
+        // await join(code);
     }
     // if (game?.started) ( navigate(`/play/${game.code}`) )
     useEffect(() => {
