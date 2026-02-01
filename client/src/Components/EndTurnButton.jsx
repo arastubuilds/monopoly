@@ -1,8 +1,11 @@
 import { useGameStore } from "../store/gameStore";
+import { useGameStoreUsingSocket } from "../store/gameStoreUsingSocket";
 
 export default function EndTurnButton() {
-    const code = useGameStore.getState().code;
-    const endTurn = useGameStore.getState().end;
+    // const code = useGameStore.getState().code;
+    // const endTurn = useGameStore.getState().end;
+    const code = useGameStoreUsingSocket.getState().code;
+    const endTurn = useGameStoreUsingSocket.getState().end;
     return (
         <button
         className="

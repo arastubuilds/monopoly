@@ -28,25 +28,28 @@ export default class Game {
         const playerExists = this.players.some(player => player.userId.toString() === userId.toString());
         if (playerExists) throw new Error("Player already joined");
         if (this.players.length >= 6) throw new Error("Room is Full");
-        this.game.players.push(new Player(userId, userName));
+        this.players.push(new Player(userId, userName));
     }
     start(userId){
         if (userId.toString() !== this.hostId.toString()) throw new Error("Not the Host");
 
         if (this.players.length < 2) throw new Error("2 or more players required");
         this.players.forEach((p, index) => {
-            idToIndexMap[p.userId._id.toString()] = index;
+            this.idToIndexMap[p.userId.toString()] = index;
         });
-        this.turnOrder = this.players.map(player => player.userId._id.toString());
+        this.turnOrder = this.players.map(player => player.userId.toString());
         this.turnOrder.sort(() => Math.random() - 0.5);
 
         this.currentTurn = this.turnOrder[0];
         this.started = true;
+        // console.log(this.idToIndexMap);
     }
     rollDice(userId){
+        console.log(userId);
+        
         if (this.currentTurn.toString() !== userId.toString()) throw new Error("Not Your Turn");
         const playerIndex = this.idToIndexMap[userId.toString()];
-        if (!playerIndex) throw new Error("Player not found");
+        // if (!playerIndex) throw new Error("Player not found");
 
         const die1 = Math.ceil(Math.random() * 6);
         const die2 = Math.ceil(Math.random() * 6);
@@ -68,7 +71,7 @@ export default class Game {
             game: this,
             yourIndex: playerIndex,
             landedOn: landed.space,
-            dice: { die1, die2 },
+            dice: { die1: die1, die2: die2 },
             number: roll,
         });
     }

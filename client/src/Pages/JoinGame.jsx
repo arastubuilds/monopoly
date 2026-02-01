@@ -34,7 +34,7 @@ const JoinGame = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         connectSocket();
-        if (socket) join(socket, code);
+        join(code);
         // await join(code);
     }
     // if (game?.started) ( navigate(`/play/${game.code}`) )

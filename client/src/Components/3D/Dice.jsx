@@ -4,6 +4,7 @@ import gsap from 'gsap';
 
 import { useGameStore } from '../../store/gameStore';
 import { useGLTF } from '@react-three/drei';
+import { useGameStoreUsingSocket } from '../../store/gameStoreUsingSocket';
 
 
 const DiceInstance = memo(function DiceInstance({ position, models, which }) {
@@ -11,12 +12,15 @@ const DiceInstance = memo(function DiceInstance({ position, models, which }) {
   const gltf = useGLTF(`/3D/dice/scene.gltf`);
   const scene = useMemo(() => gltf?.scene.clone(true), [gltf]);
   
-  const isRolling = useGameStore((state) => state.isRolling);
+  // const isRolling = useGameStore((state) => state.isRolling);
+  const isRolling = useGameStoreUsingSocket((state) => state.isRolling);
   
   
   // const isRolling = false;
   // const value = 1;
-  const value = useGameStore((state) => which === 1 ? state.dice.die1 : state.dice.die2);
+  // const value = useGameStore((state) => which === 1 ? state.dice.die1 : state.dice.die2);
+  const value = useGameStoreUsingSocket((state) => which === 1 ? state.dice.die1 : state.dice.die2);
+  
   
   
   // const face = which === 1 ? 1 : 1;
@@ -42,11 +46,16 @@ const DiceInstance = memo(function DiceInstance({ position, models, which }) {
       // mesh.rotation
   }
   const rollToFace = (number, duration = 2) => {
+    // console.log("roll to face");
+    // console.log("number",number);
+    
     const mesh = diceRef.current;
     if (!mesh) return;
 
     const faceRotations = getFaceRotations();
     const finalRotation = faceRotations[number];
+    // console.log("final",finalRotation);
+    
     if (!finalRotation) return;
 
     const randomRotation = {
@@ -69,6 +78,7 @@ const DiceInstance = memo(function DiceInstance({ position, models, which }) {
           duration: duration * 0.3,
           ease: 'power3.out',
         });
+        // showFace(value);
       },
     });
   };
@@ -84,8 +94,12 @@ const DiceInstance = memo(function DiceInstance({ position, models, which }) {
   // Auto-roll on change of value or isRolling
   useEffect(() => {
     console.log(isRolling, value);
+    console.log("Dice "+which+" "+value);
     if (isRolling) {
+      console.log("value", value);
       rollToFace(value);
+    } else {
+      // showFace(value);
     }
     // showFace(value);
   }, [isRolling, value]);

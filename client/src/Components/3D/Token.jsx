@@ -132,7 +132,7 @@ const TokenInstance = ({index, color="red", size = 1.5, models}) => {
 
 export default function TokenGroup({models}) {
     const tokens = useTokenStore((state) => state.tokens);
-    console.log(tokens);
+    console.log("tokens", tokens);
     
     const tokenColors = useTokenStore((state) => state.tokenColors);
 

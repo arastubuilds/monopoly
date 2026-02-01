@@ -1,11 +1,16 @@
 import { useGameStore } from "../store/gameStore";
+import { useGameStoreUsingSocket } from "../store/gameStoreUsingSocket";
 import { useDiceStore } from "../store/useDiceStore";
 import { useTokenStore } from "../store/useTokenStore";
 
 const RollDiceButton = () => {
     // const rollDice =  useDiceStore((state) => state.rollDice);
-    const rollDice = useGameStore((state) => state.roll);
-    const code = useGameStore((state) => state.code);
+    // const rollDice = useGameStore((state) => state.roll);
+    // const code = useGameStore((state) => state.code);
+    const rollDice = useGameStoreUsingSocket((state) => state.roll);
+    const code = useGameStoreUsingSocket((state) => state.code);
+    console.log(code);
+    
     return (
         <button
         className="
@@ -17,7 +22,7 @@ const RollDiceButton = () => {
         cursor-pointer
         transition-colors duration-200
         hover:bg-black/20"    
-        onClick={async () => { await rollDice(code);  }}>
+        onClick={() => {  rollDice(code);  }}>
             Roll Dice
         </button>
     );

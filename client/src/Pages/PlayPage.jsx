@@ -18,21 +18,31 @@ import RollDiceButton from '../Components/RollDiceButton.jsx';
 import EndTurnButton from '../Components/EndTurnButton.jsx';
 import HUD from '../Components/HUD.jsx';
 import { Loader } from 'lucide-react';
+import { useGameStoreUsingSocket } from '../store/gameStoreUsingSocket.js';
 
 
 function PlayPage() {
 
-
-  const game = useGameStore((state) => state.game);
-  const landedOn = useGameStore((state) => state.landedOn);
-  const length = useGameStore((state) => state.numPlayers);
+  // const game = useGameStore((state) => state.game);
+  // const landedOn = useGameStore((state) => state.landedOn);
+  // const length = useGameStore((state) => state.numPlayers);
   
   
-  const yourProperties = useGameStore((state) => state.yourProperties);
-  const oPP = useGameStore((state) => state.oPP);
-  const { roll, end, rolled, passed, viewing, tradingWith, offeredTrade, isYourTurn, isBuying, isPaying, isOwn, isViewing, isOffering, isOffered } = useGameStore();
-  const isViewingOwnProps = useGameStore((state) => state.isViewingOwnProps);
-  const isViewingOthersProps = useGameStore((state) => state.isViewingOthersProps);
+  // const yourProperties = useGameStore((state) => state.yourProperties);
+  // const oPP = useGameStore((state) => state.oPP);
+  // const { roll, end, rolled, passed, viewing, tradingWith, offeredTrade, isYourTurn, isBuying, isPaying, isOwn, isViewing, isOffering, isOffered } = useGameStore();
+  // const isViewingOwnProps = useGameStore((state) => state.isViewingOwnProps);
+  // const isViewingOthersProps = useGameStore((state) => state.isViewingOthersProps);
+  const game = useGameStoreUsingSocket((state) => state.game);
+  const landedOn = useGameStoreUsingSocket((state) => state.landedOn);
+  // const length = useGameStoreUsingSocket((state) => state.game.players.length());
+  
+  
+  const yourProperties = useGameStoreUsingSocket((state) => state.yourProperties);
+  const oPP = useGameStoreUsingSocket((state) => state.oPP);
+  const { roll, end, rolled, passed, viewing, tradingWith, offeredTrade, isYourTurn, isBuying, isPaying, isOwn, isViewing, isOffering, isOffered } = useGameStoreUsingSocket();
+  const isViewingOwnProps = useGameStoreUsingSocket((state) => state.isViewingOwnProps);
+  const isViewingOthersProps = useGameStoreUsingSocket((state) => state.isViewingOthersProps);
   
   const handleClick = async() => {
     await roll(game?.code);
@@ -41,7 +51,7 @@ function PlayPage() {
     await end(game?.code);
   }
   useEffect(() => {
-    useTokenStore.getState().createTokens(length);
+    useTokenStore.getState().createTokens(game?.players?.length);
     // console.log( useTokenStore.getState().tokens );
     registerPlayerEvents();
     return () => unregisterPlayerEvents();

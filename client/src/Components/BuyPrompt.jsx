@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useGameStore } from "../store/gameStore";
+import { useGameStoreUsingSocket } from "../store/gameStoreUsingSocket";
 
 const BuyPrompt = ({ space  }) => {
     const [buying, setBuying] = useState(false);
     const [passing, setPassing] = useState(false);
-    const { game, buy, pass } = useGameStore();
+    // const { game, buy, pass } = useGameStore();
+    const { game, buy, pass } = useGameStoreUsingSocket();
     const handleBuy = async () =>  { setBuying(true);  await buy(game?.code); setBuying(false); };
     const handlePass = () => { setPassing(true); pass(); setPassing(false); };
     

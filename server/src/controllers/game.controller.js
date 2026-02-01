@@ -349,7 +349,7 @@ export const drawChanceCard = async (req, res) => {
             return res.status(404).json({message: "Player not found in game"});
 
         const socket = getSocket(userId);
-        const card = drawChanceCardUtil();
+        const card = drawChanceCardUtil(game.players[playerIndex]);
         socket.to(code).emit("chance-card-drawn", {card});
         return res.status(200).json({message: "Chance Card Drawn", card});
 
@@ -358,6 +358,7 @@ export const drawChanceCard = async (req, res) => {
         return res.status(500).json({message: "Error Drawing Chance Card"});
     }
 }
+
 export const endTurn = async (req, res) => {
     try {
         const userId = req.user._id;

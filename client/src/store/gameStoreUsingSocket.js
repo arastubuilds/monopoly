@@ -7,7 +7,7 @@ import { useTokenStore } from "./useTokenStore";
 
 
 
-export const useGameStoreUsingSocket = create((set) => ({
+export const useGameStoreUsingSocket = create((set, get) => ({
     game: null,
     idToIndexMap: null,
     players: null,
@@ -44,11 +44,13 @@ export const useGameStoreUsingSocket = create((set) => ({
     started: false,
     rolled: false,
     dice: {die1: 1, die2: 1},
-
-    create: (socket) => {
+    socket: null,
+    create: () => {
         set({game: null});
         try {
             // const res = await axiosInstance.post("/game/create");
+            const socket = useAuthStore.getState().socket;
+            set({socket});
             socket.emit("socket:create-game");
             // console.log(res.data);
             // set({ game: res.data.game, code: res.data.game.code, isHost: res.data.isHost});
@@ -61,15 +63,16 @@ export const useGameStoreUsingSocket = create((set) => ({
             set({isCreating: false});
         }
     },
-    join: (socket, code) => {
+    join: (code) => {
         set({game: null, isJoining: true});
         try {
             // const res = await axiosInstance.post(`/game/join/${code}`);
             // const socket = useAuthStore((state) => state.socket);
             // if (!socket) return;
-            socket.emit("socket:join-game", { code }, (response) => {
-                console.log(response);
-            });
+            const socket = useAuthStore.getState().socket;
+            console.log(socket);
+            socket.emit("socket:join-game", { code });
+            set({socket, joined: true});
             // console.log(res.data);            
             
             // set({ game: res.data.game, joined: true });
@@ -79,7 +82,7 @@ export const useGameStoreUsingSocket = create((set) => ({
             // toast.success("Game Joined Successfully");
         } catch (error) {
             console.log(error);
-            toast.error(error.response.data.message);
+            // toast.error(error.response.data.message);
         } finally {
             set({isJoining: false});
         }
@@ -101,12 +104,14 @@ export const useGameStoreUsingSocket = create((set) => ({
     start: async (code) => {
         set({game: null, isStarting: true});
         try {
-            const res = await axiosInstance.post(`/game/start/${code}`);
-            set({game: res.data.game, started: true, numPlayers: res.data.game.players.length});
+            // const res = await axiosInstance.post(`/game/start/${code}`);
+            // set({game: res.data.game, started: true, numPlayers: res.data.game.players.length});
             // console.log(res.data.game.players.length);
+            const socket = useAuthStore.getState().socket;
+            socket.emit("socket:start-game", {code});
             
         } catch (error) {
-            toast.error(error.response.data.message);
+            // toast.error(error.response.data.message);
         } finally {
             set({isStarting: false});
         }
@@ -133,40 +138,47 @@ export const useGameStoreUsingSocket = create((set) => ({
     closeTrade: () => {
         set({tradingWith: null, isOffering: false});
     },
-    roll: async(code) => {
+    roll: (code) => {
         set({isRolling: true});
         try {
-            const res = await axiosInstance.post(`/game/${code}/roll`);
-            set({game: res.data.game, dice: res.data.dice, rolled: true});
-            return new Promise((resolve) => {
-                setTimeout(async () => {
-                    // set({isRolling: false});                    
-                    useTokenStore.getState().animateTokenToTile(res.data.yourIndex, res.data.landedOn.id);
+            // const res = await axiosInstance.post(`/game/${code}/roll`);
+            // set({game: res.data.game, dice: res.data.dice, rolled: true});
+            const socket = useAuthStore.getState().socket;
+            console.log(get().game.code);
+            
+            socket.emit("socket:roll-dice", {code: get().game.code});
+            // return new Promise((resolve) => {
+            //     setTimeout(async () => {
+            //         // set({isRolling: false});                    
+            //         useTokenStore.getState().animateTokenToTile(res.data.yourIndex, res.data.landedOn.id);
                     
-                    set({isBuying: res.data.buy, isPaying: res.data.pay, isOwn: res.data.own, landedOn: res.data.landedOn });
+            //         set({isBuying: res.data.buy, isPaying: res.data.pay, isOwn: res.data.own, landedOn: res.data.landedOn });
                     
-                    toast(res.data.message);        
-                    // console.log(res.data.landedOn);
-                    // console.log(res.data.dice);
+            //         toast(res.data.message);        
+            //         // console.log(res.data.landedOn);
+            //         // console.log(res.data.dice);
                     
-                    set({isRolling: false});
-                    resolve();
+            //         set({isRolling: false});
+            //         resolve();
                     
-                }, 2200);
-            });
+            //     }, 2200);
+            // });
             
         } catch (error) {
             set({isRolling: false});
-            toast.error(error.response.data.message);
+            console.log(error);
+            // toast.error(error.response.data.message);
         }
     },
-    end: async (code) => {
+    end:  (code) => {
         try {
-            const res = await axiosInstance.post(`/game/${code}/endTurn`);
-            set({isYourTurn: false, rolled: false, passed: false, landedOn: null});
-            toast.success(res.data.message);
+            // const res = await axiosInstance.post(`/game/${code}/endTurn`);
+            // set({isYourTurn: false, rolled: false, passed: false, landedOn: null});
+            // toast.success(res.data.message);
+            const socket = useAuthStore.getState().socket;
+            socket.emit("socket:end-turn", { code: get().game.code });
         } catch (error) {
-            toast.error(error.response.data.message);
+            toast.error(error);
         }
     },
     buy: async (code) => {
@@ -255,4 +267,10 @@ export const useGameStoreUsingSocket = create((set) => ({
     setCode: (code) => set({code}),
     setGame: (game) => set({game}),
     setIsHost: (isHost) => set({isHost}),
+    setIsRolling: (isRolling) => set({isRolling}),
+    setIsBuying: (isBuying) => set({isBuying}),
+    setIsPaying: (isPaying) => set({isPaying}),
+    setIsOwn: (isOwn) => set({isOwn}),
+    setRolled: (rolled) => set({rolled}),
+    setDice: (dice) => set({dice}),
 }));

@@ -19,6 +19,7 @@ export const registerBasicEvents = () => {
     
     const setGameSocket = useGameStoreUsingSocket.getState().setGame;
     const setIsHostSocket = useGameStoreUsingSocket.getState().setIsHost;
+    const setIsYourTurnSocket = useGameStoreUsingSocket.getState().setIsYourTurn;
     if (!socket) return;
 
     // { message: "Game Created Successfully", game, isHost: true }
@@ -27,42 +28,69 @@ export const registerBasicEvents = () => {
         setGameSocket(res.game);
         setIsHostSocket(res.isHost);
     });
-    socket.on("joined-room", (game) => {
+    socket.on("socket:join-game:success", (res) => {
+        console.log(res.message);
+        // setGameCode(res.game)
+        setGameSocket(res.game);
+    });
+    socket.on("socket:start-game:success", (res) => {
+        console.log(res.game.currentTurn+" current turn");
+        if (res.game.currentTurn.toString() === user._id.toString()){
+            toast.success('Your Turn');
+            setIsYourTurnSocket(true);
+        } else {
+            toast.success(`${res.game.currentTurn.toString()}'s Turn`);
+            setIsYourTurnSocket(false);
+        }
+        setGameSocket(res.game);
+    });
+    socket.on("joined-room", (res) => {
         console.log("player joined room");
         toast.success("Player Joined");
-        setGame(game);
+        // setGame(game);
+        console.log(res.game.players);
+        
+        setGameSocket(res.game);
     });
-
-    socket.on("game-started", ({game, idToIndexMap}) => {
+    socket.on("game-started", ({game}) => {
+        // let idToIndexMap = game.idToIndexMap
+        console.log(game.currentTurn+" current turn");
         console.log("game started");
         toast.success("Game Started");
-        setGame(game);
-        setIdToIndexMap(idToIndexMap);
-        setCode(game.code);
-        setNumPlayers(game.players.length);
-        setYourIndex(idToIndexMap[user._id.toString()]);
-        setPlayers(game.players);
+        setGameSocket(game);
+        if (game.currentTurn.toString() === user._id.toString()){
+            toast.success('Your Turn');
+            setIsYourTurnSocket(true);
+        } else {
+            toast.success(`${game.currentTurn.toString()}'s Turn`);
+            setIsYourTurnSocket(false);
+        }
+        // setIdToIndexMap(idToIndexMap);
+        // setCode(game.code);
+        // setNumPlayers(game.players.length);
+        // setYourIndex(idToIndexMap[user._id.toString()]);
+        // setPlayers(game.players);
         // console.log(idToIndexMap[user._id.toString()]);
     });
 
-    socket.on("player-turn", (res) => {
-        // if (res._id === user._id) { 
-        //     toast.success(`Your Turn`); 
-        //     setIsYourTurn(true);
-        // } else {
-        //     toast.success(`${res.username}'s turn`);
-        //     setIsYourTurn(false);
-        // }
-        console.log(res);
-        if (res.currentTurn._id.toString() === user._id.toString()) { 
-            toast.success(`Your Turn`); 
-            setIsYourTurn(true);
-        } else {
-            toast.success(`${res.currentTurn.username}'s turn`);
-            setIsYourTurn(false);
-        }
-        setGame(res.game);
-    });
+    // socket.on("player-turn", (res) => {
+    //     // if (res._id === user._id) { 
+    //     //     toast.success(`Your Turn`); 
+    //     //     setIsYourTurn(true);
+    //     // } else {
+    //     //     toast.success(`${res.username}'s turn`);
+    //     //     setIsYourTurn(false);
+    //     // }
+    //     console.log(res);
+    //     if (res.currentTurn._id.toString() === user._id.toString()) { 
+    //         toast.success(`Your Turn`); 
+    //         setIsYourTurn(true);
+    //     } else {
+    //         toast.success(`${res.currentTurn.username}'s turn`);
+    //         setIsYourTurn(false);
+    //     }
+    //     setGame(res.game);
+    // });
 };
 export const unregisterBasicEvents = () => {
     const socket = useAuthStore.getState().socket;
@@ -76,26 +104,61 @@ export const registerPlayerEvents = () => {
     const user = useAuthStore.getState().authUser;
 
     const socket = useAuthStore.getState().socket;
-    const setGame = useGameStore.getState().setGame;
-    const setYourMoney = useGameStore.getState().setYourMoney;
-    const setYourProperties = useGameStore.getState().setYourProperties;
-    const setIsYourTurn = useGameStore.getState().setIsYourTurn;
-    const setIsOffering = useGameStore.getState().setIsOffering;
-    const setTradingWith = useGameStore.getState().setTradingWith;
-    const setOPP = useGameStore.getState().setOPP;
-    const setIsOffered = useGameStore.getState().setIsOffered;
-    const setOfferedTrade = useGameStore.getState().setOfferedTrade;
+    // const setGame = useGameStore.getState().setGame;
+    // const setYourMoney = useGameStore.getState().setYourMoney;
+    // const setYourProperties = useGameStore.getState().setYourProperties;
+    // const setIsYourTurn = useGameStore.getState().setIsYourTurn;
+    // const setIsOffering = useGameStore.getState().setIsOffering;
+    // const setTradingWith = useGameStore.getState().setTradingWith;
+    // const setOPP = useGameStore.getState().setOPP;
+    // const setIsOffered = useGameStore.getState().setIsOffered;
+    // const setOfferedTrade = useGameStore.getState().setOfferedTrade;
+    
+    const setGame = useGameStoreUsingSocket.getState().setGame;
+    const setYourMoney = useGameStoreUsingSocket.getState().setYourMoney;
+    const setYourProperties = useGameStoreUsingSocket.getState().setYourProperties;
+    const setIsYourTurn = useGameStoreUsingSocket.getState().setIsYourTurn;
+    const setIsOffering = useGameStoreUsingSocket.getState().setIsOffering;
+    const setTradingWith = useGameStoreUsingSocket.getState().setTradingWith;
+    const setOPP = useGameStoreUsingSocket.getState().setOPP;
+    const setIsOffered = useGameStoreUsingSocket.getState().setIsOffered;
+    const setOfferedTrade = useGameStoreUsingSocket.getState().setOfferedTrade;
+    const setIsRolling = useGameStoreUsingSocket.getState().setIsRolling;
+    const setIsBuying = useGameStoreUsingSocket.getState().setIsBuying;
+    const setIsPaying = useGameStoreUsingSocket.getState().setIsPaying;
+    const setIsOwn = useGameStoreUsingSocket.getState().setIsOwn;
+    const setLandedOn = useGameStoreUsingSocket.getState().setLandedOn;
+    const setRolled = useGameStoreUsingSocket.getState().setRolled;
+    const setDice = useGameStoreUsingSocket.getState().setDice;
 
     const animateTokenToTile = useTokenStore.getState().animateTokenToTile;
 
     if (!socket) return;
 
-    socket.on("dice-rolled", (res) => {
-        // console.log(res);
+
+    socket.on("socket:roll-dice:success", ({res}) => {
+        setTimeout(() => {
+            animateTokenToTile(res.yourIndex, res.landedOn.id);
         
+            // set({isBuying: res.buy, isPaying: res.pay, isOwn: res.own, landedOn: res.landedOn });  
+            setIsBuying(res.buy);
+            setIsPaying(res.pay);
+            setIsOwn(res.own);
+            setLandedOn(res.landedOn);
+            setIsRolling(false);
+            setRolled(true);
+            setDice(res.dice);
+            toast(res.message);
+        }, 2200);
+            // console.log(res.data.landedOn);
+            // console.log(res.data.dice);
+    })
+
+    socket.on("dice-rolled", ({res, game}) => {
+        // console.log(res);
+        animateTokenToTile(res.yourIndex, res.landedOn.id);
+        setGame(game);
         toast.success(`${res.name.username} rolled a ${res.num}`);
-        animateTokenToTile(res.index, res.space.id);
-        setGame(res.game);
     });
 
     socket.on("landed-unowned-prop", (res) => {

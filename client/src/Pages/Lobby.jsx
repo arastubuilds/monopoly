@@ -15,8 +15,8 @@ const Lobby = () => {
     // console.log(isHost);
     
     const handleStart = async (e) => {
-        await start(game?.code);
-    
+        // await start(game?.code);
+        start(game?.code);
     }
     useEffect(() => {
         // preloadSceneCanvas();

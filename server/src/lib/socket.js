@@ -77,9 +77,9 @@ io.on("connection", (socket) => {
             }
             const code = await generateUniqueCode();
             const game = new Game(code, userId); 
-            activeSessions.set({code, game});
+            activeSessions.set(code, game);
             socket.join(code);
-            console.log("New game", game);
+            console.log("New game", game.code);
             socket.emit("socket:create-game:success", { message: "Game Created Successfully", game, isHost: true });
         } catch (error) {
             console.log("Error in socket:create-game", error.message);
@@ -98,7 +98,7 @@ io.on("connection", (socket) => {
             // const session = await getGameSession(code, GameModel, io, getSocket);
             // const gameResponse = await session.joinGame(userId);
             const game = activeSessions.get(code);
-            console.log(game);
+            // console.log(game);
             if (game) {
                 game.join(userId);
                 socket.join(code);
@@ -107,6 +107,7 @@ io.on("connection", (socket) => {
                 const usersInRoom = room.map(s => s.id).filter(id => id !== socket.id);
                 socket.emit("existing-users", { usersInRoom });
                 socket.emit("socket:join-game:success", { message: "Joined Game Successfully", game });
+                socket.to(code).emit("joined-room", {game});
             } else throw new Error("Invalid Code");
         } catch (error) {
             console.log("Error in socket:join-game", error.message);
@@ -120,37 +121,45 @@ io.on("connection", (socket) => {
                 socket.emit("error", { message: "Authentication required" });
                 return;
             }
-
+            console.log("in socket:start-game");
+            
             const game = activeSessions.get(code);
+            // console.log("game", game);
             game.start(userId);
             // const result = await session.startGame();
+            // console.log("game", game);
             
-            socket.to(code).emit("socket:start-game:success", { game });
+            socket.emit("socket:start-game:success", { game });
+            socket.to(code).emit("game-started", {game });
+            // socket.to(code).emit("player-turn", {currentTurn: game.currentTurn})
         } catch (error) {
             console.log("Error in socket:start-game", error.message);
             socket.to(code).emit("error", { message: error.message });
         }
     });
 
-    socket.on("socket:roll-dice", async ({ code }) => {
+    socket.on("socket:roll-dice", ({ code }) => {
         try {
             if (!userId) {
                 socket.emit("error", { message: "Authentication required" });
                 return;
             }
+            // console.log(code);
             const game = activeSessions.get(code);
+            // console.log(game);
             const result = game.rollDice(userId);
             // Use new GameSession architecture for rollDice
             // const session = await getGameSession(code, GameModel, io, getSocket);
             // const result = await session.rollDice(userId);
-            socket.to(code).emit("socket:roll-dice:success", result);
+            socket.emit("socket:roll-dice:success", {res: result});
+            socket.to(code).emit("dice-rolled", {res: result, game});
         } catch (error) {
             console.log("Error in socket:roll-dice", error.message);
             socket.emit("error", { message: error.message });
         }
     });
 
-    socket.on("socket:end-turn", async ({ code }) => {
+    socket.on("socket:end-turn", ({ code }) => {
         try {
             if (!userId) {
                 socket.emit("error", { message: "Authentication required" });

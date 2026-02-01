@@ -11,14 +11,21 @@ import YourOwnPrompt from "../Components/YourOwnPrompt";
 import OfferTrade from "../Components/OfferTrade";
 import OwnedProp from "../Components/OwnedProp";
 import OfferedTrade from "../Components/OfferedTrade";
+import { useGameStoreUsingSocket } from "../store/gameStoreUsingSocket";
 
 const Play = () => {
-    const game = useGameStore((state) => state.game);
-    const yourMoney = useGameStore((state) => state.yourMoney);
-    const landedOn = useGameStore((state) => state.landedOn);
-    const yourProperties = useGameStore((state) => state.yourProperties);
-    const oPP = useGameStore((state) => state.oPP);
-    const { roll, end, rolled, passed, viewing, tradingWith, offeredTrade, isYourTurn, isBuying, isPaying, isOwn, isViewing, isOffering, isOffered } = useGameStore();
+    // const game = useGameStore((state) => state.game);
+    // const yourMoney = useGameStore((state) => state.yourMoney);
+    // const landedOn = useGameStore((state) => state.landedOn);
+    // const yourProperties = useGameStore((state) => state.yourProperties);
+    // const oPP = useGameStore((state) => state.oPP);
+    // const { roll, end, rolled, passed, viewing, tradingWith, offeredTrade, isYourTurn, isBuying, isPaying, isOwn, isViewing, isOffering, isOffered } = useGameStore();
+    const game = useGameStoreUsingSocket((state) => state.game);
+    const yourMoney = useGameStoreUsingSocket((state) => state.yourMoney);
+    const landedOn = useGameStoreUsingSocket((state) => state.landedOn);
+    const yourProperties = useGameStoreUsingSocket((state) => state.yourProperties);
+    const oPP = useGameStoreUsingSocket((state) => state.oPP);
+    const { roll, end, rolled, passed, viewing, tradingWith, offeredTrade, isYourTurn, isBuying, isPaying, isOwn, isViewing, isOffering, isOffered } = useGameStoreUsingSocket();
     // console.log(tradingWith);
     // console.log(yourMoney);
     // console.log(isOffered, offeredTrade);

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import Game from "../models/game.model.js";
-
+import { activeSessions } from "./socket.js";
 
 export const generateToken = (userId, res) => {
     const token = jwt.sign({userId}, process.env.JWT_SECRET, {
@@ -31,7 +31,8 @@ export const generateUniqueCode = async () => {
 
     while(exists) {
         code = generateNamespace();
-        exists = await Game.exists({code});
+        // exists = await Game.exists({code});
+        exists = activeSessions.has(code);
     }
     return code;
 }
