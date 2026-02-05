@@ -19,7 +19,7 @@ const DiceInstance = memo(function DiceInstance({ position, models, which }) {
   // const isRolling = false;
   // const value = 1;
   // const value = useGameStore((state) => which === 1 ? state.dice.die1 : state.dice.die2);
-  const value = useGameStoreUsingSocket((state) => which === 1 ? state.dice.die1 : state.dice.die2);
+  const value = useGameStoreUsingSocket((state) => state.rolledDice);
   
   
   
@@ -47,7 +47,7 @@ const DiceInstance = memo(function DiceInstance({ position, models, which }) {
   }
   const rollToFace = (number, duration = 2) => {
     // console.log("roll to face");
-    // console.log("number",number);
+    console.log("number",number);
     
     const mesh = diceRef.current;
     if (!mesh) return;
@@ -91,18 +91,20 @@ const DiceInstance = memo(function DiceInstance({ position, models, which }) {
     showFace(1);
   }, [scene]);
 
+  // useEffect(() => {
+  //   console.log(value);
+  //   console.log("Dice "+which+" "+(which === 1 ? value.die1 : value.die2));
+  //       showFace((which === 1 ? value.die1 : value.die2));
+  // }, [value])
   // Auto-roll on change of value or isRolling
   useEffect(() => {
-    console.log(isRolling, value);
-    console.log("Dice "+which+" "+value);
-    if (isRolling) {
-      console.log("value", value);
-      rollToFace(value);
-    } else {
-      // showFace(value);
-    }
-    // showFace(value);
-  }, [isRolling, value]);
+    // if (isRolling) {
+      // if (!isRolling) return;
+      console.log("value", (which === 1 ? value?.die1 : value?.die2));
+      rollToFace((which === 1 ? value?.die1 : value?.die2));
+    // } 
+
+  }, [value]);
 
   return scene ? (
     <primitive object={scene} scale={[3, 3, 3]} position={position} />

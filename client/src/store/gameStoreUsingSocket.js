@@ -44,6 +44,7 @@ export const useGameStoreUsingSocket = create((set, get) => ({
     started: false,
     rolled: false,
     dice: {die1: 1, die2: 1},
+    rolledDice: null,
     socket: null,
     create: () => {
         set({game: null});
@@ -173,8 +174,8 @@ export const useGameStoreUsingSocket = create((set, get) => ({
     end:  (code) => {
         try {
             // const res = await axiosInstance.post(`/game/${code}/endTurn`);
-            // set({isYourTurn: false, rolled: false, passed: false, landedOn: null});
             // toast.success(res.data.message);
+            set({isYourTurn: false, rolled: false, passed: false, landedOn: null});
             const socket = useAuthStore.getState().socket;
             socket.emit("socket:end-turn", { code: get().game.code });
         } catch (error) {
@@ -272,5 +273,6 @@ export const useGameStoreUsingSocket = create((set, get) => ({
     setIsPaying: (isPaying) => set({isPaying}),
     setIsOwn: (isOwn) => set({isOwn}),
     setRolled: (rolled) => set({rolled}),
-    setDice: (dice) => set({dice}),
+    setDice: (dice) => {set({dice})},
+    setRolledDice: (rolledDice) => {set({rolledDice});}
 }));

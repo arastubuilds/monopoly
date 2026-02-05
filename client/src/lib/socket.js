@@ -130,6 +130,8 @@ export const registerPlayerEvents = () => {
     const setLandedOn = useGameStoreUsingSocket.getState().setLandedOn;
     const setRolled = useGameStoreUsingSocket.getState().setRolled;
     const setDice = useGameStoreUsingSocket.getState().setDice;
+    const setRolledDice = useGameStoreUsingSocket.getState().setRolledDice;
+    const setIsYourTurnSocket = useGameStoreUsingSocket.getState().setIsYourTurn;
 
     const animateTokenToTile = useTokenStore.getState().animateTokenToTile;
 
@@ -137,6 +139,10 @@ export const registerPlayerEvents = () => {
 
 
     socket.on("socket:roll-dice:success", ({res}) => {
+        setRolledDice(res.dice);
+        // console.log("dice from socket:", res.dice);
+        setIsRolling(false);
+        setRolled(true);
         setTimeout(() => {
             animateTokenToTile(res.yourIndex, res.landedOn.id);
         
@@ -145,15 +151,22 @@ export const registerPlayerEvents = () => {
             setIsPaying(res.pay);
             setIsOwn(res.own);
             setLandedOn(res.landedOn);
-            setIsRolling(false);
-            setRolled(true);
-            setDice(res.dice);
             toast(res.message);
         }, 2200);
             // console.log(res.data.landedOn);
             // console.log(res.data.dice);
     })
-
+    socket.on("socket:end-turn:success", (res) => {
+        // console.log(res.game.currentTurn+" current turn");
+        if (res.game.currentTurn.toString() === user._id.toString()){
+            toast.success('Your Turn');
+            setIsYourTurnSocket(true);
+        } else {
+            toast.success(`${res.game.currentTurn.toString()}'s Turn`);
+            setIsYourTurnSocket(false);
+        }
+        setGame(game);
+    })
     socket.on("dice-rolled", ({res, game}) => {
         // console.log(res);
         animateTokenToTile(res.yourIndex, res.landedOn.id);
@@ -188,18 +201,18 @@ export const registerPlayerEvents = () => {
         setOPP(otherPlayersProperties);
         setGame(res.game);
     });
-    socket.on("player-turn", (res) => {
-        console.log(res);
+    // socket.on("player-turn", (res) => {
+    //     // console.log(res);
         
-        if (res.currentTurn._id.toString() === user._id.toString()) { 
-            toast.success(`Your Turn`); 
-            setIsYourTurn(true);
-        } else {
-            toast.success(`${res.currentTurn.username}'s turn`);
-            setIsYourTurn(false);
-        }
-        setGame(res.game);
-    });
+    //     if (res.currentTurn._id.toString() === user._id.toString()) { 
+    //         toast.success(`Your Turn`); 
+    //         setIsYourTurn(true);
+    //     } else {
+    //         toast.success(`${res.currentTurn.username}'s turn`);
+    //         setIsYourTurn(false);
+    //     }
+    //     setGame(res.game);
+    // });
     
     socket.on("end-turn", (res) => {
         // setIsYourTurn(false);

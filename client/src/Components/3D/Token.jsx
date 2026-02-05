@@ -17,8 +17,8 @@ const TokenInstance = ({index, color="red", size = 1.5, models}) => {
     const tileIndex = (useTokenStore((state) => state.tokens[index]?.tileIndex));
     const toTileIndex = (useTokenStore((state) => state.tokens[index]?.toTileIndex));
 
-    console.log(tileIndex);
-    console.log(toTileIndex);
+    // console.log(tileIndex);
+    // console.log(toTileIndex);
 
     const getTokenGroupData = (tileIdx, tokenIdx) => {
         const tokens = useTokenStore.getState().tokens;
@@ -37,7 +37,7 @@ const TokenInstance = ({index, color="red", size = 1.5, models}) => {
     const moveToTile = (tileIdx) => {
         // tileIdx = getPositionByIndex(tileIdx);
         const pos = getTilePosition(getPositionByIndex(tileIdx));
-        console.log(pos);
+        // console.log(pos);
         
         if (!meshRef.current || !pos) return;
 
@@ -107,7 +107,7 @@ const TokenInstance = ({index, color="red", size = 1.5, models}) => {
 
     useEffect(() => {
         if (meshRef.current && tileIndex !== null){
-            console.log(tileIndex);
+            // console.log(tileIndex);
             moveToTile(tileIndex);
         } 
     }, [tileIndex]);
@@ -132,7 +132,7 @@ const TokenInstance = ({index, color="red", size = 1.5, models}) => {
 
 export default function TokenGroup({models}) {
     const tokens = useTokenStore((state) => state.tokens);
-    console.log("tokens", tokens);
+    // console.log("tokens", tokens);
     
     const tokenColors = useTokenStore((state) => state.tokenColors);
 
