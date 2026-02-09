@@ -58,17 +58,18 @@ function PlayPage() {
   }, []);
 
   return (
-    <div
-      className=''
-      style={{
-        backgroundImage: `url(/bg.jpg)`,
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-        height: '100vh',
-        width: '100vw',
-        zIndex: -1,
-      }} >
-      <Suspense fallback={<div className='h-full w-full flex justify-center items-center '><Loader className=''/></div>}>
+    <div className='h-screen w-screen'>
+      <img src="/3D/background.jpg" alt="background" 
+        style={{
+          position: 'fixed',
+          // backgroundImage: `url(/bg.jpg)`,
+          // backgroundSize: 'cover',
+          // backgroundRepeat: 'no-repeat',
+          // height: '100vh',
+          // width: '100vw',
+          // zIndex: -1,
+        }}/>
+      <Suspense fallback={<div className='h-full w-full flex justify-center items-center'><Loader className=''/></div>}>
         <SceneCanvas />
       </Suspense>
       <div className='top-0 left-0 flex justify-center w-full h-full z-50 lg:text-lg text-sm'>

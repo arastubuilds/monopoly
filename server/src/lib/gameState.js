@@ -77,6 +77,8 @@ export default class Game {
     }
     endTurn(userId) {
         const nextIndex = (this.idToIndexMap[userId] + 1) % this.players.length;
+        // console.log("nextIndex", nextIndex);
+        
         this.currentTurn = this.turnOrder[nextIndex];
     }
     buyProp(userId) {

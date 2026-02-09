@@ -169,7 +169,8 @@ io.on("connection", (socket) => {
             // Use new GameSession architecture for endTurn
             const game = activeSessions.get(code);
             game.endTurn(userId);
-            io.to(code).emit("socket:end-turn:success", { game });
+            // console.log("game.currentTurn", game.currentTurn); 
+            io.to(code).emit("socket:end-turn:success", { currentTurn: game.currentTurn, game });
             // socket.to(code).emit("player-turn", {currentTurn: game.currentTurn, game});
         } catch (error) {
             console.log("Error in socket:end-turn", error.message);

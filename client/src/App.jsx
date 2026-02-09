@@ -48,13 +48,14 @@ const App = () => {
     {(bgPages.includes(location.pathname) &&  
       <div style={{
         position: 'absolute',
-        backgroundImage: `url(/bg.jpg)`,
+        // backgroundImage: `url(/bg.jpg)`,
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
         height: '100vh',
         width: '100vw',
         zIndex: -1,
       }}> 
+        <img src="/3D/background.jpg" alt="background" />
         {/* <SceneCanvas />  */}
       </div> 
     )}

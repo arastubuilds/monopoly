@@ -158,20 +158,20 @@ export const registerPlayerEvents = () => {
     })
     socket.on("socket:end-turn:success", (res) => {
         // console.log(res.game.currentTurn+" current turn");
-        if (res.game.currentTurn.toString() === user._id.toString()){
+        if (res.currentTurn.toString() === user._id.toString()){
             toast.success('Your Turn');
             setIsYourTurnSocket(true);
         } else {
-            toast.success(`${res.game.currentTurn.toString()}'s Turn`);
+            toast.success(`${res.currentTurn.toString()}'s Turn`);
             setIsYourTurnSocket(false);
         }
-        setGame(game);
+        setGame(res.game);
     })
     socket.on("dice-rolled", ({res, game}) => {
         // console.log(res);
         animateTokenToTile(res.yourIndex, res.landedOn.id);
         setGame(game);
-        toast.success(`${res.name.username} rolled a ${res.num}`);
+        toast(`${game.currentTurn.toString()} ${res.message}`);
     });
 
     socket.on("landed-unowned-prop", (res) => {
@@ -203,21 +203,20 @@ export const registerPlayerEvents = () => {
     });
     // socket.on("player-turn", (res) => {
     //     // console.log(res);
-        
-    //     if (res.currentTurn._id.toString() === user._id.toString()) { 
+    //     if (res.currentTurn.toString() === user._id.toString()) { 
     //         toast.success(`Your Turn`); 
-    //         setIsYourTurn(true);
+    //         setIsYourTurnSocket(true);
     //     } else {
-    //         toast.success(`${res.currentTurn.username}'s turn`);
-    //         setIsYourTurn(false);
+    //         toast.success(`${res.currentTurn.toString()}'s turn`);
+    //         setIsYourTurnSocket(false);
     //     }
     //     setGame(res.game);
     // });
     
-    socket.on("end-turn", (res) => {
-        // setIsYourTurn(false);
-        toast.success(`${res.username}'s turn ended`);
-    });
+    // socket.on("end-turn", (res) => {
+    //     // setIsYourTurn(false);
+    //     toast.success(`${res.username}'s turn ended`);
+    // });
 
     socket.on("property-bought", (res) => {
         toast.success(`${res.player} bought ${res.property}`);
