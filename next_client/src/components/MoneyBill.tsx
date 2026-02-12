@@ -47,7 +47,7 @@ type MoneyBillProps = {
         className={`
           absolute inset-0
           ${style.bg}
-          // ${style.border}
+          ${style.border}
           border-[0.35rem]
           rounded-md
           shadow-[0_8px_18px_rgba(0,0,0,0.15)]
@@ -67,7 +67,7 @@ type MoneyBillProps = {
         <div
           className={`
             absolute inset-x-[18%] inset-y-[32%]
-            text-[2.3rem]
+            text-[2.4rem]
             flex items-center justify-center
             font-serif 
             tracking-wide

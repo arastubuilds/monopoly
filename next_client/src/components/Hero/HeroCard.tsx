@@ -1,22 +1,20 @@
-const avatarColors = {
-  blue: "bg-blue-400",
-  green: "bg-green-400",
-  red: "bg-red-400",
-  yellow: "bg-yellow-400",
+const avatarColors:Record<string, string> = {
+  "blue": "bg-blue-400",
+  "green": "bg-green-400",
+  "red": "bg-red-400",
+  "yellow": "bg-yellow-400",
 };
 
 export default function HeroCard() {
   return (
     <div
       className="
-        
         relative z-10 glass-panel
-        w-full max-w-3xl
+        w-full max-w-4xl
         px-6 sm:px-8 lg:px-10
         py-8 sm:py-10 lg:py-12
         text-center
         flex flex-col justify-center
-        overflow-hidden
         lg:h-[70svh]
         sm:h-[95svh]  
         
