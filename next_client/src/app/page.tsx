@@ -17,8 +17,10 @@ import GameElements from "@/components/GameElements";
 
 export default function Home() {
   return (
-    <main className="relative min-h-[100svh] flex items-center justify-center overflow-hidden">
+    <main className="relative min-h-[100svh] flex items-center justify-center  select-none md:translate-x-4 portrait:overflow-hidden">
+      <Header />
       <Hero />
+      
     </main>
   );
 }

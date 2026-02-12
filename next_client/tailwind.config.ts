@@ -8,6 +8,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        'landscape-sm': {'raw': '(orientation: landscape) and (max-width: 1000px)'},
+      },
       colors: {
         "off-white": "#FDFBF7",
         "game-board": "#D8E2DC",

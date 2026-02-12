@@ -32,7 +32,7 @@ import HeroEdgeDecor from "./HeroEdgeDecor";
 
 export default function Hero() {
   return (
-    <section className="relative w-full flex justify-center md:translate-x-6">
+    <section className="relative w-full flex justify-center mt-20 landscape-sm:mt-0">
       <div
         className="
           relative
@@ -45,7 +45,7 @@ export default function Hero() {
         <HeroEdgeDecor />
 
         {/* HERO-CANVAS DECOR (dice, houses, tokens) */}
-        <HeroDecor />
+        {/* <HeroDecor /> */}
 
         {/* HERO CARD + MASCOTS */}
         <div className="relative z-20 flex items-center justify-center h-full">

@@ -6,13 +6,9 @@
 
 @layer base {
   body {
-    @apply text-text-main font-sans antialiased overflow-x-hidden;
-    background: linear-gradient(
-      135deg,
-      #e3f4f6 0%,
-      #fdfcf8 45%,
-      #fff1df 100%
-    );
+    @apply text-text-main font-sans antialiased overflow-x-hidden overflow-y-hidden;
+    background: #deffea;
+    background: linear-gradient(120deg, rgba(222, 255, 234, 1) 50%, rgba(255, 252, 207, 1) 50%);
   }
   
 
@@ -29,6 +25,7 @@
     margin: 0;
   }
 }
+
 
 /* =========================
    Design primitives

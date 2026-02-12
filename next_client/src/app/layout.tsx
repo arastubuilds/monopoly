@@ -21,8 +21,8 @@ const fredoka = Fredoka({
 });
 
 export const metadata: Metadata = {
-  title: "Capital City - High Personality Landing Page",
-  description: "Own the City. Build Your Legacy. A reimagined classic bursting with life.",
+  title: "Monopoly - Fast Dealing, Property Card Game",
+  description: "Play Monopoly, the classic board game online, for free.",
 };
 
 export default function RootLayout({

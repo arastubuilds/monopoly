@@ -47,18 +47,19 @@ type MoneyBillProps = {
         className={`
           absolute inset-0
           ${style.bg}
-          ${style.border}
+          // ${style.border}
           border-[0.35rem]
           rounded-md
           shadow-[0_8px_18px_rgba(0,0,0,0.15)]
+          
           ${className}
         `}
       >
         {/* Inner frame */}
         <div
           className={`
-            absolute inset-[0.35rem]
-            border-2 border-dashed ${style.border}/50
+            absolute inset-[0.55rem]
+            border-2 border-dashed ${style.border}
           `}
         />
   
@@ -66,9 +67,9 @@ type MoneyBillProps = {
         <div
           className={`
             absolute inset-x-[18%] inset-y-[32%]
-            border-2 ${style.border}
+            text-[2.3rem]
             flex items-center justify-center
-            font-serif font-extrabold
+            font-serif 
             tracking-wide
             ${style.text}
             text-[clamp(0.9rem,2vw,1.4rem)]
@@ -78,16 +79,16 @@ type MoneyBillProps = {
         </div>
   
         {/* Corner values */}
-        <span
+        {/* <span
           className={`absolute top-2 left-2 text-xs font-bold ${style.text}`}
         >
           {value}
-        </span>
-        <span
+        </span> */}
+        {/* <span
           className={`absolute bottom-2 right-2 text-xs font-bold ${style.text}`}
         >
           {value}
-        </span>
+        </span> */}
   
         {/* Paper grain */}
         <div

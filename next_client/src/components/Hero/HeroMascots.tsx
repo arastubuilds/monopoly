@@ -13,7 +13,7 @@ export default function HeroMascots() {
           landscape:-left-[28%]
           landscape:-rotate-12
           
-          portrait:-top-[53%]
+          portrait:-top-[47%]
           portrait:left-[23%] 
           portrait:rotate-0
 

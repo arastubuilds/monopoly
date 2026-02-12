@@ -9,7 +9,7 @@ export default function HeroCard() {
   return (
     <div
       className="
-
+        
         relative z-10 glass-panel
         w-full max-w-3xl
         px-6 sm:px-8 lg:px-10
@@ -18,13 +18,14 @@ export default function HeroCard() {
         flex flex-col justify-center
         overflow-hidden
         lg:h-[70svh]
-        sm:h-[95svh]
+        sm:h-[95svh]  
+        
       "
     >
       {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-white/60 to-transparent pointer-events-none" />
+      {/* <div className="absolute inset-0 pointer-events-none" /> */}
 
-      <div className="relative z-10 flex flex-col items-center">
+      <div className="relative z-10 flex flex-col items-center ">
         {/* Badge */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 bg-monopoly-yellow text-dark-blue rounded-full shadow-button border-b-4 border-yellow-500 -rotate-2">
           <span className="material-symbols-outlined text-sm animate-spin-slow">
@@ -69,15 +70,15 @@ export default function HeroCard() {
 
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row gap-4 mb-8">
-          <button className="btn-green px-6 py-3 text-[clamp(0.9rem,1.2vw,1.1rem)] flex items-center justify-center gap-2">
+          <a href={`${process.env.NEXT_PUBLIC_APP_URL}/create`} className="btn-green px-6 py-3 text-[clamp(0.9rem,1.2vw,1.1rem)] flex items-center justify-center gap-2">
             <span className="material-symbols-outlined">add_circle</span>
             Create Game
-          </button>
+          </a>
 
-          <button className="btn-outline px-6 py-3 text-[clamp(0.9rem,1.2vw,1.1rem)] flex items-center justify-center gap-2">
-            <span className="material-symbols-outlined">qr_code_2</span>
+          <a href={`${process.env.NEXT_PUBLIC_APP_URL}/join`} className="btn-outline px-6 py-3 text-[clamp(0.9rem,1.2vw,1.1rem)] flex items-center justify-center gap-2">
+            <span className="material-symbols-outlined">qr_code</span>
             Join with Code
-          </button>
+          </a>
         </div>
 
         {/* Social proof */}
