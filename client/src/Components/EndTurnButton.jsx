@@ -10,13 +10,11 @@ export default function EndTurnButton() {
         <button
         className="
         absolute
-        h-[5%] w-[8%]
-        lg:bottom-52 bottom-30
-        bg-black/10
-        border-none rounded-full
         cursor-pointer
-        transition-colors duration-200
-        hover:bg-black/20"    
+        px-3 py-2
+        lg:bottom-50 bottom-29
+        btn-green
+        flex items-center justify-center gap-2"    
         onClick={async () => { await endTurn(code) }}>
             End Turn
         </button>

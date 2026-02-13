@@ -58,8 +58,8 @@ function PlayPage() {
   }, []);
 
   return (
-    <div className='h-screen w-screen'>
-      <img src="/3D/background.jpg" alt="background" 
+    <div className='min-h-screen board-spherical'>
+      {/* <img src="/3D/background.jpg" alt="background" 
         style={{
           position: 'fixed',
           // backgroundImage: `url(/bg.jpg)`,
@@ -68,7 +68,7 @@ function PlayPage() {
           // height: '100vh',
           // width: '100vw',
           // zIndex: -1,
-        }}/>
+        }}/> */}
       <Suspense fallback={<div className='h-full w-full flex justify-center items-center'><Loader className=''/></div>}>
         <SceneCanvas />
       </Suspense>

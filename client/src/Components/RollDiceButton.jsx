@@ -8,22 +8,27 @@ const RollDiceButton = () => {
     // const rollDice = useGameStore((state) => state.roll);
     // const code = useGameStore((state) => state.code);
     const rollDice = useGameStoreUsingSocket((state) => state.roll);
+    const isRolling = useGameStoreUsingSocket((state) => state.isRolling);
     const code = useGameStoreUsingSocket((state) => state.code);
-    console.log(code);
-    
+    // console.log(code);
+
+    // btn-green px-6 py-3 text-[clamp(0.9rem,1.2vw,1.1rem)] flex items-center justify-center gap-2
+    // border-none rounded-full
+    // cursor-pointer
+    // transition-colors duration-200
+    // hover:bg-black/20
     return (
         <button
         className="
         absolute
-        h-[5%] w-[8%]
-        lg:bottom-52 bottom-30
-        bg-black/10
-        border-none rounded-full
         cursor-pointer
-        transition-colors duration-200
-        hover:bg-black/20"    
+        px-3 py-2
+        lg:bottom-50 bottom-29
+        btn-green
+        flex items-center justify-center gap-2
+        "    
         onClick={() => {  rollDice(code);  }}>
-            Roll Dice
+            {isRolling ? "Rolling" : "Roll Dice"}
         </button>
     );
 };

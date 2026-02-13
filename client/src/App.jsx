@@ -55,7 +55,8 @@ const App = () => {
         width: '100vw',
         zIndex: -1,
       }}> 
-        <img src="/3D/background.jpg" alt="background" />
+        {/* <img src="/3D/background.jpg" alt="background" /> */}
+        <div className='min-h-screen board-spherical' />
         {/* <SceneCanvas />  */}
       </div> 
     )}

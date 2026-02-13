@@ -1,3 +1,204 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================
+   Design Tokens
+   ========================= */
+@layer base {
+  :root {
+    /* Monopoly palette */
+    --monopoly-green: #2ecc71;
+    --monopoly-dark-green: #27ae60;
+    --monopoly-blue: #3498db;
+    --monopoly-dark-blue: #2980b9;
+    --monopoly-red: #ff4757;
+    --monopoly-dark-red: #c0392b;
+    --monopoly-yellow: #f1c40f;
+
+    /* Text */
+    --text-main: #2c3e50;
+    --text-light: #5d6d7e;
+
+    /* Money */
+    --money-1: #fad7a0;
+    --money-5: #f5b7b1;
+    --money-10: #aed6f1;
+    --money-20: #abebc6;
+    --money-50: #d2b4de;
+    --money-100: #f9e79f;
+    --money-500: #e67e22;
+
+    /* Surfaces */
+    --off-white: #fdfbf7;
+    --game-board: #d8e2dc;
+  }
+
+  body {
+    color: var(--text-main);
+    background: linear-gradient(
+      135deg,
+      #e7f4f7 0%,
+      #f7fbfa 35%,
+      #fdfbf6 60%,
+      #fff3e2 100%
+    );
+  }
+}
+
+/* =========================
+   Utilities (safe)
+   ========================= */
+@layer utilities {
+  /* Shadows */
+  .shadow-card {
+    box-shadow:
+      0 20px 40px -5px rgba(0,0,0,0.15),
+      0 10px 20px -5px rgba(0,0,0,0.1);
+  }
+
+  .shadow-button {
+    box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+  }
+
+  .shadow-button-hover {
+    box-shadow: 0 3px 0 rgba(0,0,0,0.2);
+  }
+
+  .shadow-floating {
+    box-shadow:
+      0 30px 60px -12px rgba(0,0,0,0.3),
+      0 18px 36px -18px rgba(0,0,0,0.3);
+  }
+
+  .shadow-piece {
+    box-shadow: 5px 10px 15px rgba(0,0,0,0.2);
+  }
+
+  .shadow-piece-lg {
+    box-shadow: 10px 20px 30px rgba(0,0,0,0.25);
+  }
+}
+
+/* =========================
+   Components (NO custom @apply)
+   ========================= */
+@layer components {
+
+  /* ---------- Buttons ---------- */
+  .btn-green {
+    background-color: var(--monopoly-green);
+    color: white;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 1rem;
+    border-bottom: 4px solid var(--monopoly-dark-green);
+    box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+  }
+
+  .btn-green:hover {
+    background-color: var(--monopoly-dark-green);
+    transform: translateY(3px);
+    box-shadow: 0 3px 0 rgba(0,0,0,0.2);
+  }
+
+  .btn-outline {
+    background-color: rgba(255,255,255,0.9);
+    backdrop-filter: blur(6px);
+    border: 2px solid var(--monopoly-dark-blue);
+    color: var(--monopoly-dark-blue);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 1rem;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+  }
+
+  .btn-outline:hover {
+    transform: translateY(3px);
+    box-shadow: 0 3px 0 rgba(0,0,0,0.2);
+    background-color: #f9fafb;
+  }
+
+  /* ---------- Glass ---------- */
+  .glass-panel {
+    background: rgba(255,255,255,0.8);
+    backdrop-filter: blur(16px);
+    border: 2px solid white;
+    border-radius: 3rem;
+    box-shadow:
+      0 30px 60px -12px rgba(0,0,0,0.3),
+      0 18px 36px -18px rgba(0,0,0,0.3);
+  }
+
+  /* ---------- Dice ---------- */
+  .die-face {
+    background: radial-gradient(circle at 30% 30%, #fff, #f0f0f0);
+    border-radius: 1.5rem;
+    border: 2px solid #eee;
+    box-shadow: 5px 10px 15px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .die-dot {
+    background: black;
+    border-radius: 9999px;
+    box-shadow:
+      inset 1px 1px 2px rgba(255,255,255,0.5),
+      1px 1px 1px rgba(255,255,255,0.2);
+  }
+
+  /* ---------- Buildings ---------- */
+  .house-base {
+    background: linear-gradient(135deg, var(--monopoly-green), var(--monopoly-dark-green));
+    border-radius: 0.125rem;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+  }
+
+  .hotel-base {
+    background: linear-gradient(135deg, var(--monopoly-red), var(--monopoly-dark-red));
+    border-radius: 0.125rem;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+  }
+
+  /* ---------- Misc ---------- */
+  .mascot-shadow {
+    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.25));
+  }
+
+  .playful-title {
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+  }
+}
+@layer components {
+    .hud-action {
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+  
+      color: var(--monopoly-blue);
+      padding: 0.35rem 0.75rem;
+      border-radius: 9999px;
+  
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+  
+      transition: all 0.15s ease;
+    }
+  
+    .hud-action:hover {
+      background: white;
+      color: var(--monopoly-dark-blue);
+      transform: translateY(-1px);
+    }
+  }
+  
 /* * {
     margin: 0;
     padding: 0;
@@ -15,3 +216,36 @@
     width: 100vw;
     height: 100vh;
 }
+
+.board-spherical {
+  position: relative;
+  background-color: #f4efe6;
+
+  background-image:
+    /* Convex lighting */
+    radial-gradient(
+      ellipse at center,
+      rgba(255, 255, 255, 0.45) 0%,
+      rgba(255, 255, 255, 0.25) 30%,
+      rgba(0, 0, 0, 0.04) 55%,
+      rgba(0, 0, 0, 0.10) 80%,
+      rgba(0, 0, 0, 0.16) 100%
+    ),
+
+    /* Fine grid */
+    linear-gradient(
+      rgba(120, 85, 60, 0.14) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(120, 85, 60, 0.14) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    100% 100%,
+    2.5rem 2.5rem,
+    2.5rem 2.5rem;
+}
+
