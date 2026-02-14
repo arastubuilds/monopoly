@@ -32,7 +32,7 @@ import HeroEdgeDecor from "./HeroEdgeDecor";
 
 export default function Hero() {
   return (
-    <section className="relative w-full flex justify-center mt-20 landscape-sm:mt-0">
+    <section className="relative w-full flex justify-center mt-20 landscape-sm:mt-0 scale-[1.0]">
       <div
         className="
           relative

@@ -34,7 +34,7 @@
     --game-board: #d8e2dc;
   }
 
-  body {
+  /* body {
     color: var(--text-main);
     background: linear-gradient(
       135deg,
@@ -43,7 +43,7 @@
       #fdfbf6 60%,
       #fff3e2 100%
     );
-  }
+  } */
 }
 
 /* =========================
