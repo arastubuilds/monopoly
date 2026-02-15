@@ -98,7 +98,7 @@ const Login = () => {
             className="
               w-full max-w-sm
               bg-[#fffdf6]
-              border-[3px] border-monopoly-red
+              border-[3px] 
               rounded-3xl
               shadow-card
               p-6
@@ -111,7 +111,7 @@ const Login = () => {
                 font-display
                 text-3xl
                 font-black
-                text-monopoly-red
+                
                 tracking-wide
                 mb-3
               "
@@ -137,7 +137,7 @@ const Login = () => {
                   w-full
                   text-center
                   
-                  tracking-widest
+                  
                   font-black
                   text-sm
                   px-4 py-3
@@ -146,7 +146,7 @@ const Login = () => {
                   border-[3px] border-black/20
                   shadow-piece
                   focus:outline-none
-                  focus:border-monopoly-blue
+                  
                 "
               />
       
@@ -171,7 +171,7 @@ const Login = () => {
                     border-[3px] border-black/20
                     shadow-piece
                     focus:outline-none
-                    focus:border-monopoly-blue
+
                   "
                 />
       

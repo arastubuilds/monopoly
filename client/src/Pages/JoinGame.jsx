@@ -90,10 +90,10 @@ const JoinGame = () => {
               shadow-card
               text-center
       
-              /* Default padding */
+              
               p-6
       
-              /* Mobile landscape adjustments */
+              
               landscape-sm:scale-[0.9]
               landscape-sm:p-4
             "

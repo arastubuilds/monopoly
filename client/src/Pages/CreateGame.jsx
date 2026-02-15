@@ -84,9 +84,10 @@ const CreateGame = () => {
         <div
           className="
             relative z-10
-            min-h-[100svh]
+            h-[100svh]
             flex items-center justify-center
             px-4
+            overflow-hidden
           "
         >
           <div

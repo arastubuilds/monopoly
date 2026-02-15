@@ -34,12 +34,12 @@ export const registerBasicEvents = () => {
         setGameSocket(res.game);
     });
     socket.on("socket:start-game:success", (res) => {
-        console.log(res.game.currentTurn+" current turn");
-        if (res.game.currentTurn.toString() === user._id.toString()){
+        console.log(res.game.currentTurn.userName+" current turn");
+        if (res.game.currentTurn.userId.toString() === user._id.toString()){
             toast.success('Your Turn');
             setIsYourTurnSocket(true);
         } else {
-            toast.success(`${res.game.currentTurn.toString()}'s Turn`);
+            toast.success(`${res.game.currentTurn.userName.toString()}'s Turn`);
             setIsYourTurnSocket(false);
         }
         setGameSocket(res.game);
@@ -54,15 +54,15 @@ export const registerBasicEvents = () => {
     });
     socket.on("game-started", ({game}) => {
         // let idToIndexMap = game.idToIndexMap
-        console.log(game.currentTurn+" current turn");
+        // console.log(game.currentTurn+" current turn");
         console.log("game started");
         toast.success("Game Started");
         setGameSocket(game);
-        if (game.currentTurn.toString() === user._id.toString()){
+        if (game.currentTurn.userId.toString() === user._id.toString()){
             toast.success('Your Turn');
             setIsYourTurnSocket(true);
         } else {
-            toast.success(`${game.currentTurn.toString()}'s Turn`);
+            toast.success(`${game.currentTurn.userName.toString()}'s Turn`);
             setIsYourTurnSocket(false);
         }
         // setIdToIndexMap(idToIndexMap);
@@ -158,11 +158,11 @@ export const registerPlayerEvents = () => {
     })
     socket.on("socket:end-turn:success", (res) => {
         // console.log(res.game.currentTurn+" current turn");
-        if (res.currentTurn.toString() === user._id.toString()){
+        if (res.currentTurn.userId.toString() === user._id.toString()){
             toast.success('Your Turn');
             setIsYourTurnSocket(true);
         } else {
-            toast.success(`${res.currentTurn.toString()}'s Turn`);
+            toast.success(`${res.currentTurn.userName.toString()}'s Turn`);
             setIsYourTurnSocket(false);
         }
         setGame(res.game);
@@ -171,7 +171,7 @@ export const registerPlayerEvents = () => {
         // console.log(res);
         animateTokenToTile(res.yourIndex, res.landedOn.id);
         setGame(game);
-        toast(`${game.currentTurn.toString()} ${res.message}`);
+        toast(`${game.currentTurn.userName.toString()} ${res.message}`);
     });
 
     socket.on("landed-unowned-prop", (res) => {

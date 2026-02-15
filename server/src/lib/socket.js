@@ -76,7 +76,7 @@ io.on("connection", (socket) => {
                 return;
             }
             const code = await generateUniqueCode();
-            const game = new Game(code, userId); 
+            const game = new Game(code, userId, userName); 
             activeSessions.set(code, game);
             socket.join(code);
             console.log("New game", game.code);
@@ -100,7 +100,7 @@ io.on("connection", (socket) => {
             const game = activeSessions.get(code);
             // console.log(game);
             if (game) {
-                game.join(userId);
+                game.join(userId, userName);
                 socket.join(code);
                 
                 const room = await io.in(code).fetchSockets();
@@ -184,11 +184,12 @@ io.on("connection", (socket) => {
                 socket.emit("error", { message: "Authentication required" });
                 return;
             }
-
-            const session = await getGameSession(code, GameModel, io, getSocket);
-            const result = await session.buyProperty(userId);
-            
-            socket.emit("socket:buy-prop:success", result);
+            const game = activeSessions.get(code);
+            const result = game.buyProp(userId);
+            // const session = await getGameSession(code, GameModel, io, getSocket);
+            // const result = await session.buyProperty(userId);
+            socket.emit("socket:buy-prop:success", {result, game});
+            socket.to(code).emit("property-bought", {game, otherPlayersProperties: result.otherPlayersProperties});
         } catch (error) {
             console.log("Error in socket:buy-prop", error.message);
             socket.emit("error", { message: error.message });

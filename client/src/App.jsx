@@ -32,10 +32,13 @@ const App = () => {
   const bgPages = ["/signup", "/login", "/create", "/join", "/join", "/lobby", "/", "/load", "/test"];
   useEffect(()=>{
     checkAuth();
-    console.log(authUser);
+    
   }, [checkAuth]);
-
-  // console.log({ authUser });
+  
+  // useEffect(() => {
+  //   console.log(authUser);
+  // }, [authUser]);
+  
   
   if (isCheckingAuth && !authUser) return (
     <div className="flex items-center justify-center h-screen">

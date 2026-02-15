@@ -5,9 +5,10 @@ import { boardData } from "../lib/data.js";
 class Player {
     constructor(userId, name){
         this.userId = userId;
-        this.name = name;
+        this.userName = name;
         this.money = 15000;
         this.position = 0;
+        this.owned = [];
     }
 }
 export default class Game {
@@ -37,7 +38,7 @@ export default class Game {
         this.players.forEach((p, index) => {
             this.idToIndexMap[p.userId.toString()] = index;
         });
-        this.turnOrder = this.players.map(player => player.userId.toString());
+        this.turnOrder = this.players.map(player => { return {userId: player.userId.toString(), userName: player.userName}});
         this.turnOrder.sort(() => Math.random() - 0.5);
 
         this.currentTurn = this.turnOrder[0];
@@ -47,7 +48,7 @@ export default class Game {
     rollDice(userId){
         console.log(userId);
         
-        if (this.currentTurn.toString() !== userId.toString()) throw new Error("Not Your Turn");
+        if (this.currentTurn.userId.toString() !== userId.toString()) throw new Error("Not Your Turn");
         const playerIndex = this.idToIndexMap[userId.toString()];
         // if (!playerIndex) throw new Error("Player not found");
 
