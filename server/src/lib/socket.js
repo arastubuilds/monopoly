@@ -189,7 +189,7 @@ io.on("connection", (socket) => {
             // const session = await getGameSession(code, GameModel, io, getSocket);
             // const result = await session.buyProperty(userId);
             socket.emit("socket:buy-prop:success", {result, game});
-            socket.to(code).emit("property-bought", {game, otherPlayersProperties: result.otherPlayersProperties});
+            socket.to(code).emit("property-bought", {game, message: result.message, otherPlayersProperties: result.otherPlayersProperties});
         } catch (error) {
             console.log("Error in socket:buy-prop", error.message);
             socket.emit("error", { message: error.message });

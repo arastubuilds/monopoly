@@ -60,10 +60,8 @@ import { useGameStoreUsingSocket } from "../store/gameStoreUsingSocket";
 export default function HUD() {
   const yourMoney = useGameStoreUsingSocket((state) => state.yourMoney);
 
-  const setIsViewingOwnProps =
-    useGameStoreUsingSocket.getState().setIsViewingOwnProps;
-  const setIsViewingOthersProps =
-    useGameStoreUsingSocket.getState().setIsViewingOthersProps;
+  const setIsViewingOwnProps = useGameStoreUsingSocket.getState().setIsViewingOwnProps;
+  const setIsViewingOthersProps = useGameStoreUsingSocket.getState().setIsViewingOthersProps;
 
   const isViewingOwnProps = useGameStoreUsingSocket(
     (state) => state.isViewingOwnProps
@@ -89,7 +87,7 @@ export default function HUD() {
                 You
               </span>
               <span className="text-sm font-black text-dark-blue">
-                ${yourMoney ?? 15000}
+                ${yourMoney || 15000}
               </span>
             </div>
           </div>

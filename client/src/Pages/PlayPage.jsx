@@ -84,7 +84,7 @@ function PlayPage() {
         {isBuying && !passed && <BuyPrompt space={landedOn} />}
         {isPaying && <PayRentPrompt space={landedOn}/>}
         {isOwn && !passed && <YourOwnPrompt space={landedOn}/>}
-        {isViewing && <OwnedProp space={viewing} />}
+        {isViewing && <OwnedProp id={viewing} />}
       </div>
     </div>
   )

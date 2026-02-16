@@ -110,7 +110,7 @@ const Lobby = () => {
                     tracking-wide
                   "
                 >
-                  {player.userId}
+                  {player.userName}
                 </div>
               ))
             )}

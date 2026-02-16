@@ -184,13 +184,15 @@ export const useGameStoreUsingSocket = create((set, get) => ({
     },
     buy: async (code) => {
         try {
-            const res = await axiosInstance.post(`/game/${code}/buy`);
+            // const res = await axiosInstance.post(`/game/${code}/buy`);
             // console.log(res.data.yourProperties);
-            set({game: res.data.game, isBuying: false});
-            set({yourProperties: res.data.yourProperties, yourMoney: res.data.yourMoney});
-            toast.success(res.data.message);
+            // set({game: res.data.game, isBuying: false});
+            const socket = useAuthStore.getState().socket;
+            socket.emit("socket:buy-prop", { code: get().game.code });
+            // set({yourProperties: res.data.yourProperties, yourMoney: res.data.yourMoney});
+            // toast.success(res.data.message);
         } catch (error) {
-            toast.error(error.response.data.message);   
+            toast.error(error);   
         }
     },
     pay: async (code, recipient, space) => {

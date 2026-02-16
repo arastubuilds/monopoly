@@ -127,7 +127,7 @@ function PlayerSection({ player, properties = [], onTrade }) {
               Player
             </span>
             <span className="text-sm font-black text-dark-blue truncate max-w-[10rem]">
-              {player?.userId?.username || "Unnamed Player"}
+              {player?.userName || "Unnamed Player"}
             </span>
           </div>
   

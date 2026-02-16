@@ -12,7 +12,7 @@ export default function EndTurnButton() {
         absolute
         cursor-pointer
         px-3 py-2
-        lg:bottom-[15rem] bottom-29
+        lg:bottom-[12rem] bottom-29
         btn-green
         flex items-center justify-center gap-2"    
         onClick={async () => { await endTurn(code) }}>

@@ -166,7 +166,14 @@ export const registerPlayerEvents = () => {
             setIsYourTurnSocket(false);
         }
         setGame(res.game);
-    })
+    });
+    socket.on("socket:buy-prop:success", ({result, game}) => {
+        setIsBuying(false);
+        setGame(game);
+        setYourProperties(result.yourProperties);
+        setYourMoney(result.yourMoney);
+        toast.success(`${result.message}`);
+    });
     socket.on("dice-rolled", ({res, game}) => {
         // console.log(res);
         animateTokenToTile(res.yourIndex, res.landedOn.id);
@@ -219,13 +226,13 @@ export const registerPlayerEvents = () => {
     // });
 
     socket.on("property-bought", (res) => {
-        toast.success(`${res.player} bought ${res.property}`);
+        toast.success(`${res.message}`);
         
         const otherPlayersProperties = res.otherPlayersProperties.filter((opp) => {
-            return opp.player.userId._id.toString() !== user._id.toString();
+            return opp.player.userId.toString() !== user._id.toString();
         });
 
-        console.log(otherPlayersProperties);
+        // console.log(otherPlayersProperties);
         setOPP(otherPlayersProperties);
         setGame(res.game);
     });

@@ -8,7 +8,7 @@ class Player {
         this.userName = name;
         this.money = 15000;
         this.position = 0;
-        this.owned = [];
+        this.properties = [];
     }
 }
 export default class Game {
@@ -86,17 +86,30 @@ export default class Game {
         const playerIndex = this.idToIndexMap[userId.toString()];
         const player = this.players[playerIndex];
         const property = this.boardState[player.position];
+
         if (player.money < property.price) throw new Error("Insufficient Balance");
+
         player.money -= property.price;
         player.properties.push(property.id);
         property.owned = true;
         property.owner = userId;
+
+        const otherPlayersProperties = [];
+        this.players.forEach((p) => {
+
+            const yourProperties = this.boardState.filter((prop) => {
+                return p.properties.includes(prop.id);
+            });
+            otherPlayersProperties.push({player : p, properties: yourProperties});
+
+        });
+
         return {
-            message: `You Bought ${property.name}`,
-            game: this,
+            message: `${player.userName} Bought ${property.name}`,
             yourIndex: playerIndex,
             yourProperties: player.properties,
             yourMoney: player.money,
+            otherPlayersProperties,
         }
     }
     payRent(userId, recipientId, space) {

@@ -1,11 +1,14 @@
 import { useAuthStore } from "../store/authStore";
 import { useGameStore } from "../store/gameStore";
 import { useState } from "react";
+import { useGameStoreUsingSocket } from "../store/gameStoreUsingSocket";
+import boardData from "../lib/data";
+
 
 const OfferTrade = ({ recipient }) => {
     console.log(recipient);
     const { authUser } = useAuthStore();
-    const { game, yourProperties, yourMoney, closeTrade, offerTrade } = useGameStore();
+    const { game, yourProperties, yourMoney, closeTrade, offerTrade } = useGameStoreUsingSocket();
     const recipientProperties = recipient?.properties || [];
     const recipientMoney = recipient?.player.money || 0;
 
@@ -92,7 +95,7 @@ const OfferTrade = ({ recipient }) => {
                                         checked={own.includes(prop)}
                                         onChange={() => toggleProperty(prop, true)}
                                     />
-                                    {prop.name}
+                                    {boardData[prop].name}
                                 </label>
                             ))}
                         </div>
@@ -103,7 +106,7 @@ const OfferTrade = ({ recipient }) => {
 
                 {/* Recipient Properties */}
                 <div className="flex-1 border-4 border-red-600 rounded-lg p-4">
-                    <h2 className="text-2xl font-bold text-red-600 mb-2">{recipient?.player.userId.username}'s Properties</h2>
+                    <h2 className="text-2xl font-bold text-red-600 mb-2">{recipient?.player.userName}'s Properties</h2>
                     <p className="text-gray-800 mb-2">
                         <span className="font-bold">${recipientMoney}</span>
                     </p>

@@ -7,7 +7,7 @@ const BuyPrompt = ({ space  }) => {
     const [passing, setPassing] = useState(false);
     // const { game, buy, pass } = useGameStore();
     const { game, buy, pass } = useGameStoreUsingSocket();
-    const handleBuy = async () =>  { setBuying(true);  await buy(game?.code); setBuying(false); };
+    const handleBuy =  () =>  { setBuying(true);  buy(game?.code); setBuying(false); };
     const handlePass = () => { setPassing(true); pass(); setPassing(false); };
     
     if (!space) return null;
@@ -43,7 +43,15 @@ const BuyPrompt = ({ space  }) => {
                         </div>
                     </>
                 ) : (
-                    <p className="text-gray-600">This space cannot be purchased.</p>
+                    <div className="flex flex-col sm:flex-row justify-center gap-4">
+                        <p className="text-gray-600">This space cannot be purchased.</p>
+                            <button
+                            className="w-full sm:w-32 h-12 bg-white text-red-600 border-4 border-red-600 rounded-lg font-bold text-lg hover:bg-red-600 hover:text-white transition-all"
+                            onClick={handlePass}
+                            >
+                        {passing ? "Passing..." : "Pass"}
+                        </button>
+                    </div>
                 )}
             </div>
         </div>

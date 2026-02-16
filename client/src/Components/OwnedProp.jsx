@@ -1,7 +1,11 @@
 import { useGameStore } from "../store/gameStore";
+import { useGameStoreUsingSocket } from "../store/gameStoreUsingSocket";
+import boardData from "../lib/data";
 
-const OwnedProp = ({space}) => {
-    const {closeOwn} = useGameStore();
+const OwnedProp = ({id}) => {
+    const {closeOwn} = useGameStoreUsingSocket();
+    const space = boardData[id];
+    
     const handleClose = () => {closeOwn()};
     return (
         <>
@@ -9,16 +13,16 @@ const OwnedProp = ({space}) => {
             <div className="bg-white rounded-xl border-4 border-red-600 px-8 py-6 text-center font-mono w-[90%] max-w-md shadow-2xl">
                 
                 <h2 className="text-3xl font-bold text-red-600 mb-2">
-                    {space.name}
+                    {space?.name}
                 </h2>                
                     <>
                         <p className="text-lg text-gray-800 mb-6">
-                            <span className="font-bold">Price: ${space.price}</span>
+                            <span className="font-bold">Price: ${space?.price}</span>
                         </p>
                         <p className="text-lg text-gray-800 mb-6">
 
-                            <span className="font-bold">Base Rent: ${space.base}</span>
-                            <span className="font-bold">Rent </span>
+                            <span className="font-bold">Base Rent: ${space?.base}</span>
+                            
                         </p>
 
                         <div className="flex flex-col sm:flex-row justify-center gap-4">
