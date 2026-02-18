@@ -41,7 +41,7 @@
 // };
 
 // export default Hand;
-
+import boardData from "../lib/data";
 import { useGameStoreUsingSocket } from "../store/gameStoreUsingSocket";
 
 const Hand = ({ owned = [], money = 0 }) => {
@@ -51,7 +51,7 @@ const Hand = ({ owned = [], money = 0 }) => {
     <div
       className="
         absolute left-4 top-20 z-30
-        w-[clamp(16rem,22vw,22rem)]
+        
         max-h-[60vh]
         flex flex-col
         rounded-2xl
@@ -96,13 +96,13 @@ const Hand = ({ owned = [], money = 0 }) => {
           p-4
           flex-1
           overflow-y-auto
-          grid grid-cols-2 gap-3
+          grid grid-cols-3 gap-3
         "
       >
         {owned.length === 0 ? (
           <EmptyState />
         ) : (
-          owned.map((property, index) => (
+          owned.sort().reverse().map((property, index) => (
             <PropertyCard
               key={index}
               property={property}
@@ -133,11 +133,11 @@ function PropertyCard({ property, onView }) {
         {/* Color strip (property group) */}
         <div
           className="absolute top-0 left-0 right-0 h-2 rounded-t-md"
-          style={{ backgroundColor: "var(--monopoly-red)" }}
+          style={{ backgroundColor: `${boardData[property]?.color}` }}
         />
   
         <span className="mt-3 text-xs font-bold text-center truncate">
-          {property.name}
+          {boardData[property].name}
         </span>
   
         <button

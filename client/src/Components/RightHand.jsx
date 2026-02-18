@@ -110,6 +110,7 @@ const RightHand = ({ players = [] }) => {
 export default RightHand;
 
 function PlayerSection({ player, properties = [], onTrade }) {
+    const {setIsViewing} = useGameStoreUsingSocket();
     return (
       <div className="space-y-2">
         {/* Player header */}
@@ -162,7 +163,7 @@ function PlayerSection({ player, properties = [], onTrade }) {
         ) : (
           <div className="grid grid-cols-2 gap-2">
             {properties.map((property, i) => (
-              <OtherPropertyCard key={i} name={property.name} />
+              <OtherPropertyCard key={i} name={property.name} onView={() => setIsViewing(property.id)}/>
             ))}
           </div>
         )}
@@ -170,7 +171,7 @@ function PlayerSection({ player, properties = [], onTrade }) {
     );
   }
 
-  function OtherPropertyCard({ name }) {
+  function OtherPropertyCard({ name, onView }) {
     return (
       <div
         className="
@@ -181,12 +182,30 @@ function PlayerSection({ player, properties = [], onTrade }) {
           text-xs
           font-semibold
           text-dark-blue
-          truncate
           shadow-piece
+          flex items-center justify-between
         "
         title={name}
       >
-        {name}
+        <span className="truncate">{name}</span>
+        <button
+          className="
+            
+            rounded-md
+            bg-[#f4efe6]
+            border border-[#d6cfc2]
+            text-[0.65rem]
+            font-black
+            uppercase
+            tracking-widest
+            py-1 px-1
+            hover:bg-[#efe8db]
+            transition
+          "
+          onClick={onView}
+        >
+          View
+        </button>
       </div>
     );
   }
