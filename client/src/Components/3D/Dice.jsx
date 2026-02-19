@@ -4,19 +4,23 @@ import gsap from 'gsap';
 
 import { useGameStore } from '../../store/gameStore';
 import { useGLTF } from '@react-three/drei';
+import { useGameStoreUsingSocket } from '../../store/gameStoreUsingSocket';
 
 
 const DiceInstance = memo(function DiceInstance({ position, models, which }) {
   const diceRef = useRef();
-  const gltf = useGLTF('/3D/dice/scene.gltf');
+  const gltf = useGLTF(`/3D/dice/scene.gltf`);
   const scene = useMemo(() => gltf?.scene.clone(true), [gltf]);
   
-  const isRolling = useGameStore((state) => state.isRolling);
+  // const isRolling = useGameStore((state) => state.isRolling);
+  const isRolling = useGameStoreUsingSocket((state) => state.isRolling);
   
   
   // const isRolling = false;
   // const value = 1;
-  const value = useGameStore((state) => which === 1 ? state.dice.die1 : state.dice.die2);
+  // const value = useGameStore((state) => which === 1 ? state.dice.die1 : state.dice.die2);
+  const value = useGameStoreUsingSocket((state) => state.rolledDice);
+  
   
   
   // const face = which === 1 ? 1 : 1;
@@ -42,11 +46,16 @@ const DiceInstance = memo(function DiceInstance({ position, models, which }) {
       // mesh.rotation
   }
   const rollToFace = (number, duration = 2) => {
+    // console.log("roll to face");
+    console.log("number",number);
+    
     const mesh = diceRef.current;
     if (!mesh) return;
 
     const faceRotations = getFaceRotations();
     const finalRotation = faceRotations[number];
+    // console.log("final",finalRotation);
+    
     if (!finalRotation) return;
 
     const randomRotation = {
@@ -69,6 +78,7 @@ const DiceInstance = memo(function DiceInstance({ position, models, which }) {
           duration: duration * 0.3,
           ease: 'power3.out',
         });
+        // showFace(value);
       },
     });
   };
@@ -81,14 +91,20 @@ const DiceInstance = memo(function DiceInstance({ position, models, which }) {
     showFace(1);
   }, [scene]);
 
+  // useEffect(() => {
+  //   console.log(value);
+  //   console.log("Dice "+which+" "+(which === 1 ? value.die1 : value.die2));
+  //       showFace((which === 1 ? value.die1 : value.die2));
+  // }, [value])
   // Auto-roll on change of value or isRolling
   useEffect(() => {
-    console.log(isRolling, value);
-    if (isRolling) {
-      rollToFace(value);
-    }
-    // showFace(value);
-  }, [isRolling, value]);
+    // if (isRolling) {
+      // if (!isRolling) return;
+      console.log("value", (which === 1 ? value?.die1 : value?.die2));
+      rollToFace((which === 1 ? value?.die1 : value?.die2));
+    // } 
+
+  }, [value]);
 
   return scene ? (
     <primitive object={scene} scale={[3, 3, 3]} position={position} />
@@ -99,8 +115,10 @@ const DiceInstance = memo(function DiceInstance({ position, models, which }) {
 export default function Dice({ models }) {
   return (
     <group>
-      <DiceInstance position={[-5, -26, -26]}  which={1} />
-      <DiceInstance position={[6, -26, -26]}  which={2} />
+      {/* <DiceInstance position={[-5, -26, -26]}  which={1} /> */}
+      {/* <DiceInstance position={[6, -26, -26]}  which={2} /> */}
+      <DiceInstance position={[-5, 3.5, 36]}  which={1} />
+      <DiceInstance position={[5, 3.5, 36]}  which={2} />
     </group>
   );
 }

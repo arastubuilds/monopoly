@@ -12,7 +12,7 @@ export const useTokenStore = create((set) => ({
             return {tileIndex: 0, toTileIndex: null};
         });
         set({tokens});
-        console.log(tokens);
+        // console.log(tokens);
     },
     setTokenTileIndex: (index, tileIndex) => set((state) => {
         // tileIndex = getPositionByIndex(tileIndex);
@@ -22,20 +22,20 @@ export const useTokenStore = create((set) => ({
             tileIndex,
             toTileIndex: null,
         };
-        console.log(tokens);
+        // console.log(tokens);
         return {tokens};
     }),
     
     animateTokenToTile: (index, toTileIndex) => set((state) => {
         // toTileIndex = getPositionByIndex(toTileIndex);
-        console.log(toTileIndex);
+        // console.log(toTileIndex);
         
         const tokens = [...state.tokens];
         tokens[index] = {
             ...tokens[index],
             toTileIndex,
         };
-        console.log(tokens);
+        // console.log(tokens);
         return {tokens};
         // return new Promise((resolve) => {
         //     setTimeout(() => {

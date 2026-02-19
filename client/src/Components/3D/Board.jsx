@@ -1,26 +1,104 @@
 import * as THREE from 'three';
 import { memo, useEffect, useMemo, useRef } from "react";
-import TokenGroup from './Token.jsx';
 import { useTexture } from '@react-three/drei';
 
+import TokenGroup from './Token.jsx';
+import Dice from './Dice.jsx';
 
-const Board1 = memo (() => {
-    const texture = useTexture('/3D/Board.png');
+const Board1 = memo (({rotateY}) => {
+    const groupRef = useRef();
+    const dragging = useRef(false);
+    const lastX = useRef(0);
+
+    const texture = useTexture('/Board.webp');
     texture.magFilter = THREE.LinearFilter;
     texture.minFilter = THREE.LinearMipMapLinearFilter;
     texture.generateMipmaps = true;
     texture.anisotropy = 16;
     texture.colorSpace = THREE.SRGBColorSpace;
+
+    const onPointerDown = (e) => {
+        e.stopPropagation();
+        dragging.current = true;
+        lastX.current = e.clientX;
+      };
+    
+    const onPointerUp = (e) => {
+    e.stopPropagation();
+    dragging.current = false;
+    };
+    
+    const onPointerMove = (e) => {
+    if (!dragging.current) return;
+    e.stopPropagation();
+
+    const deltaX = e.clientX - lastX.current;
+    lastX.current = e.clientX;
+
+    // rotation speed (tweak this)
+    groupRef.current.rotation.y += deltaX * 0.005;
+    };
+
     return (
-        <group rotation={[0, 0, 0]} position={[0, -30, -56]}>
+        <group 
+            ref={groupRef}  
+            rotation={[0, rotateY, 0]} position={[0, -30, -56]}
+            onPointerDown={onPointerDown}
+            onPointerUp={onPointerUp}
+            onPointerLeave={onPointerUp}
+            onPointerMove={onPointerMove}
+        >
             <mesh>
                 <boxGeometry args={[150.7, 1, 150.7]} />
                 <meshBasicMaterial map={texture} />
             </mesh>
+            <BoardBorder />
+            <Dice />
             <TokenGroup />
         </group>
     )
-})
+});
+
+
+const BoardBorder = ({
+  size = 150.7,
+  thickness = 1,
+  height = 1,
+}) => {
+  const half = size / 2;
+  const halfWithBorder = half + thickness / 2;
+
+  return (
+    <group>
+      {/* Front */}
+      <mesh position={[0, height / 2, halfWithBorder]}>
+        <boxGeometry args={[size + thickness * 2, height, thickness]} />
+        <meshStandardMaterial color="black" />
+      </mesh>
+
+      {/* Back */}
+      <mesh position={[0, height / 2, -halfWithBorder]}>
+        <boxGeometry args={[size + thickness * 2, height, thickness]} />
+        <meshStandardMaterial color="black" />
+      </mesh>
+
+      {/* Left */}
+      <mesh position={[-halfWithBorder, height / 2, 0]}>
+        <boxGeometry args={[thickness, height, size]} />
+        <meshStandardMaterial color="black" />
+      </mesh>
+
+      {/* Right */}
+      <mesh position={[halfWithBorder, height / 2, 0]}>
+        <boxGeometry args={[thickness, height, size]} />
+        <meshStandardMaterial color="black" />
+      </mesh>
+    </group>
+  );
+};
+
+
+
 const Board = memo (function Board({rotateY = Math.PI}) {
     // console.log("board");
     const groupRef = useRef();
@@ -105,7 +183,7 @@ function Logo(){
     const logoHeight = 25;
     // console.log("logo");
     
-    const texture = useTexture('/3D/monopoly.png');
+    const texture = useTexture(`/monopoly/3D/monopoly.png`);
     texture.magFilter = THREE.LinearFilter;
     texture.minFilter = THREE.LinearMipMapLinearFilter;
     texture.generateMipmaps = true;

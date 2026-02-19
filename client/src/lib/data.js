@@ -62,7 +62,7 @@ const boardData =
     {
         id: 5,
         name: "King Cross St",
-        // color : "black",
+        color : "black",
         price: 2000,
         base: 250,
         station: true,
@@ -160,7 +160,7 @@ const boardData =
     {
         id: 12,
         name : "Electrics",
-        // color: "z",
+        color: "transparent",
         base: 4,
         price : 1500,
         setSize: 2,
@@ -205,7 +205,7 @@ const boardData =
     {
         id: 15,
         name: "Marleybone Stn",
-        // color : "black",
+        color : "black",
         price: 2000,
         base: 250,
         station: true,
@@ -241,7 +241,7 @@ const boardData =
     },
     {
         id: 18,
-        name : "Marlborough St",
+        name : "Marlborough Street",
         color : "orange",
         price : 1800,
         base: 140,
@@ -340,7 +340,7 @@ const boardData =
     {
         id: 25,
         name: "Fenchurch Stn",
-        // color : "black",
+        color : "black",
         price: 2000,
         base: 250,
         station: true,
@@ -390,7 +390,7 @@ const boardData =
         id: 28,
         name: "Water Works",
         setSize: 2,
-        // color: "z",
+        color: "transparent",
         base: 4,
         price : 1500,
         utility : true,
@@ -480,7 +480,7 @@ const boardData =
     {
         id: 35,
         name: "Liverpool Stn",
-        // color : "black",
+        color : "black",
         price: 2000,
         base: 250,
         station: true,
@@ -528,6 +528,10 @@ const boardData =
         color : "darkblue",
         price : 4000,
         base: 500,
+        rent1: 2000,
+        rent2: 5000,
+        rent3: 15000,
+        rent4: 20000,
         hcost: 2000,
         houses : 0,
         hotels : 0,

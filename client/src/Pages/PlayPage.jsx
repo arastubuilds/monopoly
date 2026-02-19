@@ -18,21 +18,32 @@ import RollDiceButton from '../Components/RollDiceButton.jsx';
 import EndTurnButton from '../Components/EndTurnButton.jsx';
 import HUD from '../Components/HUD.jsx';
 import { Loader } from 'lucide-react';
+import { useGameStoreUsingSocket } from '../store/gameStoreUsingSocket.js';
 
 
 function PlayPage() {
 
-
-  const game = useGameStore((state) => state.game);
-  const landedOn = useGameStore((state) => state.landedOn);
-  const length = useGameStore((state) => state.numPlayers);
+  // const game = useGameStore((state) => state.game);
+  // const landedOn = useGameStore((state) => state.landedOn);
+  // const length = useGameStore((state) => state.numPlayers);
   
   
-  const yourProperties = useGameStore((state) => state.yourProperties);
-  const oPP = useGameStore((state) => state.oPP);
-  const { roll, end, rolled, passed, viewing, tradingWith, offeredTrade, isYourTurn, isBuying, isPaying, isOwn, isViewing, isOffering, isOffered } = useGameStore();
-  const isViewingOwnProps = useGameStore((state) => state.isViewingOwnProps);
-  const isViewingOthersProps = useGameStore((state) => state.isViewingOthersProps);
+  // const yourProperties = useGameStore((state) => state.yourProperties);
+  // const oPP = useGameStore((state) => state.oPP);
+  // const { roll, end, rolled, passed, viewing, tradingWith, offeredTrade, isYourTurn, isBuying, isPaying, isOwn, isViewing, isOffering, isOffered } = useGameStore();
+  // const isViewingOwnProps = useGameStore((state) => state.isViewingOwnProps);
+  // const isViewingOthersProps = useGameStore((state) => state.isViewingOthersProps);
+  const game = useGameStoreUsingSocket((state) => state.game);
+  const landedOn = useGameStoreUsingSocket((state) => state.landedOn);
+  // const length = useGameStoreUsingSocket((state) => state.game.players.length());
+  
+  
+  const yourProperties = useGameStoreUsingSocket((state) => state.yourProperties);
+  const oPP = useGameStoreUsingSocket((state) => state.oPP);
+  const { roll, end, rolled, passed, viewing, tradingWith, offeredTrade, isYourTurn, isBuying, isPaying, isOwn, isViewing, isOffering, isOffered } = useGameStoreUsingSocket();
+  const isViewingOwnProps = useGameStoreUsingSocket((state) => state.isViewingOwnProps);
+  const isViewingOthersProps = useGameStoreUsingSocket((state) => state.isViewingOthersProps);
+  
   const handleClick = async() => {
     await roll(game?.code);
   }
@@ -40,27 +51,28 @@ function PlayPage() {
     await end(game?.code);
   }
   useEffect(() => {
-    useTokenStore.getState().createTokens(length);
+    useTokenStore.getState().createTokens(game?.players?.length);
     // console.log( useTokenStore.getState().tokens );
     registerPlayerEvents();
     return () => unregisterPlayerEvents();
   }, []);
 
   return (
-    <div
-      className=''
-      style={{
-        backgroundImage: `url(/bg.jpg)`,
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-        height: '100vh',
-        width: '100vw',
-        zIndex: -1,
-      }} >
-      <Suspense fallback={<div className='h-full w-full flex justify-center items-center '><Loader className=''/></div>}>
+    <div className='min-h-screen board-spherical'>
+      {/* <img src="/3D/background.jpg" alt="background" 
+        style={{
+          position: 'fixed',
+          // backgroundImage: `url(/bg.jpg)`,
+          // backgroundSize: 'cover',
+          // backgroundRepeat: 'no-repeat',
+          // height: '100vh',
+          // width: '100vw',
+          // zIndex: -1,
+        }}/> */}
+      <Suspense fallback={<div className='h-full w-full flex justify-center items-center'><Loader className=''/></div>}>
         <SceneCanvas />
       </Suspense>
-      <div className='absolute top-0 left-0 flex justify-center w-full h-full z-50 lg:text-lg text-sm'>
+      <div className='top-0 left-0 flex justify-center w-full h-full z-50 lg:text-lg text-sm'>
         <HUD />
         <div className='w-full h-full'>
           {isViewingOwnProps && <Hand owned={yourProperties} />}
@@ -72,7 +84,7 @@ function PlayPage() {
         {isBuying && !passed && <BuyPrompt space={landedOn} />}
         {isPaying && <PayRentPrompt space={landedOn}/>}
         {isOwn && !passed && <YourOwnPrompt space={landedOn}/>}
-        {isViewing && <OwnedProp space={viewing} />}
+        {isViewing && <OwnedProp id={viewing} />}
       </div>
     </div>
   )

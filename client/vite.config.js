@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 
 export default defineConfig({
+  // base: "/monopoly/",
   plugins: [
     react(),
     tailwindcss(),

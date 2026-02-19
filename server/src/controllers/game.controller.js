@@ -1,8 +1,9 @@
 import Game from "../models/game.model.js";
+import { GameSession} from "../lib/gameStateNew.js";
 import { generateUniqueCode } from "../lib/utils.js";
 import { getSocket, io } from "../lib/socket.js";
 import { boardData } from "../lib/data.js";
-import { handleLandedOn } from "../lib/gameUtils.js";
+import { drawChanceCardUtil, handleLandedOn } from "../lib/gameUtils.js";
 
 export const createGame = async (req, res) => {
     try {
@@ -21,9 +22,11 @@ export const createGame = async (req, res) => {
         await newGame.save();
 
         const game = await Game.findById(newGame._id).populate("players.userId", "username");
+        // const session = new GameSession(code, game, io, getSocket);
         if (game){
             const socket = getSocket(hostId);
-
+            // console.log("socket", socket);
+            // await session.joinGame(hostId);
             socket.join(code);
             // io.to(socket).emit("joined-room", game);
 
@@ -285,13 +288,74 @@ export const rollDice = async (req, res) => {
                 number: roll,
             });
 
-        } else {
+        } else if (landed.event === "landed-chance"){
+            console.log("chance");
+            socket.to(code).emit(landed.event, {space: landed.space});
+            res.status(200).json({
+                message: `You rolled a ${roll} Landed on Chance."`,
+                buy: false,
+                pay: false,
+                own: false,
+                drawn: false,
+                yourIndex: playerIndex,
+                landedOn: landed.space,
+                game,
+                drewCard: landed.card,
+                dice: { die1, die2 },
+                number: roll,
+            });
+        } else if (landed.event === "landed-community"){
+            console.log("community");
+            socket.to(code).emit(landed.event, {space: landed.space});
+            res.status(200).json({
+                message: `You rolled a ${roll} Landed on community."`,
+                buy: false,
+                pay: false,
+                own: false,
+                drawn: false,
+                yourIndex: playerIndex,
+                landedOn: "Chance",
+                game,
+                drewCard: landed.space,
+                dice: { die1, die2 },
+                number: roll,
+            });
+        }
+        else {
             console.log("error?");
         }
 
     } catch (error) {
         console.log("Error in roll dice controller", error.message);
         return res.status(500).json({message: "Error Rolling Dice"});
+    }
+}
+export const drawChanceCard = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const {code} = req.params;
+        // const game = req.game;
+        const game = await Game.findOne({code}).populate("players.userId", "username");
+        if (!game)
+            return res.status(404).json({message: "Game not found"});
+        
+        if (game.currentTurn.toString() !== userId.toString())
+            return res.status(403).json({message: "Not your turn"});
+        
+        const playerIndex = game.players.findIndex(
+            (p) => p.userId._id.toString() === userId.toString() 
+        );
+        if (playerIndex === -1)
+            return res.status(404).json({message: "Player not found in game"});
+
+        const socket = getSocket(userId);
+        const card = drawChanceCardUtil(game.players[playerIndex]);
+        socket.to(code).emit("chance-card-drawn", {card});
+        return res.status(200).json({message: "Chance Card Drawn", card});
+
+    } catch (error) {
+        console.log("Error in draw chance card controller", error.message);
+        return res.status(500).json({message: "Error Drawing Chance Card"});
     }
 }
 

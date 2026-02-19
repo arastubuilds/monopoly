@@ -593,7 +593,7 @@ export const chanceCards = [
         id: 2,
         desc: "Pay $50",
         action: "pay",
-        amt: 50,
+        amt: -50,
     },
 ];
 export const communityCards = [
@@ -613,6 +613,6 @@ export const communityCards = [
         id: 2,
         desc: "Pay $50",
         action: "pay",
-        amt: 50,
+        amt: -50,
     },
 ];

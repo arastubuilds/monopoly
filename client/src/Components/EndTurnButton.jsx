@@ -1,19 +1,20 @@
 import { useGameStore } from "../store/gameStore";
+import { useGameStoreUsingSocket } from "../store/gameStoreUsingSocket";
 
 export default function EndTurnButton() {
-    const code = useGameStore.getState().code;
-    const endTurn = useGameStore.getState().end;
+    // const code = useGameStore.getState().code;
+    // const endTurn = useGameStore.getState().end;
+    const code = useGameStoreUsingSocket.getState().code;
+    const endTurn = useGameStoreUsingSocket.getState().end;
     return (
         <button
         className="
         absolute
-        h-[5%] w-[8%]
-        lg:bottom-60 bottom-30
-        bg-black/10
-        border-none rounded-full
         cursor-pointer
-        transition-colors duration-200
-        hover:bg-black/20"    
+        px-3 py-2
+        lg:bottom-[12rem] bottom-29
+        btn-green
+        flex items-center justify-center gap-2"    
         onClick={async () => { await endTurn(code) }}>
             End Turn
         </button>

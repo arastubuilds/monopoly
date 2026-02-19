@@ -1,1 +1,7 @@
-@import "tailwindcss"
+@import "tailwindcss";
+
+/* body {
+    @apply antialiased overflow-x-hidden overflow-y-hidden;
+    background: #deffea;
+    background: linear-gradient(120deg, rgba(222, 255, 234, 1) 50%, rgba(255, 252, 207, 1) 50%);
+  } */

@@ -22,6 +22,7 @@ import PlayPage from "./Pages/PlayPage";
 import SceneCanvas from './Components/3D/SceneCanvas';
 import LoadGame from './Pages/LoadGame';
 
+// import bgImage from './assets/bg.jpg';
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
@@ -31,10 +32,13 @@ const App = () => {
   const bgPages = ["/signup", "/login", "/create", "/join", "/join", "/lobby", "/", "/load", "/test"];
   useEffect(()=>{
     checkAuth();
-    console.log(authUser);
+    
   }, [checkAuth]);
-
-  // console.log({ authUser });
+  
+  // useEffect(() => {
+  //   console.log(authUser);
+  // }, [authUser]);
+  
   
   if (isCheckingAuth && !authUser) return (
     <div className="flex items-center justify-center h-screen">
@@ -47,13 +51,15 @@ const App = () => {
     {(bgPages.includes(location.pathname) &&  
       <div style={{
         position: 'absolute',
-        backgroundImage: `url(/bg.jpg)`,
+        // backgroundImage: `url(/bg.jpg)`,
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
         height: '100vh',
         width: '100vw',
         zIndex: -1,
       }}> 
+        {/* <img src="/3D/background.jpg" alt="background" /> */}
+        <div className='min-h-screen board-spherical' />
         {/* <SceneCanvas />  */}
       </div> 
     )}

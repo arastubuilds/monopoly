@@ -1,0 +1,145 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+  body {
+    @apply text-text-main font-sans antialiased overflow-x-hidden overflow-y-hidden;
+    background: #deffea;
+    background: linear-gradient(120deg, rgba(222, 255, 234, 1) 50%, rgba(255, 252, 207, 1) 50%);
+  }
+  
+
+  h1,
+  h2,
+  h3 {
+    @apply font-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  p {
+    margin: 0;
+  }
+}
+
+
+/* =========================
+   Design primitives
+   (visual only)
+   ========================= */
+@layer components {
+  /* Buttons */
+  .btn-green {
+    @apply bg-monopoly-green text-white font-black uppercase tracking-wide
+           rounded-2xl shadow-button border-b-4 border-monopoly-dark-green
+           hover:translate-y-[3px] hover:shadow-button-hover
+           hover:bg-monopoly-dark-green
+           transition-all duration-200;
+  }
+
+  .btn-outline {
+    @apply bg-white/90 backdrop-blur-sm border-2 border-dark-blue
+           text-dark-blue font-black uppercase tracking-wide
+           rounded-2xl shadow-button
+           hover:translate-y-[3px] hover:shadow-button-hover
+           hover:bg-gray-50
+           transition-all duration-200;
+  }
+
+  /* Glass surfaces */
+  .glass-panel {
+    @apply bg-white/80 backdrop-blur-2xl border-2 border-white
+           shadow-floating rounded-[3rem];
+  }
+
+  /* Decorative elements */
+  .game-element {
+    @apply absolute pointer-events-none select-none;
+    filter: drop-shadow(8px 12px 10px rgba(0, 0, 0, 0.2));
+    transition: transform 0.5s ease-in-out;
+  }
+
+  /* Dice */
+  .die-face {
+    @apply bg-white rounded-3xl shadow-piece
+           flex items-center justify-center border-2 border-gray-100;
+    background: radial-gradient(circle at 30% 30%, #ffffff, #f0f0f0);
+  }
+
+  .die-dot {
+    @apply bg-black rounded-full;
+    box-shadow:
+      inset 1px 1px 2px rgba(255, 255, 255, 0.5),
+      1px 1px 1px rgba(255, 255, 255, 0.2);
+  }
+
+  /* Houses / hotels (pure visuals) */
+  .house-3d {
+    transform-style: preserve-3d;
+  }
+
+  .house-base {
+    @apply bg-monopoly-green shadow-lg rounded-sm;
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+  }
+
+  .hotel-base {
+    @apply bg-monopoly-red shadow-lg rounded-sm;
+    background: linear-gradient(135deg, #ff4757, #c0392b);
+  }
+
+  /* Mascots */
+  .mascot-shadow {
+    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.2));
+  }
+
+  /* Misc visuals */
+  .playful-title {
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .chat-bubble::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 20px;
+    border-width: 10px 10px 0;
+    border-style: solid;
+    border-color: #ffffff transparent;
+  }
+}
+
+
+
+
+
+
+/* =========================
+   Utilities (pure helpers)
+   ========================= */
+@layer utilities {
+  .clip-path-polygon {
+    clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+  }
+}
+
+/* =========================
+   Legacy Stitch helpers
+   (temporary, opt-in)
+   ========================= */
+.stitch-h1 {
+  font-size: 72px;
+  line-height: 80px;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+.stitch-body {
+  font-size: 18px;
+  line-height: 28px;
+  letter-spacing: -0.01em;
+}

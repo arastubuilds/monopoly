@@ -3,7 +3,8 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
-import path from "path";
+// import path from "path";
+// import { fileURLToPath } from "url";
 
 import {connectDB} from "./lib/db.js";
 import authRoutes from "./routes/auth.route.js";
@@ -13,9 +14,10 @@ import { app, server } from "./lib/socket.js";
 
 dotenv.config();
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8000;
 const CLIENT_URL = process.env.CLIENT_URL;
-const  __dirname = path.resolve();
+// const __filename = fileURLToPath(import.meta.url);
+// const  __dirname = path.dirname(__filename);
 
 app.use(express.json());    
 app.use(cookieParser());
@@ -25,12 +27,12 @@ app.use(cors({ origin: CLIENT_URL, credentials: true }));
 app.use("/api/auth", authRoutes);
 app.use("/api/game", gameRoutes);
 
-// if (process.env.NODE_ENV==="production"){
-//     app.use(express.static(path.join(__dirname, "../client/dist")));
-//     app.get("*", (req, res) => {
-//         res.sendFile(path.join(__dirname, "../client", "dist", "index.html"));
-//     });
-// }
+
+// app.use(express.static(path.join(__dirname, "../client/dist")));
+// app.get("*", (req, res) => {
+//     res.sendFile(path.join(__dirname, "../client", "dist", "index.html"));
+// });
+
 server.listen(PORT, () => {
     console.log("server running on", PORT);
     connectDB();
