@@ -19,6 +19,7 @@ import EndTurnButton from '../Components/EndTurnButton.jsx';
 import HUD from '../Components/HUD.jsx';
 import { Loader } from 'lucide-react';
 import { useGameStoreUsingSocket } from '../store/gameStoreUsingSocket.js';
+import RollingButton from '../Components/RollingButton.jsx';
 
 
 function PlayPage() {
@@ -40,7 +41,7 @@ function PlayPage() {
   
   const yourProperties = useGameStoreUsingSocket((state) => state.yourProperties);
   const oPP = useGameStoreUsingSocket((state) => state.oPP);
-  const { roll, end, rolled, passed, viewing, tradingWith, offeredTrade, isYourTurn, isBuying, isPaying, isOwn, isViewing, isOffering, isOffered } = useGameStoreUsingSocket();
+  const { roll, end, rolled, passed, viewing, tradingWith, offeredTrade, isYourTurn, isRolling, isBuying, isPaying, isOwn, isViewing, isOffering, isOffered } = useGameStoreUsingSocket();
   const isViewingOwnProps = useGameStoreUsingSocket((state) => state.isViewingOwnProps);
   const isViewingOthersProps = useGameStoreUsingSocket((state) => state.isViewingOthersProps);
   
@@ -78,7 +79,7 @@ function PlayPage() {
           {isViewingOwnProps && <Hand owned={yourProperties} />}
           {isViewingOthersProps && <RightHand players={oPP}/>}
         </div>
-        {isYourTurn && (!rolled ? <RollDiceButton /> : <EndTurnButton />)}
+        {isYourTurn && (!rolled ? (isRolling? <RollingButton/> : <RollDiceButton />) : <EndTurnButton />)}
         {isOffering && <OfferTrade recipient = {tradingWith}/>}
         {isOffered && <OfferedTrade tradeOffer={offeredTrade}/>}
         {isBuying && !passed && <BuyPrompt space={landedOn} />}

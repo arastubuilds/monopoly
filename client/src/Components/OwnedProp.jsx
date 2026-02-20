@@ -54,20 +54,18 @@ const OwnedProp = ({ id }) => {
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center px-4">
       <div
         className="
-          relative
-
-          bg-[#fffdf6]
           rounded-3xl
-          border-[3px] border-black/20
+          relative
+          bg-[#fffdf6]
           shadow-card
           overflow-hidden
           font-serif
-          
+          -top-10
         "
       >
         {/* Color Strip */}
         <div
-          className="h-12 flex items-center justify-center"
+          className="h-14 flex items-center justify-center"
           style={{ backgroundColor: `${space.color}` }}
         >
           <span className="text-white font-black tracking-widest uppercase text-sm">
@@ -98,11 +96,12 @@ const OwnedProp = ({ id }) => {
           {/* Rent Table */}
           <div className="space-y-2 text-sm">
             {/* <RentRow label="Base Rent" value={space?.base} /> */}
+            
             {space?.rent1 && <RentRow label="With 1 House:" value={space.rent1} />}
             {space?.rent2 && <RentRow label="With 2 Houses:" value={space.rent2} />}
             {space?.rent3 && <RentRow label="With 3 Houses:" value={space.rent3} />}
             {space?.rent4 && <RentRow label="With 4 Houses:" value={space.rent4} />}
-            {space?.hotel && <RentRow label="With Hotel" value={space.hotel} />}
+            {space?.rent5 && <RentRow label="With Hotel" value={space.rent5} />}
           </div>
                 
           <div className="h-px bg-black/10 my-4" />
@@ -117,15 +116,13 @@ const OwnedProp = ({ id }) => {
               mt-6
               w-full
               py-3
+              btn-green
+              cursor-pointer
               rounded-xl
               font-black
               uppercase
               tracking-widest
               text-sm
-              bg-white
-              border-[3px] border-black/20
-              shadow-button
-              hover:bg-black/5
               transition
             "
           >

@@ -102,7 +102,7 @@ const Hand = ({ owned = [], money = 0 }) => {
         {owned.length === 0 ? (
           <EmptyState />
         ) : (
-          owned.sort().reverse().map((property, index) => (
+          owned.sort().map((property, index) => (
             <PropertyCard
               key={index}
               property={property}
