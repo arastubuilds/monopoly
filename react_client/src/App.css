@@ -86,6 +86,16 @@
 @layer components {
 
   /* ---------- Buttons ---------- */
+  .btn-disabled {
+    background-color: var(--monopoly-green);
+    color: white;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 1rem;
+    border-bottom: 4px solid var(--monopoly-dark-green);
+    box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+  }
   .btn-green {
     background-color: var(--monopoly-green);
     color: white;
@@ -100,6 +110,40 @@
 
   .btn-green:hover {
     background-color: var(--monopoly-dark-green);
+    transform: translateY(3px);
+    box-shadow: 0 3px 0 rgba(0,0,0,0.2);
+  }
+  .btn-red {
+    background-color: var(--monopoly-red);
+    color: white;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 1rem;
+    border-bottom: 4px solid var(--monopoly-dark-red);
+    box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+  }
+
+  .btn-red:hover {
+    background-color: var(--monopoly-dark-red);
+    transform: translateY(3px);
+    box-shadow: 0 3px 0 rgba(0,0,0,0.2);
+  }
+  .btn-blue {
+    background-color: var(--monopoly-blue);
+    color: white;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 1rem;
+    border-bottom: 4px solid var(--monopoly-dark-blue);
+    box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+  }
+
+  .btn-blue:hover {
+    background-color: var(--monopoly-dark-blue);
     transform: translateY(3px);
     box-shadow: 0 3px 0 rgba(0,0,0,0.2);
   }

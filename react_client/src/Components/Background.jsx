@@ -1,5 +1,6 @@
-import { MonopolyBoard } from "./Board";
+import { MonopolyBoard } from "./Board.jsx";
 import boardData from "../lib/data.js"
+
 const Background = () => {
     return (
     <div className="absolute w-full h-screen flex justify-center items-center bg-[#f5f5dc] overflow-hidden z-10">

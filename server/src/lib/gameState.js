@@ -46,7 +46,7 @@ export default class Game {
         // console.log(this.idToIndexMap);
     }
     rollDice(userId){
-        console.log(userId);
+        console.log("userId: ",userId);
         
         if (this.currentTurn.userId.toString() !== userId.toString()) throw new Error("Not Your Turn");
         const playerIndex = this.idToIndexMap[userId.toString()];
@@ -59,7 +59,7 @@ export default class Game {
         let newPosition = (this.players[playerIndex].position + roll) % 40;
 
         if (newPosition < this.players[playerIndex].position) {
-            this.players[playerIndex].money += 200; // Add $200 for passing GO
+            this.players[playerIndex].money += 2000; // Add $200 for passing GO
         }
 
         this.players[playerIndex].position = newPosition;

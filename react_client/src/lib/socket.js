@@ -141,16 +141,16 @@ export const registerPlayerEvents = () => {
     socket.on("socket:roll-dice:success", ({res}) => {
         setRolledDice(res.dice);
         // console.log("dice from socket:", res.dice);
-        setIsRolling(false);
-        setRolled(true);
         setTimeout(() => {
-            animateTokenToTile(res.yourIndex, res.landedOn.id);
-        
             // set({isBuying: res.buy, isPaying: res.pay, isOwn: res.own, landedOn: res.landedOn });  
+            animateTokenToTile(res.yourIndex, res.landedOn.id);
             setIsBuying(res.buy);
             setIsPaying(res.pay);
             setIsOwn(res.own);
             setLandedOn(res.landedOn);
+            setYourMoney(res.yourMoney);
+            setIsRolling(false);
+            setRolled(true);
             toast(res.message);
         }, 2200);
             // console.log(res.data.landedOn);
