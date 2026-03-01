@@ -18,7 +18,7 @@ const io = new Server(server, {
     //     skipMiddlewares: true,
     // },
     cors: {
-        origin: "http://localhost:5173",
+        origin: CLIENT_URL,
         methods: ["GET", "POST"]
     },
 });
