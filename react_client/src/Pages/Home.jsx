@@ -3,7 +3,8 @@ import { useEffect } from "react";
 
 const Home = () => {
     useEffect(() => {
-        window.location.replace("http://localhost:3000");
+        const appUrl = import.meta.env.VITE_APP_URL ?? "http://localhost:3000";
+        window.location.replace(appUrl);
     },[]);
     // return (
 
