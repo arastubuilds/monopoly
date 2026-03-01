@@ -59,7 +59,7 @@ function PlayPage() {
   }, []);
 
   return (
-    <div className='min-h-screen board-spherical'>
+    <div className='min-h-[100dvh] board-spherical'>
       {/* <img src="/3D/background.jpg" alt="background" 
         style={{
           position: 'fixed',

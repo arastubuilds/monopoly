@@ -47,19 +47,19 @@ const App = () => {
   );
 
   return (
-    <div>
+    <div className='h-[100dvh]'>
     {(bgPages.includes(location.pathname) &&  
       <div style={{
         position: 'absolute',
         // backgroundImage: `url(/bg.jpg)`,
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
-        height: '100vh',
+        height: '100dvh',
         width: '100vw',
         zIndex: -1,
       }}> 
         {/* <img src="/3D/background.jpg" alt="background" /> */}
-        <div className='min-h-screen board-spherical' />
+        <div className='min-h-[100dvh] board-spherical' />
         {/* <SceneCanvas />  */}
       </div> 
     )}
