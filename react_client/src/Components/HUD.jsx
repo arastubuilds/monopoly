@@ -71,8 +71,8 @@ export default function HUD() {
   );
 
   return (
-    <div className="w-full pointer-events-none absolute top-4 left-0 right-0 z-40 flex justify-center">
-      <div className="pointer-events-auto flex  px-0 w-full justify-evenly">
+    <div className="pointer-events-none absolute top-4 left-0 right-0 z-40 flex justify-center">
+      <div className="pointer-events-auto flex flex-row px-0 w-full justify-between">
         {/* YOUR PANEL */}
         <HudPill>
           <div className="flex items-center gap-3">
@@ -129,7 +129,6 @@ function HudPill({ children }) {
     return (
       <div
         className={`
-          
           lg:w-1/6
           glass-panel
           flex justify-between items-center gap-4

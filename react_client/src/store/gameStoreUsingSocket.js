@@ -117,14 +117,6 @@ export const useGameStoreUsingSocket = create((set, get) => ({
             set({isStarting: false});
         }
     },
-    end: async(code) => {
-        set({isEnding: true});
-        try {
-            const res = await axiosInstance.post(`/game/end/${code}`);
-        } catch (error) {
-            
-        }
-    },
     ready: async () => {
         try {
             const res = await axiosInstance.post(`/game/ready`);
@@ -175,11 +167,13 @@ export const useGameStoreUsingSocket = create((set, get) => ({
         try {
             // const res = await axiosInstance.post(`/game/${code}/endTurn`);
             // toast.success(res.data.message);
-            set({isYourTurn: false, rolled: false, passed: false, landedOn: null});
+            set({isYourTurn: false, rolled: false, passed: false, landedOn: null, isEnding: true});
             const socket = useAuthStore.getState().socket;
             socket.emit("socket:end-turn", { code: get().game.code });
         } catch (error) {
             toast.error(error);
+        } finally {
+            set({isEnding: false})
         }
     },
     buy: async (code) => {

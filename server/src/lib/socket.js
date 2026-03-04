@@ -188,8 +188,14 @@ io.on("connection", (socket) => {
             const result = game.buyProp(userId);
             // const session = await getGameSession(code, GameModel, io, getSocket);
             // const result = await session.buyProperty(userId);
+<<<<<<< Updated upstream
             socket.emit("socket:buy-prop:success", {result, game});
             socket.to(code).emit("property-bought", {game, message: result.message, otherPlayersProperties: result.otherPlayersProperties});
+=======
+            // socket.emit("socket:buy-prop:success", {result, game});
+            // socket.to(code).emit("property-bought", {game, message: result.message, otherPlayersProperties: result.otherPlayersProperties});
+            io.to(code).emit("socket:buy-prop:success", {result, game})
+>>>>>>> Stashed changes
         } catch (error) {
             console.log("Error in socket:buy-prop", error.message);
             socket.emit("error", { message: error.message });

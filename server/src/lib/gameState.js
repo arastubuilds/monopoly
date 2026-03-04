@@ -77,10 +77,31 @@ export default class Game {
         });
     }
     endTurn(userId) {
+<<<<<<< Updated upstream
         const nextIndex = (this.idToIndexMap[userId] + 1) % this.players.length;
         // console.log("nextIndex", nextIndex);
         
         this.currentTurn = this.turnOrder[nextIndex];
+=======
+        // if (!this.resolvingTurn) return;
+        return this.enqueue(async () => {
+            if (!this.turnLocked) throw new Error("Nothing to end");
+
+            if (this.currentTurn.userId.toString() !== userId.toString()) throw new Error("Not Your Turn");
+    
+            // console.log(this.idToIndexMap[userId]);
+            const currentIndex = this.turnOrder.findIndex(p => p.userId === userId);
+      
+            const nextIndex = (currentIndex + 1) % this.turnOrder.length;
+      
+            // console.log("nextIndex", nextIndex);
+            
+            this.currentTurn = this.turnOrder[nextIndex];
+            this.turnLocked = false;
+            
+            return this;
+        })
+>>>>>>> Stashed changes
     }
     buyProp(userId) {
         const playerIndex = this.idToIndexMap[userId.toString()];

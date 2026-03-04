@@ -158,6 +158,7 @@ export const registerPlayerEvents = () => {
     })
     socket.on("socket:end-turn:success", (res) => {
         // console.log(res.game.currentTurn+" current turn");
+        console.log(res.currentTurn);
         if (res.currentTurn.userId.toString() === user._id.toString()){
             toast.success('Your Turn');
             setIsYourTurnSocket(true);
